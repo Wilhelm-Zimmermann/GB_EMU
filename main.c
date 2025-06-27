@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "./src/memory.h"
+#include <SDL2/SDL.h>
+#include "./src/headers/memory.h"
 
 int main()
 {

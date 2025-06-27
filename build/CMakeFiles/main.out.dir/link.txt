@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/main.out.dir/main.c.o CMakeFiles/main.out.dir/src/memory.c.o CMakeFiles/main.out.dir/src/register.c.o CMakeFiles/main.out.dir/src/rom.c.o -o main.out 

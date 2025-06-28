@@ -3,7 +3,7 @@
 
 typedef struct
 {
-    uint16_t *memory;
+    uint8_t *memory;
 } Memory;
 
 void initMemory(Memory *mem);

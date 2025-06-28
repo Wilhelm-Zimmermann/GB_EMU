@@ -1,8 +1,18 @@
 #include <stdint.h>
 #include <stdlib.h>
-#include "memory.h"
+#include <stdio.h>
+#include "./headers/memory.h"
+#define DEBUG
 
 void initMemory(Memory *mem)
 {
-    mem->memory = malloc(sizeof(uint16_t) * (1024 * 32));
+#ifdef DEBUG
+    printf("Allocating RAM...\n");
+#endif
+    mem->memory = malloc(sizeof(uint8_t) * (1024 * 1024 * 32)); // 32MB, only for tests
+
+    if(mem->memory == NULL) {
+        fprintf(stderr, "RAM could not be allocated!!");
+        return;
+    }
 }

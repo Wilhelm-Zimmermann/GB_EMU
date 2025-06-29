@@ -9,7 +9,9 @@ void initMemory(Memory *mem)
 #ifdef DEBUG
     printf("Allocating RAM...\n");
 #endif
-    mem->memory = malloc(sizeof(uint8_t) * (1024 * 1024 * 32)); // 32MB, only for tests
+    mem->vRamSize = (1024 * 8);
+    mem->memory = malloc(sizeof(uint8_t) * (1024 * 32));
+    mem->vRam = malloc(sizeof(uint8_t) * mem->vRamSize);
 
     if(mem->memory == NULL) {
         fprintf(stderr, "RAM could not be allocated!!");

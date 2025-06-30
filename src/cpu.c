@@ -81,12 +81,15 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         break;
     case 0x01:
         printf("Loading 16 bit value to BC\n");
-        uint8_t lowByte = read_byte(mem, reg->PC + 1);
-        uint8_t highByte = read_byte(mem, reg->PC + 2);
+        uint8_t lowByte = readByte(mem, reg->PC + 1);
+        uint8_t highByte = readByte(mem, reg->PC + 2);
 
         uint16_t value = (highByte << 8) | lowByte;
         reg->BC = value;
         reg->PC += 3;
+        break;
+    case 0x02:
+        writeByte(mem, reg->BC, reg->A);
         break;
     default:
         break;

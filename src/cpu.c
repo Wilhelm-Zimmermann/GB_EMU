@@ -49,7 +49,7 @@ void set_CFlag16Bit(Register *reg, uint16_t value)
     }
 }
 
-void set_CFlag16Bit(Register *reg, int value)
+void set_CFlag16BitSubtr(Register *reg, int value)
 {
     if (value < 0)
     {
@@ -85,12 +85,12 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x01:
         // LD BC, n16
         printf("Loading 16 bit value to BC\n");
-        uint8_t lowByte = readByte(mem, reg->PC + 1);
-        uint8_t highByte = readByte(mem, reg->PC + 2);
+        uint8_t lowByte = readByte(mem, reg->PC);
+        uint8_t highByte = readByte(mem, reg->PC + 1);
 
         uint16_t value = (highByte << 8) | lowByte;
         reg->BC = value;
-        reg->PC += 3;
+        reg->PC += 2;
         break;
     case 0x02:
         // LD [BC], A
@@ -110,7 +110,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         break;
     case 0x06:
         // LD B, n8
-        uint8_t byteValue = readByte(mem, reg->PC + 1);
+        uint8_t byteValue = readByte(mem, reg->PC);
         reg->B = byteValue;
         break;
     case 0x07:
@@ -124,6 +124,9 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
             set_CFlagBitShift(reg);
         }
         break;
+
+    case 0x08:
+     // LD [a16], SP
     default:
         break;
     }

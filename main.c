@@ -76,7 +76,7 @@ int main(int argc, char *args[])
         }
 
         // SDL_UpdateTexture(texture, NULL, chip->display, 64 * sizeof(uint32_t));
-        cycle(reg, mem);
+        cpu_cycle(reg, mem);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);

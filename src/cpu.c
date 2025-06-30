@@ -62,24 +62,28 @@ void set_CFlag16Bit(Register *reg, int value)
 }
 
 // TODO: Implement 1 bit validation of C flag
-// void set_CFlag1BitShift(Register *reg, int value)
-// {
-
-// }
+void set_CFlagBitShift(Register *reg)
+{
+    reg->F |= (1 << C_FLAG_BIT);
+}
 
 // TODO: Implement NH flags later
-// void set_NHFlags() 
+// void set_NHFlags()
 // {
 
 // }
 
+// TODO: Review opcodes to implement the flags logic
+// Flags order -> Z N H C
 void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
     case 0x00:
+        // NOP operation
         break;
     case 0x01:
+        // LD BC, n16
         printf("Loading 16 bit value to BC\n");
         uint8_t lowByte = readByte(mem, reg->PC + 1);
         uint8_t highByte = readByte(mem, reg->PC + 2);
@@ -89,14 +93,43 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         reg->PC += 3;
         break;
     case 0x02:
+        // LD [BC], A
         writeByte(mem, reg->BC, reg->A);
+        break;
+    case 0x03:
+        // INC BC
+        reg->BC++;
+        break;
+    case 0x04:
+        // INC B
+        reg->B++;
+        break;
+    case 0x05:
+        // DEC B
+        reg->B--;
+        break;
+    case 0x06:
+        // LD B, n8
+        uint8_t byteValue = readByte(mem, reg->PC + 1);
+        reg->B = byteValue;
+        break;
+    case 0x07:
+        // RLCA
+        uint8_t accMsb = (reg->A >> 7) & 1;
+        reg->A = (reg->A << 1) | accMsb;
+        reg->F = 0;
+
+        if (accMsb)
+        {
+            set_CFlagBitShift(reg);
+        }
         break;
     default:
         break;
     }
 }
 
-void cycle(Register *reg, Memory *mem)
+void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
     printf("Getting opcode: %x\n", opcode);

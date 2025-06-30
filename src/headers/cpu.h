@@ -5,5 +5,5 @@ typedef struct
 {
 } CPU;
 
-void cycle(Register* reg, Memory* mem);
+void cpu_cycle(Register* reg, Memory* mem);
 void initRegisters(Register* reg);

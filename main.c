@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include "./src/headers/memory.h"
 #include "./src/headers/rom.h"
+#include "./src/headers/cpu.h"
 
 #define DEBUG
 
@@ -30,6 +31,7 @@ int main(int argc, char *args[])
     SDL_Window *window = SDL_CreateWindow(args[1], SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 160 * PIXEL_SCALE, 144 * PIXEL_SCALE, SDL_WINDOW_SHOWN);
     Memory *mem = malloc(sizeof(Memory));
     ROM *rom = malloc(sizeof(ROM));
+    Register *reg = malloc(sizeof(Register));
 
     if (window == NULL)
     {
@@ -41,26 +43,40 @@ int main(int argc, char *args[])
     SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160, 144);
 
     initMemory(mem);
-    // loadRom(mem, "../ROMS/Legend of Zelda, The - Link's Awakening (USA, Europe) (Rev 2).gb");
-    loadRom(mem, "./ROMS/Legend of Zelda, The - Link's Awakening (USA, Europe) (Rev 2).gb"); // when debug use this for while
-    printf("Program end successfully!!\n");
+// loadRom(mem, "../ROMS/Legend of Zelda, The - Link's Awakening (USA, Europe) (Rev 2).gb");
+// loadRom(mem, "./ROMS/Legend of Zelda, The - Link's Awakening (USA, Europe) (Rev 2).gb");
+// loadRom(mem, "./ROMS/Mortal Kombat (USA, Europe).gb");
+#ifdef DEBUG
+    loadRom(mem, "./ROMS/cpu_instrs.gb");
+#endif
 
+#ifndef DEBUG
+    loadRom(mem, "../ROMS/cpu_instrs.gb");
+#endif
+    printf("Program end successfully!!\n");
+    initRegisters(reg);
     SDL_Event e;
     int quit = 0;
-    while (!quit) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
+    while (!quit)
+    {
+        while (SDL_PollEvent(&e))
+        {
+            if (e.type == SDL_QUIT)
+            {
                 quit = 1;
             }
 
-            if (e.type == SDL_KEYDOWN) {
-                if (e.key.keysym.sym == SDLK_ESCAPE) {
+            if (e.type == SDL_KEYDOWN)
+            {
+                if (e.key.keysym.sym == SDLK_ESCAPE)
+                {
                     quit = 1;
                 }
             }
         }
 
         // SDL_UpdateTexture(texture, NULL, chip->display, 64 * sizeof(uint32_t));
+        cycle(reg, mem);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
@@ -71,5 +87,9 @@ int main(int argc, char *args[])
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+
+    free(mem);
+    free(rom);
+    // free(cpu);
     return 0;
 }

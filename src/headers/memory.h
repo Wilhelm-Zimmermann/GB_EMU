@@ -4,8 +4,11 @@
 typedef struct
 {
     int vRamSize;
-    uint8_t *memory;
+    int ramSize;
+    uint8_t *ram;
     uint8_t *vRam;
 } Memory;
 
 void initMemory(Memory *mem);
+uint8_t read_byte(Memory *mem, uint16_t address);
+void write_byte(Memory *mem, uint16_t address, uint8_t value);

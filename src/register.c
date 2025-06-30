@@ -8,5 +8,5 @@ void initialize(Register *reg)
     reg->HL = 0;
 
     reg->SP = 0;
-    reg->PC = 0;
+    reg->PC = 0x104;
 }

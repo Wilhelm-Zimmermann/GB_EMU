@@ -10,11 +10,18 @@ void initMemory(Memory *mem)
     printf("Allocating RAM...\n");
 #endif
     mem->vRamSize = (1024 * 8);
-    mem->memory = malloc(sizeof(uint8_t) * (1024 * 32));
+    mem->ramSize = (1024 * 64);
+    mem->ram = malloc(sizeof(uint8_t) * mem->ramSize);
     mem->vRam = malloc(sizeof(uint8_t) * mem->vRamSize);
 
-    if(mem->memory == NULL) {
+    if (mem->ram == NULL)
+    {
         fprintf(stderr, "RAM could not be allocated!!");
         return;
     }
+}
+
+uint8_t read_byte(Memory *mem, uint16_t address)
+{
+    return mem->ram[address];
 }

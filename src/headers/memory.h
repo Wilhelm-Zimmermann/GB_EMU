@@ -10,5 +10,5 @@ typedef struct
 } Memory;
 
 void initMemory(Memory *mem);
-uint8_t readByte(Memory *mem, uint16_t address);
-void writeByte(Memory *mem, uint16_t address, uint8_t value);
+uint8_t memoryRead(Memory *mem, uint16_t address);
+void memoryWrite(Memory *mem, uint16_t address, uint8_t value);

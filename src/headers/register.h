@@ -68,7 +68,8 @@ void unset_NFlag(Register *reg);
 void unset_HFlag(Register *reg);
 
 void checkIfHasCarryAndSetH8b(Register *reg, uint8_t value);
-// void checkIfHasCarryAndSetH16b(Register *reg, uint8_t value);
+void checkIfHasCarryAndSetH16b(Register *reg, uint16_t value);
+
 void checkIfOpZeroAndSetZ(Register *reg, uint8_t value);
 
 void setCFlagIfAddOpGtThanFF(Register *reg, uint16_t value);

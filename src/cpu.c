@@ -3,6 +3,12 @@
 #include "./headers/register.h"
 #include "./headers/memory.h"
 
+// Criar funções pra retornar esses bits especificos
+const int Z_FLAG_BIT = 7;
+const int N_FLAG_BIT = 6;
+const int H_FLAG_BIT = 5;
+const int C_FLAG_BIT = 4;
+
 void initRegisters(Register *reg)
 {
     initialize(reg);
@@ -218,7 +224,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x17:
     {
         // RLA
-        uint8_t carryBit = (reg->F >> 4) & 1;
+        uint8_t carryBit = (reg->F >> C_FLAG_BIT) & 1;
         uint8_t accMSB = (reg->A >> 7) & 1;
 
         reg->A = reg->A << 1;
@@ -237,9 +243,78 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     {
         // JR e8
         uint8_t unsignedValue = memoryRead(mem, reg->PC + 1);
-        int8_t signedValue = (int8_t) unsignedValue;
+        int8_t signedValue = (int8_t)unsignedValue;
         uint16_t newPCAddr = reg->PC + 2 + signedValue;
         reg->PC += newPCAddr;
+        break;
+    }
+    case 0x19:
+    {
+        // ADD HL, DE
+        uint32_t sumValue = (uint32_t)reg->HL + (uint32_t)reg->DE;
+        unset_NFlag(reg);
+        checkIfHasCarryAndSetH16b(reg, ((reg->HL & 0x0FFF) + (reg->DE & 0x0FFF)));
+        setCFlagIfAddOpGtThanFFFF(reg, sumValue);
+        reg->HL = (uint16_t)sumValue;
+        incrementPC(reg);
+        break;
+    }
+    case 0x1A:
+    {
+        // LD A, [DE]
+        uint8_t value = memoryRead(mem, reg->PC + 1);
+        reg->A = value;
+        incrementPC(reg);
+        break;
+    }
+    case 0x1B:
+    {
+        // DEC DE
+        reg->DE--;
+        incrementPC(reg);
+        break;
+    }
+    case 0x1C:
+    {
+        // INC E
+        reg->E++;
+        unset_NFlag(reg);
+        checkIfOpZeroAndSetZ(reg, reg->E);
+        checkIfHasCarryAndSetH8b(reg, reg->E);
+        incrementPC(reg);
+        break;
+    }
+    case 0x1D:
+    {
+        // DEC E
+        checkIfHasCarryAndSetH8b(reg, reg->E);
+        reg->E--;
+        set_NFlag(reg);
+        checkIfOpZeroAndSetZ(reg, reg->E);
+        incrementPC(reg);
+        break;
+    }
+    case 0x1E:
+    {
+        // LD E, n8
+        uint8_t value = memoryRead(mem, reg->PC + 1);
+        reg->E = value;
+        reg->PC += 2;
+    }
+    case 0x1F:
+    {
+        uint8_t accLSB = reg->A & 1;
+        uint8_t carryBit = (reg->F >> C_FLAG_BIT) & 1;
+        reg->A = reg->A >> 1;
+        reg->A |= (carryBit << 7);
+        reg->F = 0;
+
+        if (accLSB)
+        {
+            set_CFlag(reg);
+        }
+
+        incrementPC(reg);
         break;
     }
     default:

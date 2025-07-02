@@ -68,6 +68,18 @@ void checkIfHasCarryAndSetH8b(Register *reg, uint8_t value)
     }
 }
 
+void checkIfHasCarryAndSetH16b(Register *reg, uint16_t value)
+{
+    if (value > 0x0FFF)
+    {
+        set_HFlag(reg);
+    }
+    else
+    {
+        unset_HFlag(reg);
+    }
+}
+
 void checkIfOpZeroAndSetZ(Register *reg, uint8_t value)
 {
     if (value == 0)

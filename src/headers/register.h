@@ -3,8 +3,10 @@
 
 typedef struct
 {
-    union {
-        struct {
+    union
+    {
+        struct
+        {
             // Lower byte
             // z -> zero flag - 7th bit
             // n -> subtraction flag (BCD) - 6th bit
@@ -18,24 +20,30 @@ typedef struct
         uint16_t AF;
     };
 
-    union {
-        struct {
+    union
+    {
+        struct
+        {
             uint8_t C;
             uint8_t B;
         };
         uint16_t BC;
     };
 
-    union {
-        struct {
+    union
+    {
+        struct
+        {
             uint8_t E;
             uint8_t D;
         };
         uint16_t DE;
     };
 
-    union {
-        struct {
+    union
+    {
+        struct
+        {
             uint8_t L;
             uint8_t H;
         };
@@ -46,5 +54,21 @@ typedef struct
     uint16_t PC; // Program Counter
 } Register;
 
+void initialize(Register *reg);
 
-void initialize(Register* reg);
+void set_ZFlag(Register *reg);
+void set_CFlag(Register *reg);
+void set_NFlag(Register *reg);
+void set_HFlag(Register *reg);
+
+void unset_ZFlag(Register *reg);
+void unset_CFlag(Register *reg);
+void unset_NFlag(Register *reg);
+void unset_HFlag(Register *reg);
+
+void checkIfHasCarryAndSetH8b(Register *reg, uint8_t value);
+// void checkIfHasCarryAndSetH16b(Register *reg, uint8_t value);
+void checkIfOpZeroAndSetZ(Register *reg, uint8_t value);
+
+void setCFlagIfAddOpGtThanFF(Register *reg, uint16_t value);
+void setCFlagIfAddOpGtThanFFFF(Register *reg, uint32_t value);

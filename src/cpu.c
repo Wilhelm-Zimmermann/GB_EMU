@@ -3,38 +3,12 @@
 #include "./headers/register.h"
 #include "./headers/memory.h"
 
-const int Z_FLAG_BIT = 7;
-const int N_FLAG_BIT = 6;
-const int H_FLAG_BIT = 5;
-const int C_FLAG_BIT = 4;
-
 void initRegisters(Register *reg)
 {
     initialize(reg);
 }
-#pragma region // TODO: MOve this code later to register.h
-void set_ZFlag(Register *reg)
-{
-    reg->F |= (1 << Z_FLAG_BIT);
-}
 
-void set_CFlag(Register *reg)
-{
-    reg->F |= (1 << C_FLAG_BIT);
-}
-
-void set_NFlag(Register *reg)
-{
-    reg->F |= (1 << N_FLAG_BIT);
-}
-
-void set_HFlag(Register *reg)
-{
-    reg->F |= (1 << H_FLAG_BIT);
-}
-
-#pragma endregion
-
+// 0x00 to 0x0F Instructions
 // TODO: Review opcodes to implement the flags logic
 // Flags order -> Z N H C
 void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
@@ -66,10 +40,16 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x04:
         // INC B
         reg->B++;
+        unset_NFlag(reg);
+        checkIfOpZeroAndSetZ(reg, reg->B);
+        checkIfHasCarryAndSetH8b(reg, reg->B);
         break;
     case 0x05:
         // DEC B
         reg->B--;
+        set_NFlag(reg);
+        checkIfOpZeroAndSetZ(reg, reg->B);
+        checkIfHasCarryAndSetH8b(reg, reg->B);
         break;
     case 0x06:
         // LD B, n8
@@ -103,8 +83,19 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     }
     case 0x09:
         // ADD HL, BC
-        uint16_t sumValue = reg->HL + reg->BC;
-        reg->HL = sumValue;
+        uint32_t sumValue = (uint32_t)reg->HL + (uint32_t)reg->BC;
+        unset_NFlag(reg);
+        if (((reg->HL & 0x0FFF) + (reg->BC & 0x0FFF)) > 0x0FFF)
+        {
+            set_HFlag(reg);
+        }
+        else
+        {
+            unset_HFlag(reg);
+        }
+
+        setCFlagIfAddOpGtThanFFFF(reg, sumValue);
+        reg->HL = (uint16_t)sumValue;
         break;
     case 0x0A:
     {
@@ -120,10 +111,16 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x0C:
         // INC C
         reg->C++;
+        unset_NFlag(reg);
+        checkIfOpZeroAndSetZ(reg, reg->C);
+        checkIfHasCarryAndSetH8b(reg, reg->C);
         break;
     case 0x0D:
         // DEC c
         reg->C--;
+        set_NFlag(reg);
+        checkIfOpZeroAndSetZ(reg, reg->C);
+        checkIfHasCarryAndSetH8b(reg, reg->C);
     case 0x0E:
     {
         // LD C, n8
@@ -158,6 +155,21 @@ void cpu_cycle(Register *reg, Memory *mem)
     case 0x00:
         opcode_x0(reg, mem, opcode);
         break;
+    case 0x10:
+    case 0x20:
+    case 0x30:
+    case 0x40:
+    case 0x50:
+    case 0x60:
+    case 0x70:
+    case 0x80:
+    case 0x90:
+    case 0xA0:
+    case 0xB0:
+    case 0xC0:
+    case 0xD0:
+    case 0xE0:
+    case 0xF0:
     default:
     UNKNOWN_OPCODE:
         printf("Unknown opcode: %x\n", opcode);

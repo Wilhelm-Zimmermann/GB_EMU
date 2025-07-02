@@ -26,6 +26,14 @@ uint8_t memoryRead(Memory *mem, uint16_t address)
     return mem->ram[address];
 }
 
+uint16_t memoryRead16t(Memory *mem, uint16_t address)
+{
+    uint8_t lowByte = memoryRead(mem, address);
+    uint8_t highByte = memoryRead(mem, address + 1);
+
+    return (highByte << 8) | lowByte;
+}
+
 void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
 {
     mem->ram[address] = value;

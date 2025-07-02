@@ -9,8 +9,6 @@ void initRegisters(Register *reg)
 }
 
 // 0x00 to 0x0F Instructions
-// TODO: Review opcodes to implement the flags logic
-// Flags order -> Z N H C
 void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
@@ -46,15 +44,16 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         break;
     case 0x05:
         // DEC B
+        checkIfHasCarryAndSetH8b(reg, reg->B);
         reg->B--;
         set_NFlag(reg);
         checkIfOpZeroAndSetZ(reg, reg->B);
-        checkIfHasCarryAndSetH8b(reg, reg->B);
         break;
     case 0x06:
         // LD B, n8
         uint8_t byteValue = memoryRead(mem, reg->PC);
         reg->B = byteValue;
+        reg->PC++;
         break;
     case 0x07:
         // RLCA
@@ -116,11 +115,12 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         checkIfHasCarryAndSetH8b(reg, reg->C);
         break;
     case 0x0D:
-        // DEC c
+        // DEC C
+        checkIfHasCarryAndSetH8b(reg, reg->C);
         reg->C--;
         set_NFlag(reg);
         checkIfOpZeroAndSetZ(reg, reg->C);
-        checkIfHasCarryAndSetH8b(reg, reg->C);
+        break;
     case 0x0E:
     {
         // LD C, n8
@@ -144,6 +144,18 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
+
+void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    case 0x10:
+        break;
+    default:
+        break;
+    }
+}
+
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
@@ -156,6 +168,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_x0(reg, mem, opcode);
         break;
     case 0x10:
+        opcode_x1(reg, mem, opcode);
+        break;
     case 0x20:
     case 0x30:
     case 0x40:

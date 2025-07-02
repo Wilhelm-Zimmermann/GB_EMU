@@ -55,6 +55,7 @@ typedef struct
 } Register;
 
 void initialize(Register *reg);
+void incrementPC(Register *reg);
 
 void set_ZFlag(Register *reg);
 void set_CFlag(Register *reg);

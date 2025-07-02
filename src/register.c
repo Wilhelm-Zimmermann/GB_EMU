@@ -102,3 +102,8 @@ void setCFlagIfAddOpGtThanFFFF(Register *reg, uint32_t value)
         unset_CFlag(reg);
     }
 }
+
+void incrementPC(Register *reg)
+{
+    reg->PC++;
+}

@@ -3,11 +3,6 @@
 #include "./headers/register.h"
 #include "./headers/memory.h"
 
-// Criar funções pra retornar esses bits especificos
-const int Z_FLAG_BIT = 7;
-const int N_FLAG_BIT = 6;
-const int H_FLAG_BIT = 5;
-const int C_FLAG_BIT = 4;
 
 void initRegisters(Register *reg)
 {
@@ -224,7 +219,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x17:
     {
         // RLA
-        uint8_t carryBit = (reg->F >> C_FLAG_BIT) & 1;
+        uint8_t carryBit = get_CFlag(reg) & 1;
         uint8_t accMSB = (reg->A >> 7) & 1;
 
         reg->A = reg->A << 1;
@@ -304,7 +299,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x1F:
     {
         uint8_t accLSB = reg->A & 1;
-        uint8_t carryBit = (reg->F >> C_FLAG_BIT) & 1;
+        uint8_t carryBit = get_CFlag(reg) & 1;
         reg->A = reg->A >> 1;
         reg->A |= (carryBit << 7);
         reg->F = 0;
@@ -325,7 +320,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
-    printf("Getting opcode: %x\n", opcode);
+    // printf("Getting opcode: %x\n", opcode);
 
     switch (opcode & 0xF0)
     {
@@ -351,7 +346,7 @@ void cpu_cycle(Register *reg, Memory *mem)
     case 0xF0:
     default:
     UNKNOWN_OPCODE:
-        printf("Unknown opcode: %x\n", opcode);
+        // printf("Unknown opcode: %x\n", opcode);
         break;
     }
 }

@@ -119,3 +119,8 @@ void incrementPC(Register *reg)
 {
     reg->PC++;
 }
+
+uint8_t get_CFlag(Register *reg) 
+{
+    return reg->F >> C_FLAG_BIT;
+}

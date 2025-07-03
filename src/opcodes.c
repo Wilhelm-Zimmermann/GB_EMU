@@ -50,3 +50,25 @@ void instr_ldAddr16bToReg(Register *reg, Memory *mem, uint16_t *regValue)
     (*regValue) = value;
     reg->PC += 3;
 }
+
+// ADD/SUBTR 16 bit instr
+void instr_add16b(Register *reg, uint16_t *regToAdd, uint16_t valueToAdd)
+{
+    uint32_t sumValue = (uint32_t)(*regToAdd) + (uint32_t)valueToAdd;
+    unset_NFlag(reg);
+    checkIfHasCarryAndSetH16b(reg, (((*regToAdd) & 0x0FFF) + (valueToAdd & 0x0FFF)));
+    setCFlagIfAddOpGtThanFFFF(reg, sumValue);
+    *regToAdd = (uint16_t)sumValue;
+    incrementPC(reg);
+}
+
+// ADD/SUBTR 8 bit instr
+void instr_add8b(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
+{
+    uint16_t sumValue = (uint16_t)(*regToAdd) + (uint16_t)valueToAdd;
+    unset_NFlag(reg);
+    setCFlagIfAddOpGtThanFF(reg, sumValue);
+    checkIfHasCarryAndSetH8b(reg, (uint8_t)sumValue);
+    *regToAdd = (uint8_t)sumValue;
+    incrementPC(reg);
+}

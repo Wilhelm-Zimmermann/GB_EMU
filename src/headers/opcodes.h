@@ -13,3 +13,7 @@ void instr_ldAddr16bToReg(Register *reg, Memory *mem, uint16_t *regValue);
 // INC/DEC
 void instr_inc8b(Register *reg, uint8_t *value);
 void instr_dec8b(Register *reg, uint8_t *value);
+
+// ADD/SUBTR
+void instr_add8b(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd);
+void instr_add16b(Register *reg, uint16_t *regToAdd, uint16_t valueToAdd);

@@ -9,7 +9,6 @@ void initRegisters(Register *reg)
     initialize(reg);
 }
 
-// 0x00 to 0x0F Instructions
 void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
@@ -74,20 +73,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     }
     case 0x09:
         // ADD HL, BC
-        uint32_t sumValue = (uint32_t)reg->HL + (uint32_t)reg->BC;
-        unset_NFlag(reg);
-        if (((reg->HL & 0x0FFF) + (reg->BC & 0x0FFF)) > 0x0FFF)
-        {
-            set_HFlag(reg);
-        }
-        else
-        {
-            unset_HFlag(reg);
-        }
-
-        setCFlagIfAddOpGtThanFFFF(reg, sumValue);
-        reg->HL = (uint16_t)sumValue;
-        incrementPC(reg);
+        instr_add16b(reg, &reg->HL, reg->BC);
         break;
     case 0x0A:
     {
@@ -208,12 +194,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x19:
     {
         // ADD HL, DE
-        uint32_t sumValue = (uint32_t)reg->HL + (uint32_t)reg->DE;
-        unset_NFlag(reg);
-        checkIfHasCarryAndSetH16b(reg, ((reg->HL & 0x0FFF) + (reg->DE & 0x0FFF)));
-        setCFlagIfAddOpGtThanFFFF(reg, sumValue);
-        reg->HL = (uint16_t)sumValue;
-        incrementPC(reg);
+        instr_add16b(reg, &reg->HL, reg->DE);
         break;
     }
     case 0x1A:
@@ -389,12 +370,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     case 0x29:
     {
         // ADD HL, HL
-        uint32_t sumValue = (uint32_t)reg->HL + (uint32_t)reg->HL;
-        unset_NFlag(reg);
-        checkIfHasCarryAndSetH16b(reg, ((reg->HL & 0x0FFF) + (reg->HL & 0x0FFF)));
-        setCFlagIfAddOpGtThanFFFF(reg, sumValue);
-        reg->HL = (uint16_t)sumValue;
-        incrementPC(reg);
+        instr_add16b(reg, &reg->HL, reg->HL);
         break;
     }
     case 0x2A:

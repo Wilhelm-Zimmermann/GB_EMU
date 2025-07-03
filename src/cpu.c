@@ -43,7 +43,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         break;
     case 0x06:
         // LD B, n8
-        instr_ldn8bAddr(reg, mem, &reg->B);
+        instr_ldNxt8bAddrInReg(reg, mem, &reg->B);
         break;
     case 0x07:
         // RLCA
@@ -78,7 +78,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x0A:
     {
         // LD A, [BC]
-        instr_ldAddr8b(reg, mem, reg->BC, &reg->A);
+        instr_ldAddr8bInReg(reg, mem, reg->BC, &reg->A);
         break;
     }
     case 0x0B:
@@ -97,7 +97,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x0E:
     {
         // LD C, n8
-        instr_ldn8bAddr(reg, mem, &reg->C);
+        instr_ldNxt8bAddrInReg(reg, mem, &reg->C);
         break;
     }
     case 0x0F:
@@ -161,7 +161,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x16:
     {
         // LD D, n8
-        instr_ldn8bAddr(reg, mem, &reg->D);
+        instr_ldNxt8bAddrInReg(reg, mem, &reg->D);
         break;
     }
     case 0x17:
@@ -200,7 +200,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x1A:
     {
         // LD A, [DE]
-        instr_ldAddr8b(reg, mem, reg->DE, &reg->A);
+        instr_ldAddr8bInReg(reg, mem, reg->DE, &reg->A);
         break;
     }
     case 0x1B:
@@ -225,7 +225,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x1E:
     {
         // LD E, n8
-        instr_ldn8bAddr(reg, mem, &reg->E);
+        instr_ldNxt8bAddrInReg(reg, mem, &reg->E);
         break;
     }
     case 0x1F:
@@ -308,7 +308,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     case 0x26:
     {
         // LD H, n8
-        instr_ldn8bAddr(reg, mem, &reg->H);
+        instr_ldNxt8bAddrInReg(reg, mem, &reg->H);
         break;
     }
     case 0x27:
@@ -376,7 +376,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     case 0x2A:
     {
         // LD A, [HL +]
-        instr_ldAddr8b(reg, mem, reg->HL, &reg->A);
+        instr_ldAddr8bInReg(reg, mem, reg->HL, &reg->A);
         reg->HL++;
         break;
     }
@@ -401,7 +401,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     case 0x2E:
     {
         // LD L, n8
-        instr_ldn8bAddr(reg, mem, &reg->L);
+        instr_ldNxt8bAddrInReg(reg, mem, &reg->L);
         break;
     }
     case 0x2F:
@@ -413,6 +413,16 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         incrementPC(reg);
         break;
     }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
+void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
     default:
         incrementPC(reg);
         break;
@@ -436,6 +446,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_x2(reg, mem, opcode);
         break;
     case 0x30:
+        opcode_x3(reg, mem, opcode);
+        break;
     case 0x40:
     case 0x50:
     case 0x60:

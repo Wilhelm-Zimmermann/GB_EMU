@@ -4,10 +4,11 @@
 #include "memory.h"
 
 // LD
-void instr_ld8b(Register *reg, uint8_t *fromValue, uint8_t *toValue);
-void instr_ldn8bAddr(Register *reg, Memory *mem, uint8_t *value);
-void instr_ldAddr8b(Register *reg, Memory *mem, uint16_t memAddr, uint8_t *value);
+void instr_ld8bIn8b(Register *reg, uint8_t *fromValue, uint8_t *toValue);
+void instr_ldNxt8bAddrInReg(Register *reg, Memory *mem, uint8_t *value);
+void instr_ldReg8bInAddr(Register *reg, Memory *mem, uint8_t *value);
 
+void instr_ldAddr8bInReg(Register *reg, Memory *mem, uint16_t memAddr, uint8_t *value);
 void instr_ldAddr16bToReg(Register *reg, Memory *mem, uint16_t *regValue);
 
 // INC/DEC

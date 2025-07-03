@@ -2,7 +2,7 @@
 #include "./headers/cpu.h"
 #include "./headers/register.h"
 #include "./headers/memory.h"
-
+#include "./headers/opcodes.h"
 
 void initRegisters(Register *reg)
 {
@@ -21,10 +21,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x01:
     {
         // LD BC, n16
-        uint8_t lowByte = memoryRead(mem, reg->PC + 1);
-        uint8_t highByte = memoryRead(mem, reg->PC + 2);
-
-        uint16_t value = (highByte << 8) | lowByte;
+        uint16_t value = memoryRead16t(mem, reg->PC + 1);
         reg->BC = value;
         reg->PC += 3;
         break;
@@ -41,19 +38,11 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         break;
     case 0x04:
         // INC B
-        reg->B++;
-        unset_NFlag(reg);
-        checkIfOpZeroAndSetZ(reg, reg->B);
-        checkIfHasCarryAndSetH8b(reg, reg->B);
-        incrementPC(reg);
+        instr_inc8b(reg, &reg->B);
         break;
     case 0x05:
         // DEC B
-        checkIfHasCarryAndSetH8b(reg, reg->B);
-        reg->B--;
-        set_NFlag(reg);
-        checkIfOpZeroAndSetZ(reg, reg->B);
-        incrementPC(reg);
+        instr_dec8b(reg, &reg->B);
         break;
     case 0x06:
         // LD B, n8
@@ -119,19 +108,11 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         break;
     case 0x0C:
         // INC C
-        reg->C++;
-        unset_NFlag(reg);
-        checkIfOpZeroAndSetZ(reg, reg->C);
-        checkIfHasCarryAndSetH8b(reg, reg->C);
-        incrementPC(reg);
+        instr_inc8b(reg, &reg->C);
         break;
     case 0x0D:
         // DEC C
-        checkIfHasCarryAndSetH8b(reg, reg->C);
-        reg->C--;
-        set_NFlag(reg);
-        checkIfOpZeroAndSetZ(reg, reg->C);
-        incrementPC(reg);
+        instr_dec8b(reg, &reg->C);
         break;
     case 0x0E:
     {
@@ -191,21 +172,13 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x14:
     {
         // INC D
-        reg->D++;
-        unset_NFlag(reg);
-        checkIfOpZeroAndSetZ(reg, reg->D);
-        checkIfHasCarryAndSetH8b(reg, reg->D);
-        incrementPC(reg);
+        instr_inc8b(reg, &reg->D);
         break;
     }
     case 0x15:
     {
         // DEC D
-        checkIfHasCarryAndSetH8b(reg, reg->D);
-        reg->D--;
-        set_NFlag(reg);
-        checkIfOpZeroAndSetZ(reg, reg->D);
-        incrementPC(reg);
+        instr_dec8b(reg, &reg->D);
         break;
     }
     case 0x16:
@@ -272,21 +245,13 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x1C:
     {
         // INC E
-        reg->E++;
-        unset_NFlag(reg);
-        checkIfOpZeroAndSetZ(reg, reg->E);
-        checkIfHasCarryAndSetH8b(reg, reg->E);
-        incrementPC(reg);
+        instr_inc8b(reg, &reg->E);
         break;
     }
     case 0x1D:
     {
         // DEC E
-        checkIfHasCarryAndSetH8b(reg, reg->E);
-        reg->E--;
-        set_NFlag(reg);
-        checkIfOpZeroAndSetZ(reg, reg->E);
-        incrementPC(reg);
+        instr_dec8b(reg, &reg->E);
         break;
     }
     case 0x1E:
@@ -317,6 +282,69 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
+void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    // case 0x20:
+    // {
+    //     // JR NZ, e8
+    //     uint8_t zFlagValue = get_ZFlag(reg);
+    //     if (zFlagValue == 0)
+    //     {
+    //         uint8_t unsignedValue = memoryRead(mem, reg->PC + 1);
+    //         int8_t signedValue = (int8_t)unsignedValue;
+    //         uint16_t newPCAddr = reg->PC + 2 + signedValue;
+    //         reg->PC += newPCAddr;
+    //     }
+    //     else
+    //     {
+    //         reg->PC += 2;
+    //     }
+    //     break;
+    // }
+    case 0x21:
+    {
+        // LD HL, n16
+        uint16_t value = memoryRead16t(mem, reg->PC + 1);
+        reg->HL = value;
+        reg->PC += 3;
+        break;
+    }
+    case 0x22:
+    {
+        // LD [HL+], A
+        memoryWrite(mem, reg->HL, reg->A);
+        reg->HL++;
+        incrementPC(reg);
+        break;
+    }
+    case 0x23:
+    {
+        // INC HL
+        reg->HL++;
+        incrementPC(reg);
+        break;
+    }
+    case 0x24:
+    {
+        // INC H
+        instr_inc8b(reg, &reg->H);
+        break;
+    }
+    case 0x25:
+    {
+        // DEC H
+        instr_dec8b(reg, &reg->H);
+        break;
+    }
+    break;
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
@@ -331,6 +359,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_x1(reg, mem, opcode);
         break;
     case 0x20:
+        opcode_x2(reg, mem, opcode);
+        break;
     case 0x30:
     case 0x40:
     case 0x50:
@@ -347,6 +377,7 @@ void cpu_cycle(Register *reg, Memory *mem)
     default:
     UNKNOWN_OPCODE:
         // printf("Unknown opcode: %x\n", opcode);
+        incrementPC(reg);
         break;
     }
 }

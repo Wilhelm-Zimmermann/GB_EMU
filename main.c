@@ -80,7 +80,7 @@ int main(int argc, char *args[])
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
-        SDL_Delay(16);
+        // SDL_Delay(16);
     }
 
     SDL_DestroyTexture(texture);

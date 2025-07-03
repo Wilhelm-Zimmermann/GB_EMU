@@ -124,3 +124,8 @@ uint8_t get_CFlag(Register *reg)
 {
     return reg->F >> C_FLAG_BIT;
 }
+
+uint8_t get_ZFlag(Register *reg) 
+{
+    return reg->F >> Z_FLAG_BIT;
+}

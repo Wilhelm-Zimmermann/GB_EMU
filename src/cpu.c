@@ -21,9 +21,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x01:
     {
         // LD BC, n16
-        uint16_t value = memoryRead16t(mem, reg->PC + 1);
-        reg->BC = value;
-        reg->PC += 3;
+        instr_ldAddr16bToReg(reg, mem, &reg->BC);
         break;
     }
     case 0x02:
@@ -46,9 +44,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         break;
     case 0x06:
         // LD B, n8
-        uint8_t byteValue = memoryRead(mem, reg->PC + 1);
-        reg->B = byteValue;
-        reg->PC += 2;
+        instr_ldn8bAddr(reg, mem, &reg->B);
         break;
     case 0x07:
         // RLCA
@@ -96,9 +92,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x0A:
     {
         // LD A, [BC]
-        uint8_t value = memoryRead(mem, reg->BC);
-        reg->A = value;
-        incrementPC(reg);
+        instr_ldAddr8b(reg, mem, reg->BC, &reg->A);
         break;
     }
     case 0x0B:
@@ -117,9 +111,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x0E:
     {
         // LD C, n8
-        uint8_t value = memoryRead(mem, reg->PC + 1);
-        reg->C = value;
-        reg->PC += 2;
+        instr_ldn8bAddr(reg, mem, &reg->C);
         break;
     }
     case 0x0F:
@@ -150,9 +142,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x11:
     {
         // LD DE, n16
-        uint16_t value = memoryRead16t(mem, reg->PC + 1);
-        reg->DE = value;
-        reg->PC += 3;
+        instr_ldAddr16bToReg(reg, mem, &reg->DE);
         break;
     }
     case 0x12:
@@ -184,9 +174,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x16:
     {
         // LD D, n8
-        uint8_t value = memoryRead(mem, reg->PC + 1);
-        reg->D = value;
-        reg->PC += 2;
+        instr_ldn8bAddr(reg, mem, &reg->D);
         break;
     }
     case 0x17:
@@ -230,9 +218,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x1A:
     {
         // LD A, [DE]
-        uint8_t value = memoryRead(mem, reg->PC + 1);
-        reg->A = value;
-        incrementPC(reg);
+        instr_ldAddr8b(reg, mem, reg->DE, &reg->A);
         break;
     }
     case 0x1B:
@@ -257,12 +243,12 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x1E:
     {
         // LD E, n8
-        uint8_t value = memoryRead(mem, reg->PC + 1);
-        reg->E = value;
-        reg->PC += 2;
+        instr_ldn8bAddr(reg, mem, &reg->E);
+        break;
     }
     case 0x1F:
     {
+        // RRA
         uint8_t accLSB = reg->A & 1;
         uint8_t carryBit = get_CFlag(reg) & 1;
         reg->A = reg->A >> 1;
@@ -306,9 +292,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     case 0x21:
     {
         // LD HL, n16
-        uint16_t value = memoryRead16t(mem, reg->PC + 1);
-        reg->HL = value;
-        reg->PC += 3;
+        instr_ldAddr16bToReg(reg, mem, &reg->HL);
         break;
     }
     case 0x22:

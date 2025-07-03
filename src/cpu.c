@@ -126,6 +126,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         incrementPC(reg);
         break;
     default:
+        incrementPC(reg);
         break;
     }
 }
@@ -201,7 +202,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t unsignedValue = memoryRead(mem, reg->PC + 1);
         int8_t signedValue = (int8_t)unsignedValue;
         uint16_t newPCAddr = reg->PC + 2 + signedValue;
-        reg->PC += newPCAddr;
+        reg->PC = newPCAddr;
         break;
     }
     case 0x19:
@@ -264,6 +265,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
         break;
     }
     default:
+        incrementPC(reg);
         break;
     }
 }
@@ -272,23 +274,23 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
-    // case 0x20:
-    // {
-    //     // JR NZ, e8
-    //     uint8_t zFlagValue = get_ZFlag(reg);
-    //     if (zFlagValue == 0)
-    //     {
-    //         uint8_t unsignedValue = memoryRead(mem, reg->PC + 1);
-    //         int8_t signedValue = (int8_t)unsignedValue;
-    //         uint16_t newPCAddr = reg->PC + 2 + signedValue;
-    //         reg->PC += newPCAddr;
-    //     }
-    //     else
-    //     {
-    //         reg->PC += 2;
-    //     }
-    //     break;
-    // }
+    case 0x20:
+    {
+        // JR NZ, e8
+        uint8_t zFlagValue = get_ZFlag(reg);
+        if (zFlagValue == 0)
+        {
+            uint8_t unsignedValue = memoryRead(mem, reg->PC + 1);
+            int8_t signedValue = (int8_t)unsignedValue;
+            uint16_t newPCAddr = reg->PC + 2 + signedValue;
+            reg->PC = newPCAddr;
+        }
+        else
+        {
+            reg->PC += 2;
+        }
+        break;
+    }
     case 0x21:
     {
         // LD HL, n16
@@ -322,7 +324,119 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         instr_dec8b(reg, &reg->H);
         break;
     }
-    break;
+    case 0x26:
+    {
+        // LD H, n8
+        instr_ldn8bAddr(reg, mem, &reg->H);
+        break;
+    }
+    case 0x27:
+    {
+        // DAA
+        uint8_t a = reg->A;
+        uint8_t nFlagValue = get_NFlag(reg);
+        uint8_t hFlagValue = get_HFlag(reg);
+        uint8_t cFlagValue = get_CFlag(reg);
+        if (nFlagValue == 0)
+        {
+            if (cFlagValue == 1 || a > 0x99)
+            {
+                a += 0x60;
+                set_CFlag(reg);
+            }
+            if (hFlagValue == 1 || (a & 0x0F) > 0x09)
+            {
+                a += 0x06;
+            }
+        }
+        else
+        {
+            if (cFlagValue == 1)
+            {
+                a -= 0x60;
+            }
+            if (hFlagValue == 1)
+            {
+                a -= 0x06;
+            }
+        }
+        reg->A = a;
+        checkIfOpZeroAndSetZ(reg, reg->A);
+        unset_HFlag(reg);
+        if (nFlagValue == 0 && get_CFlag(reg) != 1)
+        {
+            unset_CFlag(reg);
+        }
+        break;
+    }
+    case 0x28:
+    {
+        // JR Z, e8
+        uint8_t zFlagValue = get_ZFlag(reg);
+        if (zFlagValue == 1)
+        {
+            uint8_t unsignedValue = memoryRead(mem, reg->PC + 1);
+            int8_t signedValue = (int8_t)unsignedValue;
+            uint16_t newPCAddr = reg->PC + 2 + signedValue;
+            reg->PC = newPCAddr;
+        }
+        else
+        {
+            reg->PC += 2;
+        }
+        break;
+    }
+    case 0x29:
+    {
+        // ADD HL, HL
+        uint32_t sumValue = (uint32_t)reg->HL + (uint32_t)reg->HL;
+        unset_NFlag(reg);
+        checkIfHasCarryAndSetH16b(reg, ((reg->HL & 0x0FFF) + (reg->HL & 0x0FFF)));
+        setCFlagIfAddOpGtThanFFFF(reg, sumValue);
+        reg->HL = (uint16_t)sumValue;
+        incrementPC(reg);
+        break;
+    }
+    case 0x2A:
+    {
+        // LD A, [HL +]
+        instr_ldAddr8b(reg, mem, reg->HL, &reg->A);
+        reg->HL++;
+        break;
+    }
+    case 0x2B:
+    {
+        // DEC HL
+        reg->HL--;
+        break;
+    }
+    case 0x2C:
+    {
+        // INC L
+        instr_inc8b(reg, &reg->L);
+        break;
+    }
+    case 0x2D:
+    {
+        // DEC L
+        instr_dec8b(reg, &reg->L);
+        break;
+    }
+    case 0x2E:
+    {
+        // LD L, n8
+        instr_ldn8bAddr(reg, mem, &reg->L);
+        break;
+    }
+    case 0x2F:
+    {
+        // CPL
+        reg->A = ~reg->A;
+        set_NFlag(reg);
+        set_HFlag(reg);
+        incrementPC(reg);
+        break;
+    }
     default:
         incrementPC(reg);
         break;

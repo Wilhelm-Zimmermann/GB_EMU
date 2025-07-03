@@ -59,6 +59,8 @@ void incrementPC(Register *reg);
 
 uint8_t get_CFlag(Register *reg);
 uint8_t get_ZFlag(Register *reg);
+uint8_t get_NFlag(Register *reg);
+uint8_t get_HFlag(Register *reg);
 
 void set_ZFlag(Register *reg);
 void set_CFlag(Register *reg);

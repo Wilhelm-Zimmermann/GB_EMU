@@ -9,7 +9,7 @@ void instr_ldNxt8bAddrInReg(Register *reg, Memory *mem, uint8_t *value);
 void instr_ldReg8bInAddr(Register *reg, Memory *mem, uint8_t *value);
 
 void instr_ldAddr8bInReg(Register *reg, Memory *mem, uint16_t memAddr, uint8_t *value);
-void instr_ldAddr16bToReg(Register *reg, Memory *mem, uint16_t *regValue);
+void instr_ldNxt16bAddrInReg(Register *reg, Memory *mem, uint16_t *regValue);
 
 // INC/DEC
 void instr_inc8b(Register *reg, uint8_t *value);

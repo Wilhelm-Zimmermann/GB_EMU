@@ -44,7 +44,7 @@ void instr_ldAddr8bInReg(Register *reg, Memory *mem, uint16_t memAddr, uint8_t *
 }
 
 // LD 16 bit instr
-void instr_ldAddr16bToReg(Register *reg, Memory *mem, uint16_t *regValue)
+void instr_ldNxt16bAddrInReg(Register *reg, Memory *mem, uint16_t *regValue)
 {
     uint16_t value = memoryRead16t(mem, reg->PC + 1);
     (*regValue) = value;

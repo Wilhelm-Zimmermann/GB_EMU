@@ -20,7 +20,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x01:
     {
         // LD BC, n16
-        instr_ldAddr16bToReg(reg, mem, &reg->BC);
+        instr_ldNxt16bAddrInReg(reg, mem, &reg->BC);
         break;
     }
     case 0x02:
@@ -129,7 +129,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x11:
     {
         // LD DE, n16
-        instr_ldAddr16bToReg(reg, mem, &reg->DE);
+        instr_ldNxt16bAddrInReg(reg, mem, &reg->DE);
         break;
     }
     case 0x12:
@@ -275,7 +275,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     case 0x21:
     {
         // LD HL, n16
-        instr_ldAddr16bToReg(reg, mem, &reg->HL);
+        instr_ldNxt16bAddrInReg(reg, mem, &reg->HL);
         break;
     }
     case 0x22:
@@ -375,7 +375,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     }
     case 0x2A:
     {
-        // LD A, [HL +]
+        // LD A, [HL+]
         instr_ldAddr8bInReg(reg, mem, reg->HL, &reg->A);
         reg->HL++;
         break;
@@ -423,6 +423,143 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
+    case 0x30:
+    {
+        // JR NC, e8
+        uint8_t cFlagValue = get_CFlag(reg);
+        if (cFlagValue == 0)
+        {
+            uint8_t unsignedValue = memoryRead(mem, reg->PC + 1);
+            int8_t signedValue = (int8_t)unsignedValue;
+            uint16_t newPCAddr = reg->PC + 2 + signedValue;
+            reg->PC = newPCAddr;
+        }
+        else
+        {
+            reg->PC += 2;
+        }
+        break;
+    }
+    case 0x31:
+    {
+        // LD SP, n16
+        instr_ldNxt16bAddrInReg(reg, mem, &reg->SP);
+        break;
+    }
+    case 0x32:
+    {
+        // LD [HL-], A
+        memoryWrite(mem, reg->HL, reg->A);
+        reg->HL--;
+        incrementPC(reg);
+        break;
+    }
+    case 0x33:
+    {
+        // INC SP
+        reg->SP++;
+        incrementPC(reg);
+        break;
+    }
+    case 0x34:
+    {
+        // INC [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_inc8b(reg, &memValue);
+        break;
+    }
+    case 0x35:
+    {
+        // DEC [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_dec8b(reg, &memValue);
+        break;
+    }
+    case 0x36:
+    {
+        // LD [HL], n8
+        uint8_t memValue = memoryRead(mem, reg->PC + 1);
+        memoryWrite(mem, reg->HL, memValue);
+        reg->PC += 2;
+        break;
+    }
+    case 0x37:
+    {
+        // SCF
+        set_CFlag(reg);
+        unset_HFlag(reg);
+        unset_NFlag(reg);
+        incrementPC(reg);
+    }
+    case 0x38:
+    {
+        // JR C, e8
+        uint8_t cFlagValue = get_CFlag(reg);
+        if (cFlagValue == 1)
+        {
+            uint8_t unsignedValue = memoryRead(mem, reg->PC + 1);
+            int8_t signedValue = (int8_t)unsignedValue;
+            uint16_t newPCAddr = reg->PC + 2 + signedValue;
+            reg->PC = newPCAddr;
+        }
+        else
+        {
+            reg->PC += 2;
+        }
+        break;
+    }
+    case 0x39:
+    {
+        // ADD HL, SP
+        instr_add16b(reg, &reg->HL, reg->SP);
+        break;
+    }
+    case 0x3A:
+    {
+        // LD A, [HL-]
+        instr_ldAddr8bInReg(reg, mem, reg->HL, &reg->A);
+        reg->HL--;
+        break;
+    }
+    case 0x3B:
+    {
+        // DEC HL
+        reg->SP--;
+        incrementPC(reg);
+        break;
+    }
+    case 0x3C:
+    {
+        // INC A
+        instr_inc8b(reg, &reg->A);
+        break;
+    }
+    case 0x3D:
+    {
+        // INC A
+        instr_dec8b(reg, &reg->A);
+        break;
+    }
+    case 0x3E:
+    {
+        // LD A, n8
+        instr_ldNxt8bAddrInReg(reg, mem, &reg->A);
+        break;
+    }
+    case 0x3F:
+    {
+        // CCF
+        unset_HFlag(reg);
+        unset_NFlag(reg);
+
+        if(get_CFlag(reg) == 1) {
+            unset_CFlag(reg);
+        } else {
+            set_CFlag(reg);
+        }
+        incrementPC(reg);
+        break;
+    }
     default:
         incrementPC(reg);
         break;
@@ -449,17 +586,41 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_x3(reg, mem, opcode);
         break;
     case 0x40:
+        // opcode_x4(reg, mem, opcode);
+        // break;
     case 0x50:
+        // opcode_x5(reg, mem, opcode);
+        // break;
     case 0x60:
+        // opcode_x6(reg, mem, opcode);
+        // break;
     case 0x70:
+        // opcode_x7(reg, mem, opcode);
+        // break;
     case 0x80:
+        // opcode_x8(reg, mem, opcode);
+        // break;
     case 0x90:
+        // opcode_x9(reg, mem, opcode);
+        // break;
     case 0xA0:
+        // opcode_xA(reg, mem, opcode);
+        // break;
     case 0xB0:
+        // opcode_xB(reg, mem, opcode);
+        // break;
     case 0xC0:
+        // opcode_xC(reg, mem, opcode);
+        // break;
     case 0xD0:
+        // opcode_xD(reg, mem, opcode);
+        // break;
     case 0xE0:
+        // opcode_xE(reg, mem, opcode);
+        // break;
     case 0xF0:
+        // opcode_xF(reg, mem, opcode);
+        // break;
     default:
     UNKNOWN_OPCODE:
         // printf("Unknown opcode: %x\n", opcode);

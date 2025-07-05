@@ -791,100 +791,100 @@ void opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
     case 0x60:
     {
-        // LD D, B
-        instr_ld8bIn8b(reg, &reg->D, &reg->B);
+        // LD H, B
+        instr_ld8bIn8b(reg, &reg->H, &reg->B);
         break;
     }
     case 0x61:
     {
-        // LD D, C
-        instr_ld8bIn8b(reg, &reg->D, &reg->C);
+        // LD H, C
+        instr_ld8bIn8b(reg, &reg->H, &reg->C);
         break;
     }
     case 0x62:
     {
-        // LD D, D
-        instr_ld8bIn8b(reg, &reg->D, &reg->D);
+        // LD H, D
+        instr_ld8bIn8b(reg, &reg->H, &reg->D);
         break;
     }
     case 0x63:
     {
-        // LD D, E
-        instr_ld8bIn8b(reg, &reg->D, &reg->E);
+        // LD H, E
+        instr_ld8bIn8b(reg, &reg->H, &reg->E);
         break;
     }
     case 0x64:
     {
-        // LD D, H
-        instr_ld8bIn8b(reg, &reg->D, &reg->H);
+        // LD H, H
+        instr_ld8bIn8b(reg, &reg->H, &reg->H);
         break;
     }
     case 0x65:
     {
-        // LD D, L
-        instr_ld8bIn8b(reg, &reg->D, &reg->L);
+        // LD H, L
+        instr_ld8bIn8b(reg, &reg->H, &reg->L);
         break;
     }
     case 0x66:
     {
-        // LD D, [HL]
+        // LD H, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
-        instr_ld8bIn8b(reg, &reg->D, &memValue);
+        instr_ld8bIn8b(reg, &reg->H, &memValue);
         break;
     }
     case 0x67:
     {
-        // LD D, A
-        instr_ld8bIn8b(reg, &reg->D, &reg->A);
+        // LD H, A
+        instr_ld8bIn8b(reg, &reg->H, &reg->A);
         break;
     }
     case 0x68:
     {
-        // LD E, B
-        instr_ld8bIn8b(reg, &reg->E, &reg->B);
+        // LD L, B
+        instr_ld8bIn8b(reg, &reg->L, &reg->B);
         break;
     }
     case 0x69:
     {
-        // LD E, C
-        instr_ld8bIn8b(reg, &reg->E, &reg->C);
+        // LD L, C
+        instr_ld8bIn8b(reg, &reg->L, &reg->C);
         break;
     }
     case 0x6A:
     {
-        // LD E, D
-        instr_ld8bIn8b(reg, &reg->E, &reg->D);
+        // LD L, D
+        instr_ld8bIn8b(reg, &reg->L, &reg->D);
         break;
     }
     case 0x6B:
     {
-        // LD E, E
-        instr_ld8bIn8b(reg, &reg->E, &reg->E);
+        // LD L, E
+        instr_ld8bIn8b(reg, &reg->L, &reg->E);
         break;
     }
     case 0x6C:
     {
-        // LD E, H
-        instr_ld8bIn8b(reg, &reg->E, &reg->H);
+        // LD L, H
+        instr_ld8bIn8b(reg, &reg->L, &reg->H);
         break;
     }
     case 0x6D:
     {
-        // LD E, L
-        instr_ld8bIn8b(reg, &reg->E, &reg->L);
+        // LD L, L
+        instr_ld8bIn8b(reg, &reg->L, &reg->L);
         break;
     }
     case 0x6E:
     {
-        // LD E, [HL]
+        // LD L, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
-        instr_ld8bIn8b(reg, &reg->E, &memValue);
+        instr_ld8bIn8b(reg, &reg->L, &memValue);
         break;
     }
     case 0x6F:
     {
-        // LD E, A
-        instr_ld8bIn8b(reg, &reg->E, &reg->A);
+        // LD L, A
+        instr_ld8bIn8b(reg, &reg->L, &reg->A);
         break;
     }
     default:

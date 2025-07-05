@@ -1236,6 +1236,115 @@ void opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
+void opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    case 0xA0:
+    {
+        // AND A, B
+        instr_and(reg, &reg->A, reg->B);
+        break;
+    }
+    case 0xA1:
+    {
+        // AND A, C
+        instr_and(reg, &reg->A, reg->C);
+        break;
+    }
+    case 0xA2:
+    {
+        // AND A, D
+        instr_and(reg, &reg->A, reg->D);
+        break;
+    }
+    case 0xA3:
+    {
+        // AND A, E
+        instr_and(reg, &reg->A, reg->E);
+        break;
+    }
+    case 0xA4:
+    {
+        // AND A, H
+        instr_and(reg, &reg->A, reg->H);
+        break;
+    }
+    case 0xA5:
+    {
+        // AND A, L
+        instr_and(reg, &reg->A, reg->L);
+        break;
+    }
+    case 0xA6:
+    {
+        // AND A, [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_and(reg, &reg->A, memValue);
+        break;
+    }
+    case 0xA7:
+    {
+        // AND A, A
+        instr_and(reg, &reg->A, reg->A);
+        break;
+    }
+    case 0xA8:
+    {
+        // XOR A, B
+        instr_xor(reg, &reg->A, reg->B);
+        break;
+    }
+    case 0xA9:
+    {
+        // XOR A, C
+        instr_xor(reg, &reg->A, reg->C);
+        break;
+    }
+    case 0xAA:
+    {
+        // XOR A, D
+        instr_xor(reg, &reg->A, reg->D);
+        break;
+    }
+    case 0xAB:
+    {
+        // XOR A, E
+        instr_xor(reg, &reg->A, reg->E);
+        break;
+    }
+    case 0xAC:
+    {
+        // XOR A, H
+        instr_xor(reg, &reg->A, reg->H);
+        break;
+    }
+    case 0xAD:
+    {
+        // XOR A, L
+        instr_xor(reg, &reg->A, reg->L);
+        break;
+    }
+    case 0xAE:
+    {
+        // XOR A, [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_xor(reg, &reg->A, memValue);
+        break;
+    }
+    case 0xAF:
+    {
+        // XOR A, A
+        instr_xor(reg, &reg->A, reg->A);
+        set_ZFlag(reg);
+        break;
+    }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
@@ -1274,8 +1383,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_x9(reg, mem, opcode);
         break;
     case 0xA0:
-        // opcode_xA(reg, mem, opcode);
-        // break;
+        opcode_xA(reg, mem, opcode);
+        break;
     case 0xB0:
         // opcode_xB(reg, mem, opcode);
         // break;

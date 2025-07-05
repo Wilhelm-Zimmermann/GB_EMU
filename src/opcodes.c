@@ -116,3 +116,32 @@ void instr_sub8bWithCarry(Register *reg, uint8_t *regToSubFrom, uint8_t valueToS
     checkIfOpZeroAndSetZ(reg, *regToSubFrom);
     incrementPC(reg);
 }
+
+// Normal bitwise
+void instr_and(Register *reg, uint8_t *from, uint8_t to)
+{
+    *from = (*from) & to;
+    checkIfOpZeroAndSetZ(reg, *from);
+    set_HFlag(reg);
+    unset_NFlag(reg);
+    unset_CFlag(reg);
+    incrementPC(reg);
+}
+void instr_xor(Register *reg, uint8_t *from, uint8_t to)
+{
+    *from = (*from) ^ to;
+    checkIfOpZeroAndSetZ(reg, *from);
+    unset_HFlag(reg);
+    unset_NFlag(reg);
+    unset_CFlag(reg);
+    incrementPC(reg);
+}
+void instr_or(Register *reg, uint8_t *from, uint8_t to)
+{
+    *from = (*from) | to;
+    checkIfOpZeroAndSetZ(reg, *from);
+    unset_HFlag(reg);
+    unset_NFlag(reg);
+    unset_CFlag(reg);
+    incrementPC(reg);
+}

@@ -22,3 +22,8 @@ void instr_sub8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub);
 void instr_sub8bWithCarry(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub);
 
 void instr_add16b(Register *reg, uint16_t *regToAdd, uint16_t valueToAdd);
+
+// Normal Bitwise
+void instr_and(Register *reg, uint8_t *from, uint8_t to);
+void instr_xor(Register *reg, uint8_t *from, uint8_t to);
+void instr_or(Register *reg, uint8_t *from, uint8_t to);

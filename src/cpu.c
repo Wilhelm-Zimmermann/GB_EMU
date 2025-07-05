@@ -1063,8 +1063,50 @@ void opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     case 0x88:
     {
         // ADC A, B
-        uint8_t cFlagValue = get_CFlag(reg);
-        instr_add8b(reg, &reg->A, reg->B + cFlagValue);
+        instr_add8bWithCarry(reg, &reg->A, reg->B);
+        break;
+    }
+    case 0x89:
+    {
+        // ADC A, C
+        instr_add8bWithCarry(reg, &reg->A, reg->C);
+        break;
+    }
+    case 0x8A:
+    {
+        // ADC A, D
+        instr_add8bWithCarry(reg, &reg->A, reg->D);
+        break;
+    }
+    case 0x8B:
+    {
+        // ADC A, E
+        instr_add8bWithCarry(reg, &reg->A, reg->E);
+        break;
+    }
+    case 0x8C:
+    {
+        // ADC A, H
+        instr_add8bWithCarry(reg, &reg->A, reg->H);
+        break;
+    }
+    case 0x8D:
+    {
+        // ADC A, L
+        instr_add8bWithCarry(reg, &reg->A, reg->L);
+        break;
+    }
+    case 0x8E:
+    {
+        // ADC A, [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_add8bWithCarry(reg, &reg->A, memValue);
+        break;
+    }
+    case 0x8F:
+    {
+        // ADC A, A
+        instr_add8bWithCarry(reg, &reg->A, reg->A);
         break;
     }
     default:

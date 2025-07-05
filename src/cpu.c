@@ -122,7 +122,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     switch (opcode)
     {
     case 0x10:
-        // STOP n8
+        // STOP n8 - IDLE EMU
         // Implement this after
         incrementPC(reg);
         break;
@@ -893,6 +893,120 @@ void opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
+void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    case 0x70:
+    {
+        // LD [HL], B
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &memValue, &reg->B);
+        break;
+    }
+    case 0x71:
+    {
+        // LD [HL], C
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &memValue, &reg->C);
+        break;
+    }
+    case 0x72:
+    {
+        // LD [HL], D
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &memValue, &reg->D);
+        break;
+    }
+    case 0x73:
+    {
+        // LD [HL], E
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &memValue, &reg->E);
+        break;
+    }
+    case 0x74:
+    {
+        // LD [HL], H
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &memValue, &reg->H);
+        break;
+    }
+    case 0x75:
+    {
+        // LD [HL], L
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &memValue, &reg->L);
+        break;
+    }
+    case 0x76:
+    {
+        // HALT - Only CPU STOPS - IDLE
+        incrementPC(reg);
+        break;
+    }
+    case 0x77:
+    {
+        // LD [HL], A
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &memValue, &reg->A);
+        break;
+    }
+    case 0x78:
+    {
+        // LD A, B
+        instr_ld8bIn8b(reg, &reg->A, &reg->B);
+        break;
+    }
+    case 0x79:
+    {
+        // LD A, C
+        instr_ld8bIn8b(reg, &reg->A, &reg->C);
+        break;
+    }
+    case 0x7A:
+    {
+        // LD A, D
+        instr_ld8bIn8b(reg, &reg->A, &reg->D);
+        break;
+    }
+    case 0x7B:
+    {
+        // LD A, E
+        instr_ld8bIn8b(reg, &reg->A, &reg->E);
+        break;
+    }
+    case 0x7C:
+    {
+        // LD A, H
+        instr_ld8bIn8b(reg, &reg->A, &reg->H);
+        break;
+    }
+    case 0x7D:
+    {
+        // LD A, L
+        instr_ld8bIn8b(reg, &reg->A, &reg->L);
+        break;
+    }
+    case 0x7E:
+    {
+        // LD A, [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &reg->A, &memValue);
+        break;
+    }
+    case 0x7F:
+    {
+        // LD A, A
+        instr_ld8bIn8b(reg, &reg->A, &reg->A);
+        break;
+    }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
@@ -922,8 +1036,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_x6(reg, mem, opcode);
         break;
     case 0x70:
-        // opcode_x7(reg, mem, opcode);
-        // break;
+        opcode_x7(reg, mem, opcode);
+        break;
     case 0x80:
         // opcode_x8(reg, mem, opcode);
         // break;

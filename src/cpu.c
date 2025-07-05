@@ -1007,6 +1007,72 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
+void opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    case 0x80:
+    {
+        // ADD A, B
+        instr_add8b(reg, &reg->A, reg->B);
+        break;
+    }
+    case 0x81:
+    {
+        // ADD A, C
+        instr_add8b(reg, &reg->A, reg->C);
+        break;
+    }
+    case 0x82:
+    {
+        // ADD A, D
+        instr_add8b(reg, &reg->A, reg->D);
+        break;
+    }
+    case 0x83:
+    {
+        // ADD A, E
+        instr_add8b(reg, &reg->A, reg->E);
+        break;
+    }
+    case 0x84:
+    {
+        // ADD A, H
+        instr_add8b(reg, &reg->A, reg->H);
+        break;
+    }
+    case 0x85:
+    {
+        // ADD A, L
+        instr_add8b(reg, &reg->A, reg->L);
+        break;
+    }
+    case 0x86:
+    {
+        // ADD A, [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_add8b(reg, &reg->A, memValue);
+        break;
+    }
+    case 0x87:
+    {
+        // ADD A, A
+        instr_add8b(reg, &reg->A, reg->A);
+        break;
+    }
+    case 0x88:
+    {
+        // ADC A, B
+        uint8_t cFlagValue = get_CFlag(reg);
+        instr_add8b(reg, &reg->A, reg->B + cFlagValue);
+        break;
+    }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
@@ -1039,8 +1105,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_x7(reg, mem, opcode);
         break;
     case 0x80:
-        // opcode_x8(reg, mem, opcode);
-        // break;
+        opcode_x8(reg, mem, opcode);
+        break;
     case 0x90:
         // opcode_x9(reg, mem, opcode);
         // break;

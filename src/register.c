@@ -115,18 +115,6 @@ void setCFlagIfAddOpGtThanFFFF(Register *reg, uint32_t value)
     }
 }
 
-void checkIfLessThan0CarryAndSetC8b(Register *reg, uint8_t operand1, uint8_t operand2)
-{
-    if (operand1 < operand2)
-    {
-        set_CFlag(reg);
-    }
-    else
-    {
-        unset_CFlag(reg);
-    }
-}
-
 void checkIfHasCarryAddAndSetH8b(Register *reg, uint8_t nibbleSum)
 {
     if (nibbleSum > 0x0F)
@@ -139,15 +127,30 @@ void checkIfHasCarryAddAndSetH8b(Register *reg, uint8_t nibbleSum)
     }
 }
 
-void checkIfSubHasCarryAndSetH8b(Register *reg, uint8_t operand1, uint8_t operand2)
+void checkIfHasCarrySubAndSetH8b(Register *reg, uint8_t value)
 {
-    if ((operand1 & 0x0F) < (operand2 & 0x0F))
+    int8_t signedValue = (int8_t) value;
+
+    if (signedValue < 0)
     {
         set_HFlag(reg);
     }
     else
     {
         unset_HFlag(reg);
+    }
+}
+
+void setCFlagIfAddOpLtThan0(Register *reg, uint16_t value)
+{
+    int16_t signedValue = (int16_t) value;
+    if (signedValue < 0)
+    {
+        set_CFlag(reg);
+    }
+    else
+    {
+        unset_CFlag(reg);
     }
 }
 

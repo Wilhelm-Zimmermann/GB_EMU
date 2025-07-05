@@ -68,7 +68,7 @@ void instr_add8b(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
     uint16_t sumValue = (uint16_t)(*regToAdd) + (uint16_t)valueToAdd;
     unset_NFlag(reg);
     setCFlagIfAddOpGtThanFF(reg, sumValue);
-    checkIfOpZeroAndSetZ(reg,(uint8_t)sumValue);
+    checkIfOpZeroAndSetZ(reg, (uint8_t)sumValue);
     checkIfHasCarryAddAndSetH8b(reg, (*regToAdd & 0x0F) + (valueToAdd & 0x0F));
     *regToAdd = (uint8_t)sumValue;
     incrementPC(reg);
@@ -80,7 +80,7 @@ void instr_add8bWithCarry(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
     uint16_t sumValue = (uint16_t)(*regToAdd) + (uint16_t)valueToAdd + (uint16_t)carry;
     unset_NFlag(reg);
     setCFlagIfAddOpGtThanFF(reg, sumValue);
-    checkIfOpZeroAndSetZ(reg,(uint8_t)sumValue);
+    checkIfOpZeroAndSetZ(reg, (uint8_t)sumValue);
     checkIfHasCarryAddAndSetH8b(reg, (*regToAdd & 0x0F) + (valueToAdd & 0x0F) + carry);
     *regToAdd = (uint8_t)sumValue;
     incrementPC(reg);
@@ -89,12 +89,29 @@ void instr_add8bWithCarry(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
 void instr_sub8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
 {
     uint8_t originalValue = *regToSubFrom;
+    uint8_t subrResult = *regToSubFrom - valueToSub;
 
     set_NFlag(reg);
-    checkIfSubHasCarryAndSetH8b(reg, originalValue, valueToSub);
-    checkIfLessThan0CarryAndSetC8b(reg, originalValue, valueToSub);
+    checkIfHasCarrySubAndSetH8b(reg, (originalValue & 0x0F) - (valueToSub & 0x0F));
+    setCFlagIfAddOpLtThan0(reg, subrResult);
 
-    *regToSubFrom -= valueToSub;
+    *regToSubFrom = subrResult;
+
+    checkIfOpZeroAndSetZ(reg, *regToSubFrom);
+    incrementPC(reg);
+}
+
+void instr_sub8bWithCarry(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
+{
+    uint8_t carry = get_CFlag(reg);
+    uint8_t originalValue = *regToSubFrom;
+    uint8_t subrResult = *regToSubFrom - valueToSub;
+
+    set_NFlag(reg);
+    checkIfHasCarrySubAndSetH8b(reg, (originalValue & 0x0F) - (valueToSub & 0x0F) - carry);
+    setCFlagIfAddOpLtThan0(reg, subrResult);
+
+    *regToSubFrom = subrResult;
 
     checkIfOpZeroAndSetZ(reg, *regToSubFrom);
     incrementPC(reg);

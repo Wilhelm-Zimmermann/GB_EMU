@@ -1115,6 +1115,127 @@ void opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
+void opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    case 0x90:
+    {
+        // SUB A, B
+        instr_sub8b(reg, &reg->A, reg->B);
+        break;
+    }
+    case 0x91:
+    {
+        // SUB A, C
+        instr_sub8b(reg, &reg->A, reg->C);
+        break;
+    }
+    case 0x92:
+    {
+        // SUB A, D
+        instr_sub8b(reg, &reg->A, reg->D);
+        break;
+    }
+    case 0x93:
+    {
+        // SUB A, E
+        instr_sub8b(reg, &reg->A, reg->E);
+        break;
+    }
+    case 0x94:
+    {
+        // SUB A, H
+        instr_sub8b(reg, &reg->A, reg->H);
+        break;
+    }
+    case 0x95:
+    {
+        // SUB A, L
+        instr_sub8b(reg, &reg->A, reg->L);
+        break;
+    }
+    case 0x96:
+    {
+        // SUB A, [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_sub8b(reg, &reg->A, memValue);
+        break;
+    }
+    case 0x97:
+    {
+        // SUB A, A
+        instr_sub8b(reg, &reg->A, reg->A);
+        set_ZFlag(reg);
+        set_NFlag(reg);
+        unset_HFlag(reg);
+        unset_CFlag(reg);
+        break;
+    }
+    case 0x98:
+    {
+        // SBC A, B
+        instr_sub8bWithCarry(reg, &reg->A, reg->B);
+        break;
+    }
+    case 0x99:
+    {
+        // SBC A, C
+        instr_sub8bWithCarry(reg, &reg->A, reg->C);
+        break;
+    }
+    case 0x9A:
+    {
+        // SBC A, D
+        instr_sub8bWithCarry(reg, &reg->A, reg->D);
+        break;
+    }
+    case 0x9B:
+    {
+        // SBC A, E
+        instr_sub8bWithCarry(reg, &reg->A, reg->E);
+        break;
+    }
+    case 0x9C:
+    {
+        // SBC A, H
+        instr_sub8bWithCarry(reg, &reg->A, reg->H);
+        break;
+    }
+    case 0x9D:
+    {
+        // SBC A, L
+        instr_sub8bWithCarry(reg, &reg->A, reg->L);
+        break;
+    }
+    case 0x9E:
+    {
+        // SBC A, [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_sub8bWithCarry(reg, &reg->A, memValue);
+        break;
+    }
+    case 0x9F:
+    {
+        // SBC A, A
+        uint8_t originalCarry = get_CFlag(reg);
+        instr_sub8bWithCarry(reg, &reg->A, reg->A);
+        if (originalCarry == 1)
+        {
+            set_CFlag(reg);
+        }
+        else
+        {
+            unset_CFlag(reg);
+        }
+        break;
+    }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
@@ -1150,8 +1271,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_x8(reg, mem, opcode);
         break;
     case 0x90:
-        // opcode_x9(reg, mem, opcode);
-        // break;
+        opcode_x9(reg, mem, opcode);
+        break;
     case 0xA0:
         // opcode_xA(reg, mem, opcode);
         // break;

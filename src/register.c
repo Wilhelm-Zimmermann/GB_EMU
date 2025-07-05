@@ -56,7 +56,7 @@ void unset_HFlag(Register *reg)
     reg->F &= ~(1 << H_FLAG_BIT);
 }
 
-void checkIfHasCarryAndSetH8b(Register *reg, uint8_t value)
+void checkIfHasCarryIncAndSetH8b(Register *reg, uint8_t value)
 {
     if ((value & 0x0F) == 0x00)
     {
@@ -127,6 +127,18 @@ void checkIfLessThan0CarryAndSetC8b(Register *reg, uint8_t operand1, uint8_t ope
     }
 }
 
+void checkIfHasCarryAddAndSetH8b(Register *reg, uint8_t nibbleSum)
+{
+    if (nibbleSum > 0x0F)
+    {
+        set_HFlag(reg);
+    }
+    else
+    {
+        unset_HFlag(reg);
+    }
+}
+
 void checkIfSubHasCarryAndSetH8b(Register *reg, uint8_t operand1, uint8_t operand2)
 {
     if ((operand1 & 0x0F) < (operand2 & 0x0F))
@@ -144,22 +156,22 @@ void incrementPC(Register *reg)
     reg->PC++;
 }
 
-uint8_t get_CFlag(Register *reg) 
+uint8_t get_CFlag(Register *reg)
 {
     return reg->F >> C_FLAG_BIT;
 }
 
-uint8_t get_ZFlag(Register *reg) 
+uint8_t get_ZFlag(Register *reg)
 {
     return reg->F >> Z_FLAG_BIT;
 }
 
-uint8_t get_NFlag(Register *reg) 
+uint8_t get_NFlag(Register *reg)
 {
     return reg->F >> N_FLAG_BIT;
 }
 
-uint8_t get_HFlag(Register *reg) 
+uint8_t get_HFlag(Register *reg)
 {
     return reg->F >> H_FLAG_BIT;
 }

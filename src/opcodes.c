@@ -8,13 +8,13 @@ void instr_inc8b(Register *reg, uint8_t *value)
     (*value)++;
     unset_NFlag(reg);
     checkIfOpZeroAndSetZ(reg, *value);
-    checkIfHasCarryAndSetH8b(reg, *value);
+    checkIfHasCarryIncAndSetH8b(reg, *value);
     incrementPC(reg);
 }
 
 void instr_dec8b(Register *reg, uint8_t *value)
 {
-    checkIfHasCarryAndSetH8b(reg, *value);
+    checkIfHasCarryIncAndSetH8b(reg, *value);
     (*value)--;
     set_NFlag(reg);
     checkIfOpZeroAndSetZ(reg, *value);
@@ -69,7 +69,7 @@ void instr_add8b(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
     unset_NFlag(reg);
     setCFlagIfAddOpGtThanFF(reg, sumValue);
     checkIfOpZeroAndSetZ(reg,(uint8_t)sumValue);
-    checkIfHasCarryAndSetH8b(reg, (uint8_t)sumValue);
+    checkIfHasCarryAddAndSetH8b(reg, (*regToAdd & 0x0F) + (valueToAdd & 0x0F));
     *regToAdd = (uint8_t)sumValue;
     incrementPC(reg);
 }

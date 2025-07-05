@@ -552,12 +552,123 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         unset_HFlag(reg);
         unset_NFlag(reg);
 
-        if(get_CFlag(reg) == 1) {
+        if (get_CFlag(reg) == 1)
+        {
             unset_CFlag(reg);
-        } else {
+        }
+        else
+        {
             set_CFlag(reg);
         }
         incrementPC(reg);
+        break;
+    }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
+void opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    case 0x40:
+    {
+        // LD B, B
+        instr_ld8bIn8b(reg, &reg->B, &reg->B);
+        break;
+    }
+    case 0x41:
+    {
+        // LD B, C
+        instr_ld8bIn8b(reg, &reg->B, &reg->C);
+        break;
+    }
+    case 0x42:
+    {
+        // LD B, D
+        instr_ld8bIn8b(reg, &reg->B, &reg->D);
+        break;
+    }
+    case 0x43:
+    {
+        // LD B, E
+        instr_ld8bIn8b(reg, &reg->B, &reg->E);
+        break;
+    }
+    case 0x44:
+    {
+        // LD B, H
+        instr_ld8bIn8b(reg, &reg->B, &reg->H);
+        break;
+    }
+    case 0x45:
+    {
+        // LD B, L
+        instr_ld8bIn8b(reg, &reg->B, &reg->L);
+        break;
+    }
+    case 0x46:
+    {
+        // LD B, [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &reg->B, &memValue);
+        break;
+    }
+    case 0x47:
+    {
+        // LD B, A
+        instr_ld8bIn8b(reg, &reg->B, &reg->A);
+        break;
+    }
+    case 0x48:
+    {
+        // LD C, B
+        instr_ld8bIn8b(reg, &reg->C, &reg->B);
+        break;
+    }
+    case 0x49:
+    {
+        // LD C, C
+        instr_ld8bIn8b(reg, &reg->C, &reg->C);
+        break;
+    }
+    case 0x4A:
+    {
+        // LD C, D
+        instr_ld8bIn8b(reg, &reg->C, &reg->D);
+        break;
+    }
+    case 0x4B:
+    {
+        // LD C, C
+        instr_ld8bIn8b(reg, &reg->C, &reg->E);
+        break;
+    }
+    case 0x4C:
+    {
+        // LD C, H
+        instr_ld8bIn8b(reg, &reg->C, &reg->H);
+        break;
+    }
+    case 0x4D:
+    {
+        // LD C, L
+        instr_ld8bIn8b(reg, &reg->C, &reg->L);
+        break;
+    }
+    case 0x4E:
+    {
+        // LD C, [HL]
+        uint8_t memValue = memoryRead(mem, reg->HL);
+        instr_ld8bIn8b(reg, &reg->C, &memValue);
+        break;
+    }
+    case 0x4F:
+    {
+        // LD C, A
+        instr_ld8bIn8b(reg, &reg->C, &reg->A);
         break;
     }
     default:
@@ -586,8 +697,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_x3(reg, mem, opcode);
         break;
     case 0x40:
-        // opcode_x4(reg, mem, opcode);
-        // break;
+        opcode_x4(reg, mem, opcode);
+        break;
     case 0x50:
         // opcode_x5(reg, mem, opcode);
         // break;

@@ -145,3 +145,17 @@ void instr_or(Register *reg, uint8_t *from, uint8_t to)
     unset_CFlag(reg);
     incrementPC(reg);
 }
+
+// CP
+void instr_cp8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
+{
+    uint8_t originalValue = *regToSubFrom;
+    uint8_t subrResult = *regToSubFrom - valueToSub;
+
+    set_NFlag(reg);
+    checkIfHasCarrySubAndSetH8b(reg, (originalValue & 0x0F) - (valueToSub & 0x0F));
+    setCFlagIfAddOpLtThan0(reg, subrResult);
+
+    checkIfOpZeroAndSetZ(reg, *regToSubFrom);
+    incrementPC(reg);
+}

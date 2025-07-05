@@ -115,6 +115,30 @@ void setCFlagIfAddOpGtThanFFFF(Register *reg, uint32_t value)
     }
 }
 
+void checkIfLessThan0CarryAndSetC8b(Register *reg, uint8_t operand1, uint8_t operand2)
+{
+    if (operand1 < operand2)
+    {
+        set_CFlag(reg);
+    }
+    else
+    {
+        unset_CFlag(reg);
+    }
+}
+
+void checkIfSubHasCarryAndSetH8b(Register *reg, uint8_t operand1, uint8_t operand2)
+{
+    if ((operand1 & 0x0F) < (operand2 & 0x0F))
+    {
+        set_HFlag(reg);
+    }
+    else
+    {
+        unset_HFlag(reg);
+    }
+}
+
 void incrementPC(Register *reg)
 {
     reg->PC++;

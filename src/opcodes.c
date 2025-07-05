@@ -68,7 +68,22 @@ void instr_add8b(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
     uint16_t sumValue = (uint16_t)(*regToAdd) + (uint16_t)valueToAdd;
     unset_NFlag(reg);
     setCFlagIfAddOpGtThanFF(reg, sumValue);
+    checkIfOpZeroAndSetZ(reg,(uint8_t)sumValue);
     checkIfHasCarryAndSetH8b(reg, (uint8_t)sumValue);
     *regToAdd = (uint8_t)sumValue;
+    incrementPC(reg);
+}
+
+void instr_sub8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
+{
+    uint8_t originalValue = *regToSubFrom;
+
+    set_NFlag(reg);
+    checkIfSubHasCarryAndSetH8b(reg, originalValue, valueToSub);
+    checkIfLessThan0CarryAndSetC8b(reg, originalValue, valueToSub);
+
+    *regToSubFrom -= valueToSub;
+
+    checkIfOpZeroAndSetZ(reg, *regToSubFrom);
     incrementPC(reg);
 }

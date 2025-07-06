@@ -1457,6 +1457,38 @@ void opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
+void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    case 0xC0:
+    {
+        // RET NZ
+        uint8_t zFlagValue = get_ZFlag(reg);
+        if (zFlagValue == 0)
+        {
+            uint16_t newAddr = stack_pop16(reg, mem);
+            reg->PC = newAddr;
+        }
+        else
+        {
+            reg->PC++;
+        }
+        break;
+    }
+    case 0xC1:
+    {
+        // POP BC
+        uint16_t stackValue = stack_pop16(reg, mem);
+        reg->BC = stackValue;
+        break;
+    }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
@@ -1501,8 +1533,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_xB(reg, mem, opcode);
         break;
     case 0xC0:
-        // opcode_xC(reg, mem, opcode);
-        // break;
+        opcode_xC(reg, mem, opcode);
+        break;
     case 0xD0:
         // opcode_xD(reg, mem, opcode);
         // break;

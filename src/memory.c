@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "./headers/memory.h"
+#include "./headers/register.h"
 #define DEBUG
 
 void initMemory(Memory *mem)
@@ -37,4 +38,25 @@ uint16_t memoryRead16t(Memory *mem, uint16_t address)
 void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
 {
     mem->ram[address] = value;
+}
+
+// TODO: Review the stack implementation when implementing MMU
+void stack_push16(Register *reg, Memory *mem, uint16_t value)
+{
+    reg->SP--;
+    memoryWrite(mem, reg->SP, (uint8_t)(value >> 8));
+
+    reg->SP--;
+    memoryWrite(mem, reg->SP, (uint8_t)(value & 0xFF));
+}
+
+uint16_t stack_pop16(Register *reg, Memory *mem)
+{
+    uint8_t lowByte = memoryRead(mem, reg->SP);
+    reg->SP++;
+
+    uint8_t highByte = memoryRead(mem, reg->SP);
+    reg->SP++;
+
+    return (uint16_t)((highByte << 8) | lowByte);
 }

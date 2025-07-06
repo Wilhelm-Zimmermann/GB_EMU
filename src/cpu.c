@@ -1483,6 +1483,43 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         reg->BC = stackValue;
         break;
     }
+    case 0xC2:
+    {
+        // JP NZ, a16
+        uint8_t zFlagValue = get_ZFlag(reg);
+        if (zFlagValue == 0)
+        {
+            uint16_t jmpAddr = memoryRead16t(mem, reg->PC + 1);
+            reg->PC = jmpAddr;
+        }
+        else
+        {
+            reg->PC += 3;
+        }
+        break;
+    }
+    case 0xC3:
+    {
+        // JP a16
+        uint16_t jmpAddr = memoryRead16t(mem, reg->PC + 1);
+        reg->PC = jmpAddr;
+        break;
+    }
+    case 0xC4:
+    {
+        // CALL NZ, a16
+        uint8_t zFlagValue = get_ZFlag(reg);
+        if (zFlagValue == 0)
+        {
+            uint16_t callAddr = reg->PC + 3;
+            uint16_t destAddr = memoryRead16t(mem, reg->PC + 1);
+            stack_push16(reg, mem, callAddr);
+            reg->PC = destAddr;
+        } else {
+            reg->PC += 3;
+        }
+        break;
+    }
     default:
         incrementPC(reg);
         break;

@@ -159,3 +159,30 @@ void instr_cp8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
     checkIfOpZeroAndSetZ(reg, *regToSubFrom);
     incrementPC(reg);
 }
+
+// Stack Instructions
+void instr_callAddr16(Register *reg, Memory *mem)
+{
+    uint16_t stackPushAddr = reg->PC + 3;
+    stack_push16(reg, mem, stackPushAddr);
+    uint16_t callAddr = memoryRead16t(mem, reg->PC + 1);
+    reg->PC = callAddr;
+}
+void instr_jpNxt16(Register *reg, Memory *mem)
+{
+    uint16_t jmpAddr = memoryRead16t(mem, reg->PC + 1);
+    reg->PC = jmpAddr;
+}
+
+void instr_ret(Register *reg, Memory *mem)
+{
+    uint16_t stackAddr = stack_pop16(reg, mem);
+    reg->PC = stackAddr;
+}
+
+void instr_rst(Register *reg, Memory *mem, uint16_t rstAddr)
+{
+    uint16_t stackPushAddr = reg->PC + 1;
+    stack_push16(reg, mem, stackPushAddr);
+    reg->PC = rstAddr;
+}

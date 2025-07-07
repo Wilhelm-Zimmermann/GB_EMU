@@ -1467,8 +1467,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t zFlagValue = get_ZFlag(reg);
         if (zFlagValue == 0)
         {
-            uint16_t newAddr = stack_pop16(reg, mem);
-            reg->PC = newAddr;
+            instr_ret(reg, mem);
         }
         else
         {
@@ -1489,8 +1488,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t zFlagValue = get_ZFlag(reg);
         if (zFlagValue == 0)
         {
-            uint16_t jmpAddr = memoryRead16t(mem, reg->PC + 1);
-            reg->PC = jmpAddr;
+            instr_jpNxt16(reg, mem);
         }
         else
         {
@@ -1501,8 +1499,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     case 0xC3:
     {
         // JP a16
-        uint16_t jmpAddr = memoryRead16t(mem, reg->PC + 1);
-        reg->PC = jmpAddr;
+        instr_jpNxt16(reg, mem);
         break;
     }
     case 0xC4:
@@ -1511,10 +1508,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t zFlagValue = get_ZFlag(reg);
         if (zFlagValue == 0)
         {
-            uint16_t callAddr = reg->PC + 3;
-            uint16_t destAddr = memoryRead16t(mem, reg->PC + 1);
-            stack_push16(reg, mem, callAddr);
-            reg->PC = destAddr;
+            instr_callAddr16(reg, mem);
         }
         else
         {
@@ -1540,9 +1534,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     case 0xC7:
     {
         // RST $00
-        uint16_t retAddr = reg->PC + 1;
-        stack_push16(reg, mem, retAddr);
-        reg->PC = 0x0000;
+        instr_rst(reg, mem, 0x000);
         break;
     }
     case 0xC8:
@@ -1551,8 +1543,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t zFlagValue = get_ZFlag(reg);
         if (zFlagValue == 1)
         {
-            uint16_t stackAddr = stack_pop16(reg, mem);
-            reg->PC = stackAddr;
+            instr_ret(reg, mem);
         }
         else
         {
@@ -1563,8 +1554,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     case 0xC9:
     {
         // RET
-        uint16_t stackAddr = stack_pop16(reg, mem);
-        reg->PC = stackAddr;
+        instr_ret(reg, mem);
         break;
     }
     case 0xCA:
@@ -1573,8 +1563,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t zFlagValue = get_ZFlag(reg);
         if (zFlagValue == 1)
         {
-            uint16_t jmpAddr = memoryRead16t(mem, reg->PC + 1);
-            reg->PC = jmpAddr;
+            instr_jpNxt16(reg, mem);
         }
         else
         {
@@ -1594,10 +1583,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t zFlagValue = get_ZFlag(reg);
         if (zFlagValue == 1)
         {
-            uint16_t stackPushAddr = reg->PC + 3;
-            stack_push16(reg, mem, stackPushAddr);
-            uint16_t callAddr = memoryRead16t(mem, reg->PC + 1);
-            reg->PC = callAddr;
+            instr_callAddr16(reg, mem);
         }
         else
         {
@@ -1608,13 +1594,10 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     case 0xCD:
     {
         // CALL a16
-        uint16_t stackPushAddr = reg->PC + 3;
-        stack_push16(reg, mem, stackPushAddr);
-        uint16_t callAddr = memoryRead16t(mem, reg->PC + 1);
-        reg->PC = callAddr;
+        instr_callAddr16(reg, mem);
         break;
     }
-    case 0xCE: 
+    case 0xCE:
     {
         // ADC A, n8
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
@@ -1625,11 +1608,19 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     case 0xCF:
     {
         // RST $08
-        uint16_t stackPushAddr = reg->PC + 1;
-        stack_push16(reg, mem, stackPushAddr);
-        reg->PC = 0x0008;
+        instr_rst(reg, mem, 0x0008);
         break;
     }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
+void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
     default:
         incrementPC(reg);
         break;
@@ -1683,8 +1674,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_xC(reg, mem, opcode);
         break;
     case 0xD0:
-        // opcode_xD(reg, mem, opcode);
-        // break;
+        opcode_xD(reg, mem, opcode);
+        break;
     case 0xE0:
         // opcode_xE(reg, mem, opcode);
         // break;

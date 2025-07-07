@@ -30,3 +30,9 @@ void instr_or(Register *reg, uint8_t *from, uint8_t to);
 
 // CP
 void instr_cp8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub);
+
+// Stack Instructions
+void instr_callAddr16(Register *reg, Memory *mem);
+void instr_jpNxt16(Register *reg, Memory *mem);
+void instr_ret(Register *reg, Memory *mem);
+void instr_rst(Register *reg, Memory *mem, uint16_t rstAddr);

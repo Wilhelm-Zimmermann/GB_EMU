@@ -1472,7 +1472,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         }
         else
         {
-            reg->PC++;
+            incrementPC(reg);
         }
         break;
     }
@@ -1515,9 +1515,119 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
             uint16_t destAddr = memoryRead16t(mem, reg->PC + 1);
             stack_push16(reg, mem, callAddr);
             reg->PC = destAddr;
-        } else {
+        }
+        else
+        {
             reg->PC += 3;
         }
+        break;
+    }
+    case 0xC5:
+    {
+        // PUSH BC
+        stack_push16(reg, mem, reg->BC);
+        incrementPC(reg);
+        break;
+    }
+    case 0xC6:
+    {
+        // ADD A, n8
+        uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
+        instr_add8b(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
+        break;
+    }
+    case 0xC7:
+    {
+        // RST $00
+        uint16_t retAddr = reg->PC + 1;
+        stack_push16(reg, mem, retAddr);
+        reg->PC = 0x0000;
+        break;
+    }
+    case 0xC8:
+    {
+        // RET Z
+        uint8_t zFlagValue = get_ZFlag(reg);
+        if (zFlagValue == 1)
+        {
+            uint16_t stackAddr = stack_pop16(reg, mem);
+            reg->PC = stackAddr;
+        }
+        else
+        {
+            incrementPC(reg);
+        }
+        break;
+    }
+    case 0xC9:
+    {
+        // RET
+        uint16_t stackAddr = stack_pop16(reg, mem);
+        reg->PC = stackAddr;
+        break;
+    }
+    case 0xCA:
+    {
+        // JP Z, a16
+        uint8_t zFlagValue = get_ZFlag(reg);
+        if (zFlagValue == 1)
+        {
+            uint16_t jmpAddr = memoryRead16t(mem, reg->PC + 1);
+            reg->PC = jmpAddr;
+        }
+        else
+        {
+            reg->PC += 3;
+        }
+        break;
+    }
+    case 0xCB:
+    {
+        // PREFIX -- TODO: this is more 256 instructions, implement this later
+        incrementPC(reg);
+        break;
+    }
+    case 0xCC:
+    {
+        // CALL Z, a16
+        uint8_t zFlagValue = get_ZFlag(reg);
+        if (zFlagValue == 1)
+        {
+            uint16_t stackPushAddr = reg->PC + 3;
+            stack_push16(reg, mem, stackPushAddr);
+            uint16_t callAddr = memoryRead16t(mem, reg->PC + 1);
+            reg->PC = callAddr;
+        }
+        else
+        {
+            reg->PC += 3;
+        }
+        break;
+    }
+    case 0xCD:
+    {
+        // CALL a16
+        uint16_t stackPushAddr = reg->PC + 3;
+        stack_push16(reg, mem, stackPushAddr);
+        uint16_t callAddr = memoryRead16t(mem, reg->PC + 1);
+        reg->PC = callAddr;
+        break;
+    }
+    case 0xCE: 
+    {
+        // ADC A, n8
+        uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
+        instr_add8bWithCarry(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
+        break;
+    }
+    case 0xCF:
+    {
+        // RST $08
+        uint16_t stackPushAddr = reg->PC + 1;
+        stack_push16(reg, mem, stackPushAddr);
+        reg->PC = 0x0008;
         break;
     }
     default:

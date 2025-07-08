@@ -1621,6 +1621,157 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
+    case 0xD0:
+    {
+        // RET NC
+        uint8_t cFlagValue = get_CFlag(reg);
+        if (cFlagValue == 0)
+        {
+            instr_ret(reg, mem);
+        }
+        else
+        {
+            incrementPC(reg);
+        }
+        break;
+    }
+    case 0xD1:
+    {
+        // POP DE
+        uint16_t stackValue = stack_pop16(reg, mem);
+        reg->DE = stackValue;
+        break;
+    }
+    case 0xD2:
+    {
+        // JP NC, a16
+        uint8_t cFlagValue = get_CFlag(reg);
+        if (cFlagValue == 0)
+        {
+            instr_jpNxt16(reg, mem);
+        }
+        else
+        {
+            reg->PC += 3;
+        }
+        break;
+    }
+    case 0xD3:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xD4:
+    {
+        // CALL NC, a16
+        uint8_t cFlagValue = get_CFlag(reg);
+        if (cFlagValue == 0)
+        {
+            instr_callAddr16(reg, mem);
+        }
+        else
+        {
+            reg->PC += 3;
+        }
+        break;
+    }
+    case 0xD5:
+    {
+        // PUSH DE
+        stack_push16(reg, mem, reg->DE);
+        incrementPC(reg);
+        break;
+    }
+    case 0xD6:
+    {
+        // SUB A, n8
+        uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
+        instr_sub8b(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
+        break;
+    }
+    case 0xD7:
+    {
+        // RST $10
+        instr_rst(reg, mem, 0x0010);
+        break;
+    }
+    case 0xD8:
+    {
+        // RET C
+        uint8_t cFlagValue = get_CFlag(reg);
+        if (cFlagValue == 1)
+        {
+            instr_ret(reg, mem);
+        }
+        else
+        {
+            incrementPC(reg);
+        }
+        break;
+    }
+    case 0xD9:
+    {
+        // RETI -- TODO: revise when implementing the Interrupt
+        instr_ret(reg, mem);
+        incrementPC(reg);
+        break;
+    }
+    case 0xDA:
+    {
+        // JP C, a16
+        uint8_t cFlagValue = get_CFlag(reg);
+        if (cFlagValue == 1)
+        {
+            instr_ret(reg, mem);
+        }
+        else
+        {
+            incrementPC(reg);
+        }
+        break;
+    }
+    case 0xDB:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xDC:
+    {
+        // CALL C, a16
+        uint8_t cFlagValue = get_CFlag(reg);
+        if (cFlagValue == 1)
+        {
+            instr_callAddr16(reg, mem);
+        }
+        else
+        {
+            reg->PC += 3;
+        }
+        break;
+    }
+    case 0xDD:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xDE:
+    {
+        // SBC A, n8
+        uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
+        instr_sub8bWithCarry(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
+        break;
+    }
+    case 0xDF:
+    {
+        // RST $18
+        instr_rst(reg, mem, 0x0018);
+        break;
+    }
     default:
         incrementPC(reg);
         break;

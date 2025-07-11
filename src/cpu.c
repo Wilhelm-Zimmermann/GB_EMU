@@ -1480,6 +1480,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         // POP BC
         uint16_t stackValue = stack_pop16(reg, mem);
         reg->BC = stackValue;
+        incrementPC(reg);
         break;
     }
     case 0xC2:
@@ -1640,6 +1641,7 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         // POP DE
         uint16_t stackValue = stack_pop16(reg, mem);
         reg->DE = stackValue;
+        incrementPC(reg);
         break;
     }
     case 0xD2:
@@ -1778,6 +1780,150 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
+void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    case 0xE0:
+    {
+        // LDH [a8], A
+        uint8_t offset = memoryRead(mem, reg->PC + 1);
+        memoryWrite(mem, 0xFF00 + offset, reg->A);
+        reg->PC += 2;
+        break;
+    }
+    case 0xE1:
+    {
+        // POP HL
+        uint16_t stackValue = stack_pop16(reg, mem);
+        reg->HL = stackValue;
+        incrementPC(reg);
+        break;
+    }
+    case 0xE2:
+    {
+        // LDH [C], A
+        memoryWrite(mem, 0xFF00 + reg->C, reg->A);
+        incrementPC(reg);
+        break;
+    }
+    case 0xE3:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xE4:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xE5:
+    {
+        // PUSH HL
+        stack_push16(reg, mem, reg->HL);
+        incrementPC(reg);
+        break;
+    }
+    case 0xE6:
+    {
+        // AND A, n8
+        uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
+        instr_and(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
+        break;
+    }
+    case 0xE7:
+    {
+        // RST $20
+        instr_rst(reg, mem, 0x0020);
+        break;
+    }
+    case 0xE8:
+    {
+        // ADD SP, e8
+        int8_t offset = (int8_t)memoryRead(mem, reg->PC + 1);
+
+        unset_ZFlag(reg);
+        unset_NFlag(reg);
+
+        if (((reg->SP & 0x0F) + (offset & 0x0F)) > 0x0F)
+        {
+            set_HFlag(reg);
+        }
+        else
+        {
+            unset_HFlag(reg);
+        }
+
+        if (((reg->SP & 0xFF) + (offset & 0xFF)) > 0xFF)
+        {
+            set_CFlag(reg);
+        }
+        else
+        {
+            unset_CFlag(reg);
+        }
+
+        reg->SP = reg->SP + offset;
+
+        reg->PC += 2;
+        break;
+    }
+    case 0xE9:
+    {
+        // JP HL
+        uint16_t hlAddr = reg->HL;
+        reg->PC = hlAddr;
+        break;
+    }
+    case 0xEA:
+    {
+        // LD [a16], A
+        uint16_t memAddr = memoryRead16t(mem, reg->PC + 1);
+        memoryWrite(mem, memAddr, reg->A);
+        reg->PC += 3;
+        break;
+    }
+    case 0xEB:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xEC:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xED:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xEE:
+    {
+        // XOR A, n8
+        uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
+        instr_xor(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
+        break;
+    }
+    case 0xEF:
+    {
+        // RST $28
+        instr_rst(reg, mem, 0x0028);
+        break;
+    }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
@@ -1828,8 +1974,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_xD(reg, mem, opcode);
         break;
     case 0xE0:
-        // opcode_xE(reg, mem, opcode);
-        // break;
+        opcode_xE(reg, mem, opcode);
+        break;
     case 0xF0:
         // opcode_xF(reg, mem, opcode);
         // break;

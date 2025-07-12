@@ -1,3 +1,4 @@
+#pragma once
 #include "./register.h"
 #include "./memory.h"
 

@@ -1924,6 +1924,157 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
+void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
+{
+    switch (opcode)
+    {
+    case 0xF0:
+    {
+        // LDH A, [a8]
+        uint8_t offset = memoryRead(mem, reg->PC + 1);
+        uint16_t source_address = 0xFF00 + offset;
+        uint8_t value = memoryRead(mem, source_address);
+        reg->A = value;
+        reg->PC += 2;
+
+        break;
+    }
+    case 0xF1:
+    {
+        // POP AF
+        uint16_t stackValue = stack_pop16(reg, mem);
+        reg->AF = stackValue;
+        incrementPC(reg);
+        break;
+    }
+    case 0xF2:
+    {
+        // LDH A, [C]
+        uint16_t offset = 0xFF00 + reg->C;
+        uint8_t value = memoryRead(mem, offset);
+        reg->A = value;
+        incrementPC(reg);
+        break;
+    }
+    case 0xF3:
+    {
+        // DI
+        incrementPC(reg);
+        break;
+    }
+    case 0xF4:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xF5:
+    {
+        // PUSH AF
+        stack_push16(reg, mem, reg->AF);
+        incrementPC(reg);
+        break;
+    }
+    case 0xF6:
+    {
+        // OR A, n8
+        uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
+        instr_or(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
+        break;
+    }
+    case 0xF7:
+    {
+        // RST $30
+        instr_rst(reg, mem, 0x0030);
+        break;
+    }
+    case 0xF8:
+    {
+        // LD HL, SP + e8
+        int8_t offset = (int8_t)memoryRead(mem, reg->PC + 1);
+        int16_t stackPointerSum = reg->SP + offset;
+
+        unset_ZFlag(reg);
+        unset_NFlag(reg);
+
+        if (((reg->SP & 0x0F) + (offset & 0x0F)) > 0x0F)
+        {
+            set_HFlag(reg);
+        }
+        else
+        {
+            unset_HFlag(reg);
+        }
+
+        if (((reg->SP & 0xFF) + (offset & 0xFF)) > 0xFF)
+        {
+            set_CFlag(reg);
+        }
+        else
+        {
+            unset_CFlag(reg);
+        }
+
+        reg->HL = reg->SP + offset;
+
+        reg->PC += 2;
+        break;
+    }
+    case 0xF9:
+    {
+        // LD SP, HL
+        reg->SP = reg->HL;
+        incrementPC(reg);
+        break;
+    }
+    case 0xFA:
+    {
+        // LD A, [a16]
+        uint16_t memAddr = memoryRead16t(mem, reg->PC + 1);
+        uint8_t value = memoryRead(mem, memAddr);
+        reg->A = value;
+        reg->PC += 3;
+        break;
+    }
+    case 0xFB:
+    {
+        // EI
+        incrementPC(reg);
+        break;
+    }
+    case 0xFC:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xFD:
+    {
+        // empty instr
+        incrementPC(reg);
+        break;
+    }
+    case 0xFE:
+    {
+        // CP A, n8
+        uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
+        instr_cp8b(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
+        break;
+    }
+    case 0xFF:
+    {
+        // RST $38
+        instr_rst(reg, mem, 0x0038);
+        break;
+    }
+    default:
+        incrementPC(reg);
+        break;
+    }
+}
+
 void cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = mem->ram[reg->PC];
@@ -1977,8 +2128,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         opcode_xE(reg, mem, opcode);
         break;
     case 0xF0:
-        // opcode_xF(reg, mem, opcode);
-        // break;
+        opcode_xF(reg, mem, opcode);
+        break;
     default:
     UNKNOWN_OPCODE:
         // printf("Unknown opcode: %x\n", opcode);

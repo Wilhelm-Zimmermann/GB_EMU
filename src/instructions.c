@@ -1,4 +1,5 @@
 #include "./headers/instructions.h"
+#include "./headers/prefixedInstructions.h"
 #include "./headers/opcodes.h"
 
 void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
@@ -1568,6 +1569,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     {
         // PREFIX -- TODO: this is more 256 instructions, implement this later
         incrementPC(reg);
+        execPrefix(reg, mem);
         break;
     }
     case 0xCC:

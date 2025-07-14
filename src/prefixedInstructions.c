@@ -116,6 +116,106 @@ void opcode_xp1(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
+    case 0x10:
+    {
+        // RLC B
+        rotateLeft8b(reg, &reg->B);
+        incrementPC(reg);
+    }
+    case 0x11:
+    {
+        // RLC C
+        rotateLeft8b(reg, &reg->C);
+        incrementPC(reg);
+    }
+    case 0x12:
+    {
+        // RLC D
+        rotateLeft8b(reg, &reg->D);
+        incrementPC(reg);
+    }
+    case 0x13:
+    {
+        // RLC E
+        rotateLeft8b(reg, &reg->E);
+        incrementPC(reg);
+    }
+    case 0x14:
+    {
+        // RLC H
+        rotateLeft8b(reg, &reg->H);
+        incrementPC(reg);
+    }
+    case 0x15:
+    {
+        // RLC L
+        rotateLeft8b(reg, &reg->L);
+        incrementPC(reg);
+    }
+    case 0x16:
+    {
+        // RLC HL
+        uint8_t memVal = memoryRead(mem, reg->HL);
+        rotateLeft8b(reg, &memVal);
+        memoryWrite(mem, reg->HL, memVal);
+        incrementPC(reg);
+    }
+    case 0x17:
+    {
+        // RLC A
+        rotateLeft8b(reg, &reg->A);
+        incrementPC(reg);
+    }
+    case 0x18:
+    {
+        // RRC B
+        rotateRight8b(reg, &reg->B);
+        incrementPC(reg);
+    }
+    case 0x19:
+    {
+        // RRC C
+        rotateRight8b(reg, &reg->C);
+        incrementPC(reg);
+    }
+    case 0x1A:
+    {
+        // RRC D
+        rotateRight8b(reg, &reg->D);
+        incrementPC(reg);
+    }
+    case 0x1B:
+    {
+        // RRC E
+        rotateRight8b(reg, &reg->E);
+        incrementPC(reg);
+    }
+    case 0x1C:
+    {
+        // RRC H
+        rotateRight8b(reg, &reg->H);
+        incrementPC(reg);
+    }
+    case 0x1D:
+    {
+        // RRC L
+        rotateRight8b(reg, &reg->L);
+        incrementPC(reg);
+    }
+    case 0x1E:
+    {
+        // RRC HL
+        uint8_t memVal = memoryRead(mem, reg->HL);
+        rotateRight8b(reg, &memVal);
+        memoryWrite(mem, reg->HL, memVal);
+        incrementPC(reg);
+    }
+    case 0x1F:
+    {
+        // RRC A
+        rotateRight8b(reg, &reg->A);
+        incrementPC(reg);
+    }
     default:
         incrementPC(reg);
         break;

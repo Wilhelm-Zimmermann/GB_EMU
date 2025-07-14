@@ -40,8 +40,37 @@ void rotateRightCircular8b(Register *reg, uint8_t *value)
 
 void rotateLeft8b(Register *reg, uint8_t *value)
 {
+    uint8_t msb = getMsb(*value);
+    uint8_t cFlag = get_CFlag(reg);
+    *value = (*value << 1) | cFlag;
+    if (msb)
+    {
+        set_CFlag(reg);
+    }
+    else
+    {
+        unset_CFlag(reg);
+    }
+
+    checkIfOpZeroAndSetZ(reg, *value);
+    unset_HFlag(reg);
+    unset_NFlag(reg);
 }
 
 void rotateRight8b(Register *reg, uint8_t *value)
 {
+    uint8_t lsb = getLsb(*value);
+    uint8_t cFlag = get_CFlag(reg);
+    *value = (*value >> 1) | (cFlag << 7);
+    if (lsb)
+    {
+        set_CFlag(reg);
+    }
+    else
+    {
+        unset_CFlag(reg);
+    }
+    checkIfOpZeroAndSetZ(reg, *value);
+    unset_HFlag(reg);
+    unset_NFlag(reg);
 }

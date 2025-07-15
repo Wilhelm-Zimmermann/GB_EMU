@@ -19,3 +19,6 @@ void swap8b(Register *reg, uint8_t* value);
 
 // SRL
 void shiftRightLogical8b(Register *reg, uint8_t* value);
+
+// BIT
+void checkBit(Register *reg, uint8_t* value, uint8_t bitPos);

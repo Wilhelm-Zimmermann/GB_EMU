@@ -507,6 +507,122 @@ void opcode_xp4(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
+    case 0x30:
+    {
+        // BIT 0, B
+        checkBit(reg, &reg->B, 0);
+        incrementPC(reg);
+        break;
+    }
+    case 0x31:
+    {
+        // BIT 0, C
+        checkBit(reg, &reg->C, 0);
+        incrementPC(reg);
+        break;
+    }
+    case 0x32:
+    {
+        // BIT 0, D
+        checkBit(reg, &reg->D, 0);
+        incrementPC(reg);
+        break;
+    }
+    case 0x33:
+    {
+        // BIT 0, E
+        checkBit(reg, &reg->E, 0);
+        incrementPC(reg);
+        break;
+    }
+    case 0x34:
+    {
+        // BIT 0, H
+        checkBit(reg, &reg->H, 0);
+        incrementPC(reg);
+        break;
+    }
+    case 0x35:
+    {
+        // BIT 0, L
+        checkBit(reg, &reg->L, 0);
+        incrementPC(reg);
+        break;
+    }
+    case 0x36:
+    {
+        // BIT 0, [HL]
+        uint8_t memVal = memoryRead(mem, reg->HL);
+        checkBit(reg, &memVal, 0);
+        memoryWrite(mem, reg->HL, memVal);
+        incrementPC(reg);
+        break;
+    }
+    case 0x37:
+    {
+        // BIT 0, A
+        checkBit(reg, &reg->A, 0);
+        incrementPC(reg);
+        break;
+    }
+    case 0x38:
+    {
+        // BIT 1, B
+        checkBit(reg, &reg->B, 1);
+        incrementPC(reg);
+        break;
+    }
+    case 0x39:
+    {
+        // BIT 1, C
+        checkBit(reg, &reg->C, 1);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3A:
+    {
+        // BIT 1, D
+        checkBit(reg, &reg->D, 1);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3B:
+    {
+        // BIT 1, E
+        checkBit(reg, &reg->E, 1);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3C:
+    {
+        // BIT 1, H
+        checkBit(reg, &reg->H, 1);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3D:
+    {
+        // BIT 1, L
+        checkBit(reg, &reg->L, 1);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3E:
+    {
+        // BIT 1, [HL]
+        uint8_t memVal = memoryRead(mem, reg->HL);
+        checkBit(reg, &memVal, 1);
+        memoryWrite(mem, reg->HL, memVal);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3F:
+    {
+        // BIT 1, A
+        checkBit(reg, &reg->A, 1);
+        incrementPC(reg);
+        break;
+    }
     default:
         incrementPC(reg);
         break;

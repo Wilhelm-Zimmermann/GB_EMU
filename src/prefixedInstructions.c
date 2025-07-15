@@ -12,36 +12,42 @@ void opcode_xp0(Register *reg, Memory *mem, uint8_t opcode)
         // RLC B
         rotateLeftCircular8b(reg, &reg->B);
         incrementPC(reg);
+        break;
     }
     case 0x01:
     {
         // RLC C
         rotateLeftCircular8b(reg, &reg->C);
         incrementPC(reg);
+        break;
     }
     case 0x02:
     {
         // RLC D
         rotateLeftCircular8b(reg, &reg->D);
         incrementPC(reg);
+        break;
     }
     case 0x03:
     {
         // RLC E
         rotateLeftCircular8b(reg, &reg->E);
         incrementPC(reg);
+        break;
     }
     case 0x04:
     {
         // RLC H
         rotateLeftCircular8b(reg, &reg->H);
         incrementPC(reg);
+        break;
     }
     case 0x05:
     {
         // RLC L
         rotateLeftCircular8b(reg, &reg->L);
         incrementPC(reg);
+        break;
     }
     case 0x06:
     {
@@ -50,48 +56,56 @@ void opcode_xp0(Register *reg, Memory *mem, uint8_t opcode)
         rotateLeftCircular8b(reg, &memVal);
         memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
+        break;
     }
     case 0x07:
     {
         // RLC A
         rotateLeftCircular8b(reg, &reg->A);
         incrementPC(reg);
+        break;
     }
     case 0x08:
     {
         // RRC B
         rotateRightCircular8b(reg, &reg->B);
         incrementPC(reg);
+        break;
     }
     case 0x09:
     {
         // RRC C
         rotateRightCircular8b(reg, &reg->C);
         incrementPC(reg);
+        break;
     }
     case 0x0A:
     {
         // RRC D
         rotateRightCircular8b(reg, &reg->D);
         incrementPC(reg);
+        break;
     }
     case 0x0B:
     {
         // RRC E
         rotateRightCircular8b(reg, &reg->E);
         incrementPC(reg);
+        break;
     }
     case 0x0C:
     {
         // RRC H
         rotateRightCircular8b(reg, &reg->H);
         incrementPC(reg);
+        break;
     }
     case 0x0D:
     {
         // RRC L
         rotateRightCircular8b(reg, &reg->L);
         incrementPC(reg);
+        break;
     }
     case 0x0E:
     {
@@ -100,12 +114,14 @@ void opcode_xp0(Register *reg, Memory *mem, uint8_t opcode)
         rotateRightCircular8b(reg, &memVal);
         memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
+        break;
     }
     case 0x0F:
     {
         // RRC A
         rotateRightCircular8b(reg, &reg->A);
         incrementPC(reg);
+        break;
     }
     default:
         incrementPC(reg);
@@ -121,36 +137,42 @@ void opcode_xp1(Register *reg, Memory *mem, uint8_t opcode)
         // RLC B
         rotateLeft8b(reg, &reg->B);
         incrementPC(reg);
+        break;
     }
     case 0x11:
     {
         // RLC C
         rotateLeft8b(reg, &reg->C);
         incrementPC(reg);
+        break;
     }
     case 0x12:
     {
         // RLC D
         rotateLeft8b(reg, &reg->D);
         incrementPC(reg);
+        break;
     }
     case 0x13:
     {
         // RLC E
         rotateLeft8b(reg, &reg->E);
         incrementPC(reg);
+        break;
     }
     case 0x14:
     {
         // RLC H
         rotateLeft8b(reg, &reg->H);
         incrementPC(reg);
+        break;
     }
     case 0x15:
     {
         // RLC L
         rotateLeft8b(reg, &reg->L);
         incrementPC(reg);
+        break;
     }
     case 0x16:
     {
@@ -159,48 +181,56 @@ void opcode_xp1(Register *reg, Memory *mem, uint8_t opcode)
         rotateLeft8b(reg, &memVal);
         memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
+        break;
     }
     case 0x17:
     {
         // RLC A
         rotateLeft8b(reg, &reg->A);
         incrementPC(reg);
+        break;
     }
     case 0x18:
     {
         // RRC B
         rotateRight8b(reg, &reg->B);
         incrementPC(reg);
+        break;
     }
     case 0x19:
     {
         // RRC C
         rotateRight8b(reg, &reg->C);
         incrementPC(reg);
+        break;
     }
     case 0x1A:
     {
         // RRC D
         rotateRight8b(reg, &reg->D);
         incrementPC(reg);
+        break;
     }
     case 0x1B:
     {
         // RRC E
         rotateRight8b(reg, &reg->E);
         incrementPC(reg);
+        break;
     }
     case 0x1C:
     {
         // RRC H
         rotateRight8b(reg, &reg->H);
         incrementPC(reg);
+        break;
     }
     case 0x1D:
     {
         // RRC L
         rotateRight8b(reg, &reg->L);
         incrementPC(reg);
+        break;
     }
     case 0x1E:
     {
@@ -209,12 +239,14 @@ void opcode_xp1(Register *reg, Memory *mem, uint8_t opcode)
         rotateRight8b(reg, &memVal);
         memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
+        break;
     }
     case 0x1F:
     {
         // RRC A
         rotateRight8b(reg, &reg->A);
         incrementPC(reg);
+        break;
     }
     default:
         incrementPC(reg);
@@ -225,6 +257,122 @@ void opcode_xp2(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
+    case 0x20:
+    {
+        // SLA B
+        shiftLeftArithmetic8b(reg, &reg->B);
+        incrementPC(reg);
+        break;
+    }
+    case 0x21:
+    {
+        // SLA C
+        shiftLeftArithmetic8b(reg, &reg->C);
+        incrementPC(reg);
+        break;
+    }
+    case 0x22:
+    {
+        // SLA D
+        shiftLeftArithmetic8b(reg, &reg->D);
+        incrementPC(reg);
+        break;
+    }
+    case 0x23:
+    {
+        // SLA E
+        shiftLeftArithmetic8b(reg, &reg->E);
+        incrementPC(reg);
+        break;
+    }
+    case 0x24:
+    {
+        // SLA H
+        shiftLeftArithmetic8b(reg, &reg->H);
+        incrementPC(reg);
+        break;
+    }
+    case 0x25:
+    {
+        // SLA L
+        shiftLeftArithmetic8b(reg, &reg->L);
+        incrementPC(reg);
+        break;
+    }
+    case 0x26:
+    {
+        // SLA [HL]
+        uint8_t memVal = memoryRead(mem, reg->HL);
+        shiftLeftArithmetic8b(reg, &memVal);
+        memoryWrite(mem, reg->HL, memVal);
+        incrementPC(reg);
+        break;
+    }
+    case 0x27:
+    {
+        // SLA A
+        shiftLeftArithmetic8b(reg, &reg->A);
+        incrementPC(reg);
+        break;
+    }
+    case 0x28:
+    {
+        // SRA B
+        shiftRightArithmetic8b(reg, &reg->B);
+        incrementPC(reg);
+        break;
+    }
+    case 0x29:
+    {
+        // SRA C
+        shiftRightArithmetic8b(reg, &reg->C);
+        incrementPC(reg);
+        break;
+    }
+    case 0x2A:
+    {
+        // SRA D
+        shiftRightArithmetic8b(reg, &reg->D);
+        incrementPC(reg);
+        break;
+    }
+    case 0x2B:
+    {
+        // SRA E
+        shiftRightArithmetic8b(reg, &reg->E);
+        incrementPC(reg);
+        break;
+    }
+    case 0x2C:
+    {
+        // SRA H
+        shiftRightArithmetic8b(reg, &reg->H);
+        incrementPC(reg);
+        break;
+    }
+    case 0x2D:
+    {
+        // SRA L
+        shiftRightArithmetic8b(reg, &reg->L);
+        incrementPC(reg);
+        break;
+    }
+    case 0x2E:
+    {
+        // SRA [HL]
+        uint8_t memVal = memoryRead(mem, reg->HL);
+        shiftRightArithmetic8b(reg, &memVal);
+        memoryWrite(mem, reg->HL, memVal);
+        incrementPC(reg);
+        break;
+    }
+    case 0x2F:
+    {
+        // SRA A
+        shiftRightArithmetic8b(reg, &reg->A);
+        incrementPC(reg);
+        break;
+    }
     default:
         incrementPC(reg);
         break;

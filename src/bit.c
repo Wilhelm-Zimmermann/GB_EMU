@@ -74,3 +74,38 @@ void rotateRight8b(Register *reg, uint8_t *value)
     unset_HFlag(reg);
     unset_NFlag(reg);
 }
+
+void shiftLeftArithmetic8b(Register *reg, uint8_t *value)
+{
+    uint8_t msb = getMsb(*value);
+    if (msb)
+    {
+        set_CFlag(reg);
+    }
+    else
+    {
+        unset_CFlag(reg);
+    }
+    *value = *value << 1;
+    checkIfOpZeroAndSetZ(reg, *value);
+    unset_HFlag(reg);
+    unset_NFlag(reg);
+}
+
+void shiftRightArithmetic8b(Register *reg, uint8_t *value)
+{
+    uint8_t lsb = getLsb(*value);
+    uint8_t msb = getMsb(*value);
+    if (lsb)
+    {
+        set_CFlag(reg);
+    }
+    else
+    {
+        unset_CFlag(reg);
+    }
+    *value = (*value >> 1) | (msb << 7);
+    checkIfOpZeroAndSetZ(reg, *value);
+    unset_HFlag(reg);
+    unset_NFlag(reg);
+}

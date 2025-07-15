@@ -56,6 +56,8 @@ void unset_HFlag(Register *reg)
     reg->F &= ~(1 << H_FLAG_BIT);
 }
 
+
+// Todo: implement better functions for H flag, specially for addition and subtraction
 void checkIfHasCarryIncAndSetH8b(Register *reg, uint8_t value)
 {
     if ((value & 0x0F) == 0x00)
@@ -92,6 +94,7 @@ void checkIfOpZeroAndSetZ(Register *reg, uint8_t value)
     }
 }
 
+// TODO: revise these c flags logic
 void setCFlagIfAddOpGtThanFF(Register *reg, uint16_t value)
 {
     if (value > 0xFF)

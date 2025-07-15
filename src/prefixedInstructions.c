@@ -382,6 +382,122 @@ void opcode_xp3(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
+    case 0x30:
+    {
+        // SWAP B
+        swap8b(reg, &reg->B);
+        incrementPC(reg);
+        break;
+    }
+    case 0x31:
+    {
+        // SWAP C
+        swap8b(reg, &reg->C);
+        incrementPC(reg);
+        break;
+    }
+    case 0x32:
+    {
+        // SWAP D
+        swap8b(reg, &reg->D);
+        incrementPC(reg);
+        break;
+    }
+    case 0x33:
+    {
+        // SWAP E
+        swap8b(reg, &reg->E);
+        incrementPC(reg);
+        break;
+    }
+    case 0x34:
+    {
+        // SWAP H
+        swap8b(reg, &reg->H);
+        incrementPC(reg);
+        break;
+    }
+    case 0x35:
+    {
+        // SWAP L
+        swap8b(reg, &reg->L);
+        incrementPC(reg);
+        break;
+    }
+    case 0x36:
+    {
+        // SWAP [HL]
+        uint8_t memVal = memoryRead(mem, reg->HL);
+        swap8b(reg, &memVal);
+        memoryWrite(mem, reg->HL, memVal);
+        incrementPC(reg);
+        break;
+    }
+    case 0x37:
+    {
+        // SWAP A
+        swap8b(reg, &reg->A);
+        incrementPC(reg);
+        break;
+    }
+    case 0x38:
+    {
+        // SRL B
+        shiftRightLogical8b(reg, &reg->B);
+        incrementPC(reg);
+        break;
+    }
+    case 0x39:
+    {
+        // SRL C
+        shiftRightLogical8b(reg, &reg->C);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3A:
+    {
+        // SRL D
+        shiftRightLogical8b(reg, &reg->D);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3B:
+    {
+        // SRL E
+        shiftRightLogical8b(reg, &reg->E);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3C:
+    {
+        // SRL H
+        shiftRightLogical8b(reg, &reg->H);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3D:
+    {
+        // SRL L
+        shiftRightLogical8b(reg, &reg->L);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3E:
+    {
+        // SRL [HL]
+        uint8_t memVal = memoryRead(mem, reg->HL);
+        shiftRightLogical8b(reg, &memVal);
+        memoryWrite(mem, reg->HL, memVal);
+        incrementPC(reg);
+        break;
+    }
+    case 0x3F:
+    {
+        // SRL A
+        shiftRightLogical8b(reg, &reg->A);
+        incrementPC(reg);
+        break;
+    }
     default:
         incrementPC(reg);
         break;

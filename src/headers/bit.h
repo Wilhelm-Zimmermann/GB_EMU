@@ -13,3 +13,9 @@ void rotateRight8b(Register *reg, uint8_t* value);
 // SLA & SRA
 void shiftLeftArithmetic8b(Register *reg, uint8_t* value);
 void shiftRightArithmetic8b(Register *reg, uint8_t* value);
+
+// SWAP
+void swap8b(Register *reg, uint8_t* value);
+
+// SRL
+void shiftRightLogical8b(Register *reg, uint8_t* value);

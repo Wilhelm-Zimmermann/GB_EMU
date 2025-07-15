@@ -109,3 +109,32 @@ void shiftRightArithmetic8b(Register *reg, uint8_t *value)
     unset_HFlag(reg);
     unset_NFlag(reg);
 }
+
+void swap8b(Register *reg, uint8_t *value)
+{
+    uint8_t lowerNibble = *value & 0x0F;
+    uint8_t highNibble = (*value >> 4);
+    *value = (lowerNibble << 4) | highNibble;
+    checkIfOpZeroAndSetZ(reg, *value);
+    unset_HFlag(reg);
+    unset_NFlag(reg);
+    unset_CFlag(reg);
+}
+
+void shiftRightLogical8b(Register *reg, uint8_t *value)
+{
+    uint8_t lsb = getLsb(*value);
+    if (lsb)
+    {
+        set_CFlag(reg);
+    }
+    else
+    {
+        unset_CFlag(reg);
+    }
+
+    *value = *value >> 1;
+    checkIfOpZeroAndSetZ(reg, *value);
+    unset_HFlag(reg);
+    unset_NFlag(reg);
+}

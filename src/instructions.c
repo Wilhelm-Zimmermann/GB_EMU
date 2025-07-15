@@ -1567,7 +1567,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     }
     case 0xCB:
     {
-        // PREFIX -- TODO: this is more 256 instructions, implement this later
+        // PREFIX 
         incrementPC(reg);
         execPrefix(reg, mem);
         break;

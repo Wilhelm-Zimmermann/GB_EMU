@@ -11,7 +11,9 @@ void initRegisters(Register *reg)
 
 void cpu_cycle(Register *reg, Memory *mem)
 {
+    uint16_t pc_before_instruction = reg->PC;
     uint8_t opcode = mem->ram[reg->PC];
+
     switch (opcode & 0xF0)
     {
     case 0x00:
@@ -67,5 +69,10 @@ void cpu_cycle(Register *reg, Memory *mem)
         // printf("Unknown opcode: %x\n", opcode);
         incrementPC(reg);
         break;
+    }
+
+    if (reg->PC < pc_before_instruction)
+    {
+        printf("Returning!!! BEFORE: %x ADDR: %x :: OPCODE: %x\n", reg->PC - 1, reg->PC, opcode);
     }
 }

@@ -117,7 +117,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x10:
         // STOP n8 - IDLE EMU
         // Implement this after
-        incrementPC(reg);
+        reg->PC += 2;
         break;
     case 0x11:
     {
@@ -377,6 +377,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     {
         // DEC HL
         reg->HL--;
+        incrementPC(reg);
         break;
     }
     case 0x2C:
@@ -459,6 +460,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         // INC [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_inc8b(reg, &memValue);
+        memoryWrite(mem, reg->HL, memValue);
         break;
     }
     case 0x35:
@@ -466,6 +468,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         // DEC [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_dec8b(reg, &memValue);
+        memoryWrite(mem, reg->HL, memValue);
         break;
     }
     case 0x36:
@@ -483,6 +486,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         unset_HFlag(reg);
         unset_NFlag(reg);
         incrementPC(reg);
+        break;
     }
     case 0x38:
     {
@@ -529,7 +533,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
     }
     case 0x3D:
     {
-        // INC A
+        // DEC A
         instr_dec8b(reg, &reg->A);
         break;
     }
@@ -1711,7 +1715,6 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
     {
         // RETI -- TODO: revise when implementing the Interrupt
         instr_ret(reg, mem);
-        incrementPC(reg);
         break;
     }
     case 0xDA:
@@ -1720,11 +1723,11 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t cFlagValue = get_CFlag(reg);
         if (cFlagValue == 1)
         {
-            instr_ret(reg, mem);
+            instr_jpNxt16(reg, mem);
         }
         else
         {
-            incrementPC(reg);
+            reg->PC += 3;
         }
         break;
     }
@@ -1937,7 +1940,7 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
     {
         // POP AF
         uint16_t stackValue = stack_pop16(reg, mem);
-        reg->AF = stackValue;
+        reg->AF = stackValue & 0xFFF0;
         incrementPC(reg);
         break;
     }

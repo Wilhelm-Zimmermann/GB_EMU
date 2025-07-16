@@ -5,7 +5,7 @@
 #include "./src/headers/rom.h"
 #include "./src/headers/cpu.h"
 
-#define DEBUG
+// #define DEBUG
 
 const int PIXEL_SCALE = 2;
 
@@ -90,6 +90,7 @@ int main(int argc, char *args[])
 
     free(mem);
     free(rom);
+    free(reg);
     // free(cpu);
     return 0;
 }

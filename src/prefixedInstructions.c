@@ -554,7 +554,6 @@ void opcode_xp4(Register *reg, Memory *mem, uint8_t opcode)
         // BIT 0, [HL]
         uint8_t memVal = memoryRead(mem, reg->HL);
         checkBit(reg, &memVal, 0);
-        memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
         break;
     }
@@ -612,7 +611,6 @@ void opcode_xp4(Register *reg, Memory *mem, uint8_t opcode)
         // BIT 1, [HL]
         uint8_t memVal = memoryRead(mem, reg->HL);
         checkBit(reg, &memVal, 1);
-        memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
         break;
     }
@@ -679,7 +677,6 @@ void opcode_xp5(Register *reg, Memory *mem, uint8_t opcode)
         // BIT 2, [HL]
         uint8_t memVal = memoryRead(mem, reg->HL);
         checkBit(reg, &memVal, 2);
-        memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
         break;
     }
@@ -737,7 +734,6 @@ void opcode_xp5(Register *reg, Memory *mem, uint8_t opcode)
         // BIT 3, [HL]
         uint8_t memVal = memoryRead(mem, reg->HL);
         checkBit(reg, &memVal, 3);
-        memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
         break;
     }
@@ -804,7 +800,6 @@ void opcode_xp6(Register *reg, Memory *mem, uint8_t opcode)
         // BIT 4, [HL]
         uint8_t memVal = memoryRead(mem, reg->HL);
         checkBit(reg, &memVal, 4);
-        memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
         break;
     }
@@ -862,7 +857,6 @@ void opcode_xp6(Register *reg, Memory *mem, uint8_t opcode)
         // BIT 5, [HL]
         uint8_t memVal = memoryRead(mem, reg->HL);
         checkBit(reg, &memVal, 5);
-        memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
         break;
     }
@@ -929,7 +923,6 @@ void opcode_xp7(Register *reg, Memory *mem, uint8_t opcode)
         // BIT 6, [HL]
         uint8_t memVal = memoryRead(mem, reg->HL);
         checkBit(reg, &memVal, 6);
-        memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
         break;
     }
@@ -987,7 +980,6 @@ void opcode_xp7(Register *reg, Memory *mem, uint8_t opcode)
         // BIT 7, [HL]
         uint8_t memVal = memoryRead(mem, reg->HL);
         checkBit(reg, &memVal, 7);
-        memoryWrite(mem, reg->HL, memVal);
         incrementPC(reg);
         break;
     }

@@ -139,10 +139,20 @@ void shiftRightLogical8b(Register *reg, uint8_t *value)
     unset_NFlag(reg);
 }
 
-void checkBit(Register *reg, uint8_t* value, uint8_t bitPos)
+void checkBit(Register *reg, uint8_t *value, uint8_t bitPos)
 {
     uint8_t extractedBit = (*value >> bitPos) & 1;
     checkIfOpZeroAndSetZ(reg, extractedBit);
     unset_NFlag(reg);
     set_HFlag(reg);
+}
+
+void resetBit(Register *reg, uint8_t *value, uint8_t bitPos)
+{
+    *value &= ~(1 << bitPos);
+}
+
+void setBit(Register *reg, uint8_t *value, uint8_t bitPos)
+{
+    *value |= (1 << bitPos);
 }

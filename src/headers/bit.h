@@ -22,3 +22,5 @@ void shiftRightLogical8b(Register *reg, uint8_t* value);
 
 // BIT
 void checkBit(Register *reg, uint8_t* value, uint8_t bitPos);
+void resetBit(Register *reg, uint8_t* value, uint8_t bitPos);
+void setBit(Register *reg, uint8_t* value, uint8_t bitPos);

@@ -5,7 +5,7 @@
 #include "./src/headers/rom.h"
 #include "./src/headers/cpu.h"
 
-#define DEBUG
+// #define DEBUG
 
 const int PIXEL_SCALE = 2;
 

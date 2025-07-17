@@ -66,13 +66,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         break;
     default:
     UNKNOWN_OPCODE:
-        // printf("Unknown opcode: %x\n", opcode);
+        // printf("Unknown opcode: 0x%02X at PC=0%04X\n", opcode, reg->PC);
         incrementPC(reg);
         break;
     }
-
-    // if (reg->PC < pc_before_instruction)
-    // {
-    //     printf("Returning!!! BEFORE: %x ADDR: %x :: OPCODE: %x\n", reg->PC - 1, reg->PC, opcode);
-    // }
 }

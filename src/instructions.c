@@ -100,18 +100,16 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     }
     case 0x0F:
         // RRCA
-        uint8_t lsbByte = (reg->A << 7) & (1 << 7);
-        reg->A = (reg->A >> 1) | lsbByte;
-        reg->F = 0;
-        if (lsbByte)
         {
-            set_CFlag(reg);
+            uint8_t lsb = reg->A & 0x01;
+            reg->A = (reg->A >> 1) | (lsb << 7);
+            reg->F = 0;
+            if (lsb)
+                set_CFlag(reg);
+            else
+                unset_CFlag(reg);
+            incrementPC(reg);
         }
-        else
-        {
-            unset_CFlag(reg);
-        }
-        incrementPC(reg);
         break;
     default:
         incrementPC(reg);
@@ -362,6 +360,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         reg->A = (uint8_t)a;
         unset_HFlag(reg);
         checkIfOpZeroAndSetZ(reg, reg->A);
+        incrementPC(reg);
         break;
     }
     case 0x28:
@@ -1184,10 +1183,6 @@ void opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SUB A, A
         instr_sub8b(reg, &reg->A, reg->A);
-        set_ZFlag(reg);
-        set_NFlag(reg);
-        unset_HFlag(reg);
-        unset_CFlag(reg);
         break;
     }
     case 0x98:
@@ -1236,16 +1231,7 @@ void opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     case 0x9F:
     {
         // SBC A, A
-        uint8_t originalCarry = get_CFlag(reg);
         instr_sub8bWithCarry(reg, &reg->A, reg->A);
-        if (originalCarry == 1)
-        {
-            set_CFlag(reg);
-        }
-        else
-        {
-            unset_CFlag(reg);
-        }
         break;
     }
     default:
@@ -1354,7 +1340,6 @@ void opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // XOR A, A
         instr_xor(reg, &reg->A, reg->A);
-        set_ZFlag(reg);
         break;
     }
     default:
@@ -1553,7 +1538,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     case 0xC7:
     {
         // RST $00
-        instr_rst(reg, mem, 0x000);
+        instr_rst(reg, mem, 0x0000);
         break;
     }
     case 0xC8:

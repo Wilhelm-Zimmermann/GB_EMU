@@ -5,7 +5,7 @@
 #include "./src/headers/rom.h"
 #include "./src/headers/cpu.h"
 
-// #define DEBUG
+#define DEBUG
 
 const int PIXEL_SCALE = 2;
 
@@ -43,15 +43,14 @@ int main(int argc, char *args[])
     SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160, 144);
 
     initMemory(mem);
-// loadRom(mem, "../ROMS/Legend of Zelda, The - Link's Awakening (USA, Europe) (Rev 2).gb");
-// loadRom(mem, "./ROMS/Legend of Zelda, The - Link's Awakening (USA, Europe) (Rev 2).gb");
-// loadRom(mem, "./ROMS/Mortal Kombat (USA, Europe).gb");
+    
 #ifdef DEBUG
     loadRom(mem, "./ROMS/cpu_instrs.gb");
 #endif
 
 #ifndef DEBUG
     loadRom(mem, "../ROMS/cpu_instrs.gb");
+    // loadRom(mem, "../ROMS/10-bit ops.gb");
 #endif
     printf("Program end successfully!!\n");
     initRegisters(reg);

@@ -3,7 +3,7 @@
 #include "./register.h"
 #include "./memory.h"
 
-void execPrefix(Register *reg, Memory *mem);
+void execPrefix(Register *reg, Memory *mem, uint8_t opcode);
 void opcode_xp0(Register *reg, Memory *mem,uint8_t opcode);
 void opcode_xp1(Register *reg, Memory *mem,uint8_t opcode);
 void opcode_xp2(Register *reg, Memory *mem,uint8_t opcode);

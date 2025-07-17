@@ -48,6 +48,11 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         {
             set_CFlag(reg);
         }
+        else
+        {
+            unset_CFlag(reg);
+        }
+
         incrementPC(reg);
         break;
     case 0x08:
@@ -101,6 +106,10 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         if (lsbByte)
         {
             set_CFlag(reg);
+        }
+        else
+        {
+            unset_CFlag(reg);
         }
         incrementPC(reg);
         break;
@@ -163,14 +172,17 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t carryBit = get_CFlag(reg) & 1;
         uint8_t accMSB = (reg->A >> 7) & 1;
 
-        reg->A = reg->A << 1;
-        reg->A |= carryBit;
+        reg->A = (reg->A << 1) | carryBit;
 
         reg->F = 0;
 
         if (accMSB)
         {
             set_CFlag(reg);
+        }
+        else
+        {
+            unset_CFlag(reg);
         }
         incrementPC(reg);
         break;
@@ -226,15 +238,17 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
         // RRA
         uint8_t accLSB = reg->A & 1;
         uint8_t carryBit = get_CFlag(reg) & 1;
-        reg->A = reg->A >> 1;
-        reg->A |= (carryBit << 7);
+        reg->A = (reg->A >> 1) | (carryBit << 7);
         reg->F = 0;
 
         if (accLSB)
         {
             set_CFlag(reg);
         }
-
+        else
+        {
+            unset_CFlag(reg);
+        }
         incrementPC(reg);
         break;
     }
@@ -307,40 +321,47 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     case 0x27:
     {
         // DAA
-        uint8_t a = reg->A;
+        uint16_t a = reg->A;
         uint8_t nFlagValue = get_NFlag(reg);
         uint8_t hFlagValue = get_HFlag(reg);
         uint8_t cFlagValue = get_CFlag(reg);
         if (nFlagValue == 0)
         {
-            if (cFlagValue == 1 || a > 0x99)
-            {
-                a += 0x60;
-                set_CFlag(reg);
-            }
             if (hFlagValue == 1 || (a & 0x0F) > 0x09)
             {
                 a += 0x06;
             }
+
+            if (cFlagValue == 1 || a > 0x9F) // Note: check against the potentially corrected a
+            {
+                a += 0x60;
+            }
         }
         else
         {
-            if (cFlagValue == 1)
-            {
-                a -= 0x60;
-            }
             if (hFlagValue == 1)
             {
                 a -= 0x06;
             }
+
+            if (cFlagValue == 1)
+            {
+                a -= 0x60;
+            }
         }
-        reg->A = a;
-        checkIfOpZeroAndSetZ(reg, reg->A);
-        unset_HFlag(reg);
-        if (nFlagValue == 0 && get_CFlag(reg) != 1)
+
+        if ((a & 0x100) != 0)
+        {
+            set_CFlag(reg);
+        }
+        else
         {
             unset_CFlag(reg);
         }
+
+        reg->A = (uint8_t)a;
+        unset_HFlag(reg);
+        checkIfOpZeroAndSetZ(reg, reg->A);
         break;
     }
     case 0x28:
@@ -520,7 +541,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
     }
     case 0x3B:
     {
-        // DEC HL
+        // DEC SP
         reg->SP--;
         incrementPC(reg);
         break;
@@ -897,43 +918,43 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     case 0x70:
     {
         // LD [HL], B
-        uint8_t memValue = memoryRead(mem, reg->HL);
-        instr_ld8bIn8b(reg, &memValue, &reg->B);
+        memoryWrite(mem, reg->HL, reg->B);
+        incrementPC(reg);
         break;
     }
     case 0x71:
     {
         // LD [HL], C
-        uint8_t memValue = memoryRead(mem, reg->HL);
-        instr_ld8bIn8b(reg, &memValue, &reg->C);
+        memoryWrite(mem, reg->HL, reg->C);
+        incrementPC(reg);
         break;
     }
     case 0x72:
     {
         // LD [HL], D
-        uint8_t memValue = memoryRead(mem, reg->HL);
-        instr_ld8bIn8b(reg, &memValue, &reg->D);
+        memoryWrite(mem, reg->HL, reg->D);
+        incrementPC(reg);
         break;
     }
     case 0x73:
     {
         // LD [HL], E
-        uint8_t memValue = memoryRead(mem, reg->HL);
-        instr_ld8bIn8b(reg, &memValue, &reg->E);
+        memoryWrite(mem, reg->HL, reg->E);
+        incrementPC(reg);
         break;
     }
     case 0x74:
     {
         // LD [HL], H
-        uint8_t memValue = memoryRead(mem, reg->HL);
-        instr_ld8bIn8b(reg, &memValue, &reg->H);
+        memoryWrite(mem, reg->HL, reg->H);
+        incrementPC(reg);
         break;
     }
     case 0x75:
     {
         // LD [HL], L
-        uint8_t memValue = memoryRead(mem, reg->HL);
-        instr_ld8bIn8b(reg, &memValue, &reg->L);
+        memoryWrite(mem, reg->HL, reg->L);
+        incrementPC(reg);
         break;
     }
     case 0x76:
@@ -945,8 +966,8 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     case 0x77:
     {
         // LD [HL], A
-        uint8_t memValue = memoryRead(mem, reg->HL);
-        instr_ld8bIn8b(reg, &memValue, &reg->A);
+        memoryWrite(mem, reg->HL, reg->A);
+        incrementPC(reg);
         break;
     }
     case 0x78:
@@ -1571,9 +1592,12 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     }
     case 0xCB:
     {
-        // PREFIX 
-        incrementPC(reg);
-        execPrefix(reg, mem);
+        // PREFIX
+        uint8_t cb_opcode = memoryRead(mem, reg->PC + 1);
+
+        execPrefix(reg, mem, cb_opcode);
+
+        reg->PC += 2;
         break;
     }
     case 0xCC:

@@ -37,6 +37,10 @@ uint16_t memoryRead16t(Memory *mem, uint16_t address)
 
 void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
 {
+    if (address > 0xFF00)
+    {
+        printf("GT");
+    }
     if (address == 0xFF02 && mem->ram[0xFF01] == 0x81)
     {
         printf("%c", value);

@@ -13,7 +13,7 @@ void initialize(Register *reg)
     reg->HL = 0;
 
     reg->SP = 0;
-    reg->PC = 0x104;
+    reg->PC = 0x100;
 }
 
 void set_ZFlag(Register *reg)

@@ -71,8 +71,8 @@ void cpu_cycle(Register *reg, Memory *mem)
         break;
     }
 
-    if (reg->PC < pc_before_instruction)
-    {
-        printf("Returning!!! BEFORE: %x ADDR: %x :: OPCODE: %x\n", reg->PC - 1, reg->PC, opcode);
-    }
+    // if (reg->PC < pc_before_instruction)
+    // {
+    //     printf("Returning!!! BEFORE: %x ADDR: %x :: OPCODE: %x\n", reg->PC - 1, reg->PC, opcode);
+    // }
 }

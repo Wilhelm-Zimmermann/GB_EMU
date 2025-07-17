@@ -7,12 +7,23 @@ const int C_FLAG_BIT = 4;
 
 void initialize(Register *reg)
 {
-    reg->AF = 0;
-    reg->BC = 0;
-    reg->DE = 0;
-    reg->HL = 0;
+    // reg->AF = 0;
+    // reg->BC = 0;
+    // reg->DE = 0;
+    // reg->HL = 0;
 
-    reg->SP = 0;
+    // reg->SP = 0;
+    // reg->PC = 0x100;
+    reg->A = 0x01;
+    reg->F = 0xB0;
+    reg->B = 0x00;
+    reg->C = 0x13;
+    reg->D = 0x00;
+    reg->E = 0xD8;
+    reg->H = 0x01;
+    reg->L = 0x4D;
+
+    reg->SP = 0xFFFE;
     reg->PC = 0x100;
 }
 

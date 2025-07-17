@@ -49,8 +49,8 @@ int main(int argc, char *args[])
 #endif
 
 #ifndef DEBUG
-    loadRom(mem, "../ROMS/cpu_instrs.gb");
-    // loadRom(mem, "../ROMS/10-bit ops.gb");
+    // loadRom(mem, "../ROMS/cpu_instrs.gb");
+    loadRom(mem, "../ROMS/01-special.gb");
 #endif
     printf("Program end successfully!!\n");
     initRegisters(reg);

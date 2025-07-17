@@ -3,6 +3,7 @@
 #include "./headers/register.h"
 #include "./headers/memory.h"
 #include "./headers/instructions.h"
+#include "./headers/logger.h"
 
 void initRegisters(Register *reg)
 {
@@ -11,8 +12,9 @@ void initRegisters(Register *reg)
 
 void cpu_cycle(Register *reg, Memory *mem)
 {
-    uint16_t pc_before_instruction = reg->PC;
-    uint8_t opcode = mem->ram[reg->PC];
+    uint8_t opcode = memoryRead16t(mem, reg->PC);
+
+    writeCPULogs(reg, mem, reg->PC, opcode);
 
     switch (opcode & 0xF0)
     {

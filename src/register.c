@@ -56,11 +56,48 @@ void unset_HFlag(Register *reg)
     reg->F &= ~(1 << H_FLAG_BIT);
 }
 
-
 // Todo: implement better functions for H flag, specially for addition and subtraction
-void checkIfHasCarryIncAndSetH8b(Register *reg, uint8_t value)
+// H FLAGS
+void checkIfHasCarryAndSet8b(Register *reg, uint8_t value1, uint8_t value2)
 {
-    if ((value & 0x0F) == 0x00)
+    if ((value1 & 0x0F) + (value2 & 0x0F) > 0xF)
+    {
+        set_HFlag(reg);
+    }
+    else
+    {
+        unset_HFlag(reg);
+    }
+}
+
+void checkIfHasBorrowAndSet8b(Register *reg, uint8_t value1, uint8_t value2)
+{
+    if ((value1 & 0x0F) < (value2 & 0x0F))
+    {
+        set_HFlag(reg);
+    }
+    else
+    {
+        unset_HFlag(reg);
+    }
+}
+
+void checkIfHasCarryAndSet8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
+{
+    if (((value1 & 0x0F) + (value2 & 0x0F) + carry) > 0x0F)
+    {
+        set_HFlag(reg);
+    }
+    else
+    {
+        unset_HFlag(reg);
+    }
+}
+void checkIfHasBorrowAndSet8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
+{
+    int16_t result = (value1 & 0x0F) - (value2 & 0x0F) - carry;
+
+    if (result < 0)
     {
         set_HFlag(reg);
     }
@@ -82,6 +119,7 @@ void checkIfHasCarryAndSetH16b(Register *reg, uint16_t value)
     }
 }
 
+// Z FLAG
 void checkIfOpZeroAndSetZ(Register *reg, uint8_t value)
 {
     if (value == 0)
@@ -94,7 +132,7 @@ void checkIfOpZeroAndSetZ(Register *reg, uint8_t value)
     }
 }
 
-// TODO: revise these c flags logic
+// C FLAG
 void setCFlagIfAddOpGtThanFF(Register *reg, uint16_t value)
 {
     if (value > 0xFF)
@@ -118,35 +156,9 @@ void setCFlagIfAddOpGtThanFFFF(Register *reg, uint32_t value)
     }
 }
 
-void checkIfHasCarryAddAndSetH8b(Register *reg, uint8_t nibbleSum)
-{
-    if (nibbleSum > 0x0F)
-    {
-        set_HFlag(reg);
-    }
-    else
-    {
-        unset_HFlag(reg);
-    }
-}
-
-void checkIfHasCarrySubAndSetH8b(Register *reg, uint8_t value)
-{
-    int8_t signedValue = (int8_t) value;
-
-    if (signedValue < 0)
-    {
-        set_HFlag(reg);
-    }
-    else
-    {
-        unset_HFlag(reg);
-    }
-}
-
 void setCFlagIfAddOpLtThan0(Register *reg, uint16_t value)
 {
-    int16_t signedValue = (int16_t) value;
+    int16_t signedValue = (int16_t)value;
     if (signedValue < 0)
     {
         set_CFlag(reg);

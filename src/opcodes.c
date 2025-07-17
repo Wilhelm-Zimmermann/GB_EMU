@@ -8,21 +8,20 @@ void instr_inc8b(Register *reg, uint8_t *value)
     (*value)++;
     unset_NFlag(reg);
     checkIfOpZeroAndSetZ(reg, *value);
-    checkIfHasCarryIncAndSetH8b(reg, *value);
+    checkIfHasCarryAndSet8b(reg, *value, *value + 1);
     incrementPC(reg);
 }
 
 void instr_dec8b(Register *reg, uint8_t *value)
 {
-    checkIfHasCarryIncAndSetH8b(reg, *value);
     (*value)--;
     set_NFlag(reg);
     checkIfOpZeroAndSetZ(reg, *value);
+    checkIfHasBorrowAndSet8b(reg, *value, *value - 1);
     incrementPC(reg);
 }
 
 // LD 8 bit instr
-
 void instr_ld8bIn8b(Register *reg, uint8_t *fromValue, uint8_t *toValue)
 {
     *fromValue = *toValue;
@@ -69,7 +68,7 @@ void instr_add8b(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
     unset_NFlag(reg);
     setCFlagIfAddOpGtThanFF(reg, sumValue);
     checkIfOpZeroAndSetZ(reg, (uint8_t)sumValue);
-    checkIfHasCarryAddAndSetH8b(reg, (*regToAdd & 0x0F) + (valueToAdd & 0x0F));
+    checkIfHasCarryAndSet8b(reg, *regToAdd, valueToAdd);
     *regToAdd = (uint8_t)sumValue;
     incrementPC(reg);
 }
@@ -81,7 +80,7 @@ void instr_add8bWithCarry(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
     unset_NFlag(reg);
     setCFlagIfAddOpGtThanFF(reg, sumValue);
     checkIfOpZeroAndSetZ(reg, (uint8_t)sumValue);
-    checkIfHasCarryAddAndSetH8b(reg, (*regToAdd & 0x0F) + (valueToAdd & 0x0F) + carry);
+    checkIfHasCarryAndSet8bWithCarry(reg, *regToAdd, valueToAdd, carry);
     *regToAdd = (uint8_t)sumValue;
     incrementPC(reg);
 }
@@ -92,7 +91,7 @@ void instr_sub8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
     uint8_t subrResult = *regToSubFrom - valueToSub;
 
     set_NFlag(reg);
-    checkIfHasCarrySubAndSetH8b(reg, (originalValue & 0x0F) - (valueToSub & 0x0F));
+    checkIfHasBorrowAndSet8b(reg, originalValue, valueToSub);
     setCFlagIfAddOpLtThan0(reg, subrResult);
 
     *regToSubFrom = subrResult;
@@ -108,7 +107,7 @@ void instr_sub8bWithCarry(Register *reg, uint8_t *regToSubFrom, uint8_t valueToS
     uint8_t subrResult = *regToSubFrom - valueToSub;
 
     set_NFlag(reg);
-    checkIfHasCarrySubAndSetH8b(reg, (originalValue & 0x0F) - (valueToSub & 0x0F) - carry);
+    checkIfHasBorrowAndSet8bWithCarry(reg, originalValue, valueToSub, carry);
     setCFlagIfAddOpLtThan0(reg, subrResult);
 
     *regToSubFrom = subrResult;
@@ -153,7 +152,7 @@ void instr_cp8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
     uint8_t subrResult = *regToSubFrom - valueToSub;
 
     set_NFlag(reg);
-    checkIfHasCarrySubAndSetH8b(reg, (originalValue & 0x0F) - (valueToSub & 0x0F));
+    checkIfHasBorrowAndSet8b(reg, originalValue, valueToSub);
     setCFlagIfAddOpLtThan0(reg, subrResult);
 
     checkIfOpZeroAndSetZ(reg, *regToSubFrom);

@@ -320,46 +320,35 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     {
         // DAA
         uint16_t a = reg->A;
-        uint8_t nFlagValue = get_NFlag(reg);
-        uint8_t hFlagValue = get_HFlag(reg);
-        uint8_t cFlagValue = get_CFlag(reg);
-        if (nFlagValue == 0)
+
+        if (!get_NFlag(reg))
         {
-            if (hFlagValue == 1 || (a & 0x0F) > 0x09)
+            if (get_CFlag(reg) || a > 0x99)
+            {
+                a += 0x60;
+                set_CFlag(reg);
+            }
+            if (get_HFlag(reg) || (a & 0x0F) > 0x09)
             {
                 a += 0x06;
             }
-
-            if (cFlagValue == 1 || a > 0x9F) // Note: check against the potentially corrected a
-            {
-                a += 0x60;
-            }
         }
         else
         {
-            if (hFlagValue == 1)
+            if (get_CFlag(reg))
+            {
+                a -= 0x60;
+                set_CFlag(reg);
+            }
+            if (get_HFlag(reg))
             {
                 a -= 0x06;
             }
-
-            if (cFlagValue == 1)
-            {
-                a -= 0x60;
-            }
-        }
-
-        if ((a & 0x100) != 0)
-        {
-            set_CFlag(reg);
-        }
-        else
-        {
-            unset_CFlag(reg);
         }
 
         reg->A = (uint8_t)a;
-        unset_HFlag(reg);
         checkIfOpZeroAndSetZ(reg, reg->A);
+        unset_HFlag(reg);
         incrementPC(reg);
         break;
     }

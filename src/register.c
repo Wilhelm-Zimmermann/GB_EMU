@@ -167,6 +167,18 @@ void setCFlagIfAddOpGtThanFFFF(Register *reg, uint32_t value)
     }
 }
 
+void checkIfHasBorrowAndSetC8b(Register *reg, uint8_t value1, uint8_t value2)
+{
+    if (value1 < value2)
+    {
+        set_CFlag(reg);
+    }
+    else
+    {
+        unset_CFlag(reg);
+    }
+}
+
 void setCFlagIfAddOpLtThan0(Register *reg, uint16_t value)
 {
     int16_t signedValue = (int16_t)value;
@@ -187,20 +199,20 @@ void incrementPC(Register *reg)
 
 uint8_t get_CFlag(Register *reg)
 {
-    return reg->F >> C_FLAG_BIT;
+    return (reg->F >> C_FLAG_BIT) & 1;
 }
 
 uint8_t get_ZFlag(Register *reg)
 {
-    return reg->F >> Z_FLAG_BIT;
+    return (reg->F >> Z_FLAG_BIT) & 1;
 }
 
 uint8_t get_NFlag(Register *reg)
 {
-    return reg->F >> N_FLAG_BIT;
+    return (reg->F >> N_FLAG_BIT) & 1;
 }
 
 uint8_t get_HFlag(Register *reg)
 {
-    return reg->F >> H_FLAG_BIT;
+    return (reg->F >> H_FLAG_BIT) & 1;
 }

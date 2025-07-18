@@ -2,22 +2,40 @@
 #include "./headers/register.h"
 #include "./headers/memory.h"
 
-// INC and DEC 8 bit instr
+// INC and DEC 8 bit instr - must check half carry before incrementing
 void instr_inc8b(Register *reg, uint8_t *value)
 {
+    if ((*value & 0x0F) == 0x0F)
+    {
+        set_HFlag(reg);
+    }
+    else
+    {
+        unset_HFlag(reg);
+    }
+
     (*value)++;
+
     unset_NFlag(reg);
+
     checkIfOpZeroAndSetZ(reg, *value);
-    checkIfHasCarryAndSet8b(reg, *value, *value + 1);
     incrementPC(reg);
 }
 
 void instr_dec8b(Register *reg, uint8_t *value)
 {
+    if ((*value & 0x0F) == 0x00)
+    {
+        set_HFlag(reg);
+    }
+    else
+    {
+        unset_HFlag(reg);
+    }
+
     (*value)--;
     set_NFlag(reg);
     checkIfOpZeroAndSetZ(reg, *value);
-    checkIfHasBorrowAndSet8b(reg, *value, *value - 1);
     incrementPC(reg);
 }
 
@@ -92,7 +110,8 @@ void instr_sub8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
 
     set_NFlag(reg);
     checkIfHasBorrowAndSet8b(reg, originalValue, valueToSub);
-    setCFlagIfAddOpLtThan0(reg, subrResult);
+    checkIfHasBorrowAndSetC8b(reg, originalValue, valueToSub);
+    // setCFlagIfAddOpLtThan0(reg, subrResult);
 
     *regToSubFrom = subrResult;
 
@@ -155,7 +174,15 @@ void instr_cp8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
     checkIfHasBorrowAndSet8b(reg, originalValue, valueToSub);
     setCFlagIfAddOpLtThan0(reg, subrResult);
 
-    checkIfOpZeroAndSetZ(reg, *regToSubFrom);
+    checkIfOpZeroAndSetZ(reg, subrResult);
+    if (originalValue < valueToSub)
+    {
+        set_CFlag(reg);
+    }
+    else
+    {
+        unset_CFlag(reg);
+    }
     incrementPC(reg);
 }
 

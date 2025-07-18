@@ -50,6 +50,7 @@ void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
     if (address == 0xFF02 && value == 0x81)
     {
         printf("%c", mem->ram[0xFF01]);
+        mem->ram[address] = 0;
         return;
     }
     mem->ram[address] = value;

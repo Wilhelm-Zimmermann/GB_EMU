@@ -5,7 +5,6 @@
 void writeCPULogs(Register *reg, Memory *mem, uint16_t pcAddr, uint8_t opcode)
 {
     FILE *filePointer;
-
     char *fileName = "../log.txt";
 
     filePointer = fopen(fileName, "a");
@@ -22,6 +21,11 @@ void writeCPULogs(Register *reg, Memory *mem, uint16_t pcAddr, uint8_t opcode)
     uint8_t part2 = memoryRead(mem, reg->PC + 1);
     uint8_t part3 = memoryRead(mem, reg->PC + 2);
     uint8_t part4 = memoryRead(mem, reg->PC + 3);
+
+    // char cFlag = get_CFlag(reg) ? 'C' : '-';
+    // char hFlag = get_HFlag(reg) ? 'H' : '-';
+    // char nFlag = get_NFlag(reg) ? 'N' : '-';
+    // char ZFlag = get_ZFlag(reg) ? 'Z' : '-';
 
     fprintf(filePointer, "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X PC:%04X PCMEM:%02X,%02X,%02X,%02X \n",
             reg->A,

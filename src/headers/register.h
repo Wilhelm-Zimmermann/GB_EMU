@@ -85,3 +85,4 @@ void setCFlagIfAddOpGtThanFF(Register *reg, uint16_t value);
 void setCFlagIfAddOpGtThanFFFF(Register *reg, uint32_t value);
 void setCFlagIfAddOpLtThan0(Register *reg, uint16_t value);
 void checkIfHasBorrowAndSetC8b(Register *reg, uint8_t value1, uint8_t value2);
+void checkIfHasBorrowAndSetC8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry);

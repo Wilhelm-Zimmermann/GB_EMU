@@ -49,11 +49,19 @@ int main(int argc, char *args[])
 #endif
 
 #ifndef DEBUG
-    loadRom(mem, "../ROMS/cpu_instrs.gb");
-    // loadRom(mem, "../ROMS/01-special.gb");
-    // loadRom(mem, "../ROMS/03-op sp,hl.gb");
+    // loadRom(mem, "../ROMS/cpu_instrs.gb");
+    // loadRom(mem, "../ROMS/01-special.gb"); // PASSED ROM -- PASSED DOCTOR
+    // loadRom(mem, "../ROMS/02-interrupts.gb");
+    // loadRom(mem, "../ROMS/03-op sp,hl.gb"); // PASSED ROM -- TEST
+    loadRom(mem, "../ROMS/04-op r,imm.gb");
+    // loadRom(mem, "../ROMS/05-op rp.gb");
+    // loadRom(mem, "../ROMS/06-ld r,r.gb");
+    // loadRom(mem, "../ROMS/07-jr,jp,call,ret,rst.gb");
+    // loadRom(mem, "../ROMS/08-misc instrs.gb");
+    // loadRom(mem, "../ROMS/09-op r,r.gb");
+    // loadRom(mem, "../ROMS/10-bit ops.gb");
+    // loadRom(mem, "../ROMS/11-op a,(hl).gb");
 #endif
-    printf("Program end successfully!!\n");
     initRegisters(reg);
     SDL_Event e;
     int quit = 0;
@@ -88,9 +96,8 @@ int main(int argc, char *args[])
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    free(mem);
+    freeMemory(mem);
     free(rom);
     free(reg);
-    // free(cpu);
     return 0;
 }

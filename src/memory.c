@@ -10,6 +10,7 @@ void initMemory(Memory *mem)
 #ifdef DEBUG
     printf("Allocating RAM...\n");
 #endif
+    // TODO: make mallocs safer
     mem->vRamSize = (1024 * 8);
     mem->ramSize = (1024 * 64);
     mem->ram = malloc(sizeof(uint8_t) * mem->ramSize);
@@ -20,6 +21,13 @@ void initMemory(Memory *mem)
         fprintf(stderr, "RAM could not be allocated!!");
         return;
     }
+}
+
+void freeMemory(Memory *mem)
+{
+    free(mem->ram);
+    free(mem->vRam);
+    free(mem);
 }
 
 uint8_t memoryRead(Memory *mem, uint16_t address)

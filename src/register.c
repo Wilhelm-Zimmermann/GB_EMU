@@ -179,6 +179,20 @@ void checkIfHasBorrowAndSetC8b(Register *reg, uint8_t value1, uint8_t value2)
     }
 }
 
+void checkIfHasBorrowAndSetC8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
+{
+    int16_t result = (value1 & 0x0F) - (value2 & 0x0F) - carry;
+
+    if (result < 0)
+    {
+        set_HFlag(reg);
+    }
+    else
+    {
+        unset_HFlag(reg);
+    }
+}
+
 void setCFlagIfAddOpLtThan0(Register *reg, uint16_t value)
 {
     int16_t signedValue = (int16_t)value;

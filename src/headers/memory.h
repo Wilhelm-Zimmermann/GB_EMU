@@ -17,3 +17,5 @@ void memoryWrite(Memory *mem, uint16_t address, uint8_t value);
 
 void stack_push16(Register *reg, Memory *mem, uint16_t value);
 uint16_t stack_pop16(Register *reg, Memory *mem);
+
+void freeMemory(Memory *mem);

@@ -16,11 +16,11 @@ void printSdlError(const char *message)
 
 int main(int argc, char *args[])
 {
-    // if (argc < 2)
-    // {
-    //     printf("Usage: %s <ROM file>\n", args[0]);
-    //     return 1;
-    // }
+    if (argc < 2)
+    {
+        printf("Usage: %s <ROM file>\n", args[0]);
+        return 1;
+    }
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -43,17 +43,9 @@ int main(int argc, char *args[])
     SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160, 144);
 
     initMemory(mem);
-    
-#ifdef DEBUG
-    loadRom(mem, "./ROMS/cpu_instrs.gb");
-#endif
-
-#ifndef DEBUG
-    loadRom(mem, "../ROMS/cpu_instrs.gb");
-    // loadRom(mem, "../ROMS/10-bit ops.gb");
-#endif
-    printf("Program end successfully!!\n");
     initRegisters(reg);
+
+    loadRom(mem, args[1]);
     SDL_Event e;
     int quit = 0;
     while (!quit)
@@ -87,9 +79,8 @@ int main(int argc, char *args[])
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    free(mem);
+    freeMemory(mem);
     free(rom);
     free(reg);
-    // free(cpu);
     return 0;
 }

@@ -2,41 +2,48 @@
 #include "./headers/prefixedInstructions.h"
 #include "./headers/opcodes.h"
 
-void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
     case 0x00:
         // NOP operation
         incrementPC(reg);
+        return 4;
         break;
     case 0x01:
     {
         // LD BC, n16
         instr_ldNxt16bAddrInReg(reg, mem, &reg->BC);
+        return 12;
         break;
     }
     case 0x02:
         // LD [BC], A
         memoryWrite(mem, reg->BC, reg->A);
         incrementPC(reg);
+        return 8;
         break;
     case 0x03:
         // INC BC
         reg->BC++;
         incrementPC(reg);
+        return 8;
         break;
     case 0x04:
         // INC B
         instr_inc8b(reg, &reg->B);
+        return 4;
         break;
     case 0x05:
         // DEC B
         instr_dec8b(reg, &reg->B);
+        return 4;
         break;
     case 0x06:
         // LD B, n8
         instr_ldNxt8bAddrInReg(reg, mem, &reg->B);
+        return 8;
         break;
     case 0x07:
         // RLCA
@@ -52,8 +59,8 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         {
             unset_CFlag(reg);
         }
-
         incrementPC(reg);
+        return 4;
         break;
     case 0x08:
     {
@@ -67,35 +74,42 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
         memoryWrite(mem, address, spValue & 0xFF);
         memoryWrite(mem, address + 1, spValue >> 8);
         reg->PC += 3;
+        return 20;
         break;
     }
     case 0x09:
         // ADD HL, BC
         instr_add16b(reg, &reg->HL, reg->BC);
+        return 8;
         break;
     case 0x0A:
     {
         // LD A, [BC]
         instr_ldAddr8bInReg(reg, mem, reg->BC, &reg->A);
+        return 8;
         break;
     }
     case 0x0B:
         // DEC BC
         reg->BC--;
         incrementPC(reg);
+        return 8;
         break;
     case 0x0C:
         // INC C
         instr_inc8b(reg, &reg->C);
+        return 4;
         break;
     case 0x0D:
         // DEC C
         instr_dec8b(reg, &reg->C);
+        return 4;
         break;
     case 0x0E:
     {
         // LD C, n8
         instr_ldNxt8bAddrInReg(reg, mem, &reg->C);
+        return 8;
         break;
     }
     case 0x0F:
@@ -109,6 +123,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
             else
                 unset_CFlag(reg);
             incrementPC(reg);
+            return 4;
         }
         break;
     default:
@@ -117,7 +132,7 @@ void opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -125,11 +140,13 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
         // STOP n8 - IDLE EMU
         // Implement this after
         reg->PC += 2;
+        return 4;
         break;
     case 0x11:
     {
         // LD DE, n16
         instr_ldNxt16bAddrInReg(reg, mem, &reg->DE);
+        return 12;
         break;
     }
     case 0x12:
@@ -137,6 +154,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
         // LD [DE], A
         memoryWrite(mem, reg->DE, reg->A);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x13:
@@ -144,24 +162,28 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
         // INC DE
         reg->DE++;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x14:
     {
         // INC D
         instr_inc8b(reg, &reg->D);
+        return 4;
         break;
     }
     case 0x15:
     {
         // DEC D
         instr_dec8b(reg, &reg->D);
+        return 4;
         break;
     }
     case 0x16:
     {
         // LD D, n8
         instr_ldNxt8bAddrInReg(reg, mem, &reg->D);
+        return 8;
         break;
     }
     case 0x17:
@@ -183,6 +205,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
             unset_CFlag(reg);
         }
         incrementPC(reg);
+        return 4;
         break;
     }
     case 0x18:
@@ -192,18 +215,21 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
         int8_t signedValue = (int8_t)unsignedValue;
         uint16_t newPCAddr = reg->PC + 2 + signedValue;
         reg->PC = newPCAddr;
+        return 12;
         break;
     }
     case 0x19:
     {
         // ADD HL, DE
         instr_add16b(reg, &reg->HL, reg->DE);
+        return 8;
         break;
     }
     case 0x1A:
     {
         // LD A, [DE]
         instr_ldAddr8bInReg(reg, mem, reg->DE, &reg->A);
+        return 8;
         break;
     }
     case 0x1B:
@@ -211,24 +237,28 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
         // DEC DE
         reg->DE--;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x1C:
     {
         // INC E
         instr_inc8b(reg, &reg->E);
+        return 4;
         break;
     }
     case 0x1D:
     {
         // DEC E
         instr_dec8b(reg, &reg->E);
+        return 4;
         break;
     }
     case 0x1E:
     {
         // LD E, n8
         instr_ldNxt8bAddrInReg(reg, mem, &reg->E);
+        return 8;
         break;
     }
     case 0x1F:
@@ -248,6 +278,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
             unset_CFlag(reg);
         }
         incrementPC(reg);
+        return 4;
         break;
     }
     default:
@@ -256,7 +287,7 @@ void opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -270,10 +301,12 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
             int8_t signedValue = (int8_t)unsignedValue;
             uint16_t newPCAddr = reg->PC + 2 + signedValue;
             reg->PC = newPCAddr;
+            return 12;
         }
         else
         {
             reg->PC += 2;
+            return 8;
         }
         break;
     }
@@ -281,6 +314,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD HL, n16
         instr_ldNxt16bAddrInReg(reg, mem, &reg->HL);
+        return 12;
         break;
     }
     case 0x22:
@@ -289,6 +323,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         memoryWrite(mem, reg->HL, reg->A);
         reg->HL++;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x23:
@@ -296,24 +331,28 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         // INC HL
         reg->HL++;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x24:
     {
         // INC H
         instr_inc8b(reg, &reg->H);
+        return 4;
         break;
     }
     case 0x25:
     {
         // DEC H
         instr_dec8b(reg, &reg->H);
+        return 4;
         break;
     }
     case 0x26:
     {
         // LD H, n8
         instr_ldNxt8bAddrInReg(reg, mem, &reg->H);
+        return 8;
         break;
     }
     case 0x27:
@@ -350,6 +389,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         checkIfOpZeroAndSetZ(reg, reg->A);
         unset_HFlag(reg);
         incrementPC(reg);
+        return 4;
         break;
     }
     case 0x28:
@@ -362,10 +402,12 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
             int8_t signedValue = (int8_t)unsignedValue;
             uint16_t newPCAddr = reg->PC + 2 + signedValue;
             reg->PC = newPCAddr;
+            return 12;
         }
         else
         {
             reg->PC += 2;
+            return 8;
         }
         break;
     }
@@ -373,6 +415,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD HL, HL
         instr_add16b(reg, &reg->HL, reg->HL);
+        return 8;
         break;
     }
     case 0x2A:
@@ -380,6 +423,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         // LD A, [HL+]
         instr_ldAddr8bInReg(reg, mem, reg->HL, &reg->A);
         reg->HL++;
+        return 8;
         break;
     }
     case 0x2B:
@@ -387,24 +431,28 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         // DEC HL
         reg->HL--;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x2C:
     {
         // INC L
         instr_inc8b(reg, &reg->L);
+        return 4;
         break;
     }
     case 0x2D:
     {
         // DEC L
         instr_dec8b(reg, &reg->L);
+        return 4;
         break;
     }
     case 0x2E:
     {
         // LD L, n8
         instr_ldNxt8bAddrInReg(reg, mem, &reg->L);
+        return 8;
         break;
     }
     case 0x2F:
@@ -414,6 +462,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         set_NFlag(reg);
         set_HFlag(reg);
         incrementPC(reg);
+        return 4;
         break;
     }
     default:
@@ -422,7 +471,7 @@ void opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -436,10 +485,12 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
             int8_t signedValue = (int8_t)unsignedValue;
             uint16_t newPCAddr = reg->PC + 2 + signedValue;
             reg->PC = newPCAddr;
+            return 12;
         }
         else
         {
             reg->PC += 2;
+            return 8;
         }
         break;
     }
@@ -447,6 +498,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD SP, n16
         instr_ldNxt16bAddrInReg(reg, mem, &reg->SP);
+        return 12;
         break;
     }
     case 0x32:
@@ -455,6 +507,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         memoryWrite(mem, reg->HL, reg->A);
         reg->HL--;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x33:
@@ -462,6 +515,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         // INC SP
         reg->SP++;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x34:
@@ -470,6 +524,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_inc8b(reg, &memValue);
         memoryWrite(mem, reg->HL, memValue);
+        return 12;
         break;
     }
     case 0x35:
@@ -478,6 +533,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_dec8b(reg, &memValue);
         memoryWrite(mem, reg->HL, memValue);
+        return 12;
         break;
     }
     case 0x36:
@@ -486,6 +542,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memValue = memoryRead(mem, reg->PC + 1);
         memoryWrite(mem, reg->HL, memValue);
         reg->PC += 2;
+        return 12;
         break;
     }
     case 0x37:
@@ -495,6 +552,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         unset_HFlag(reg);
         unset_NFlag(reg);
         incrementPC(reg);
+        return 4;
         break;
     }
     case 0x38:
@@ -507,10 +565,12 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
             int8_t signedValue = (int8_t)unsignedValue;
             uint16_t newPCAddr = reg->PC + 2 + signedValue;
             reg->PC = newPCAddr;
+            return 12;
         }
         else
         {
             reg->PC += 2;
+            return 8;
         }
         break;
     }
@@ -518,6 +578,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD HL, SP
         instr_add16b(reg, &reg->HL, reg->SP);
+        return 8;
         break;
     }
     case 0x3A:
@@ -525,6 +586,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         // LD A, [HL-]
         instr_ldAddr8bInReg(reg, mem, reg->HL, &reg->A);
         reg->HL--;
+        return 8;
         break;
     }
     case 0x3B:
@@ -532,24 +594,28 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         // DEC SP
         reg->SP--;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x3C:
     {
         // INC A
         instr_inc8b(reg, &reg->A);
+        return 4;
         break;
     }
     case 0x3D:
     {
         // DEC A
         instr_dec8b(reg, &reg->A);
+        return 4;
         break;
     }
     case 0x3E:
     {
         // LD A, n8
         instr_ldNxt8bAddrInReg(reg, mem, &reg->A);
+        return 8;
         break;
     }
     case 0x3F:
@@ -567,6 +633,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
             set_CFlag(reg);
         }
         incrementPC(reg);
+        return 4;
         break;
     }
     default:
@@ -575,7 +642,7 @@ void opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -583,36 +650,42 @@ void opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD B, B
         instr_ld8bIn8b(reg, &reg->B, &reg->B);
+        return 4;
         break;
     }
     case 0x41:
     {
         // LD B, C
         instr_ld8bIn8b(reg, &reg->B, &reg->C);
+        return 4;
         break;
     }
     case 0x42:
     {
         // LD B, D
         instr_ld8bIn8b(reg, &reg->B, &reg->D);
+        return 4;
         break;
     }
     case 0x43:
     {
         // LD B, E
         instr_ld8bIn8b(reg, &reg->B, &reg->E);
+        return 4;
         break;
     }
     case 0x44:
     {
         // LD B, H
         instr_ld8bIn8b(reg, &reg->B, &reg->H);
+        return 4;
         break;
     }
     case 0x45:
     {
         // LD B, L
         instr_ld8bIn8b(reg, &reg->B, &reg->L);
+        return 4;
         break;
     }
     case 0x46:
@@ -620,48 +693,56 @@ void opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
         // LD B, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->B, &memValue);
+        return 8;
         break;
     }
     case 0x47:
     {
         // LD B, A
         instr_ld8bIn8b(reg, &reg->B, &reg->A);
+        return 4;
         break;
     }
     case 0x48:
     {
         // LD C, B
         instr_ld8bIn8b(reg, &reg->C, &reg->B);
+        return 4;
         break;
     }
     case 0x49:
     {
         // LD C, C
         instr_ld8bIn8b(reg, &reg->C, &reg->C);
+        return 4;
         break;
     }
     case 0x4A:
     {
         // LD C, D
         instr_ld8bIn8b(reg, &reg->C, &reg->D);
+        return 4;
         break;
     }
     case 0x4B:
     {
         // LD C, E
         instr_ld8bIn8b(reg, &reg->C, &reg->E);
+        return 4;
         break;
     }
     case 0x4C:
     {
         // LD C, H
         instr_ld8bIn8b(reg, &reg->C, &reg->H);
+        return 4;
         break;
     }
     case 0x4D:
     {
         // LD C, L
         instr_ld8bIn8b(reg, &reg->C, &reg->L);
+        return 4;
         break;
     }
     case 0x4E:
@@ -669,12 +750,14 @@ void opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
         // LD C, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->C, &memValue);
+        return 8;
         break;
     }
     case 0x4F:
     {
         // LD C, A
         instr_ld8bIn8b(reg, &reg->C, &reg->A);
+        return 4;
         break;
     }
     default:
@@ -683,7 +766,7 @@ void opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -691,36 +774,42 @@ void opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD D, B
         instr_ld8bIn8b(reg, &reg->D, &reg->B);
+        return 4;
         break;
     }
     case 0x51:
     {
         // LD D, C
         instr_ld8bIn8b(reg, &reg->D, &reg->C);
+        return 4;
         break;
     }
     case 0x52:
     {
         // LD D, D
         instr_ld8bIn8b(reg, &reg->D, &reg->D);
+        return 4;
         break;
     }
     case 0x53:
     {
         // LD D, E
         instr_ld8bIn8b(reg, &reg->D, &reg->E);
+        return 4;
         break;
     }
     case 0x54:
     {
         // LD D, H
         instr_ld8bIn8b(reg, &reg->D, &reg->H);
+        return 4;
         break;
     }
     case 0x55:
     {
         // LD D, L
         instr_ld8bIn8b(reg, &reg->D, &reg->L);
+        return 4;
         break;
     }
     case 0x56:
@@ -728,48 +817,56 @@ void opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
         // LD D, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->D, &memValue);
+        return 8;
         break;
     }
     case 0x57:
     {
         // LD D, A
         instr_ld8bIn8b(reg, &reg->D, &reg->A);
+        return 4;
         break;
     }
     case 0x58:
     {
         // LD E, B
         instr_ld8bIn8b(reg, &reg->E, &reg->B);
+        return 4;
         break;
     }
     case 0x59:
     {
         // LD E, C
         instr_ld8bIn8b(reg, &reg->E, &reg->C);
+        return 4;
         break;
     }
     case 0x5A:
     {
         // LD E, D
         instr_ld8bIn8b(reg, &reg->E, &reg->D);
+        return 4;
         break;
     }
     case 0x5B:
     {
         // LD E, E
         instr_ld8bIn8b(reg, &reg->E, &reg->E);
+        return 4;
         break;
     }
     case 0x5C:
     {
         // LD E, H
         instr_ld8bIn8b(reg, &reg->E, &reg->H);
+        return 4;
         break;
     }
     case 0x5D:
     {
         // LD E, L
         instr_ld8bIn8b(reg, &reg->E, &reg->L);
+        return 4;
         break;
     }
     case 0x5E:
@@ -777,12 +874,14 @@ void opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
         // LD E, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->E, &memValue);
+        return 8;
         break;
     }
     case 0x5F:
     {
         // LD E, A
         instr_ld8bIn8b(reg, &reg->E, &reg->A);
+        return 4;
         break;
     }
     default:
@@ -791,7 +890,7 @@ void opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -799,36 +898,42 @@ void opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD H, B
         instr_ld8bIn8b(reg, &reg->H, &reg->B);
+        return 4;
         break;
     }
     case 0x61:
     {
         // LD H, C
         instr_ld8bIn8b(reg, &reg->H, &reg->C);
+        return 4;
         break;
     }
     case 0x62:
     {
         // LD H, D
         instr_ld8bIn8b(reg, &reg->H, &reg->D);
+        return 4;
         break;
     }
     case 0x63:
     {
         // LD H, E
         instr_ld8bIn8b(reg, &reg->H, &reg->E);
+        return 4;
         break;
     }
     case 0x64:
     {
         // LD H, H
         instr_ld8bIn8b(reg, &reg->H, &reg->H);
+        return 4;
         break;
     }
     case 0x65:
     {
         // LD H, L
         instr_ld8bIn8b(reg, &reg->H, &reg->L);
+        return 4;
         break;
     }
     case 0x66:
@@ -836,48 +941,56 @@ void opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
         // LD H, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->H, &memValue);
+        return 8;
         break;
     }
     case 0x67:
     {
         // LD H, A
         instr_ld8bIn8b(reg, &reg->H, &reg->A);
+        return 4;
         break;
     }
     case 0x68:
     {
         // LD L, B
         instr_ld8bIn8b(reg, &reg->L, &reg->B);
+        return 4;
         break;
     }
     case 0x69:
     {
         // LD L, C
         instr_ld8bIn8b(reg, &reg->L, &reg->C);
+        return 4;
         break;
     }
     case 0x6A:
     {
         // LD L, D
         instr_ld8bIn8b(reg, &reg->L, &reg->D);
+        return 4;
         break;
     }
     case 0x6B:
     {
         // LD L, E
         instr_ld8bIn8b(reg, &reg->L, &reg->E);
+        return 4;
         break;
     }
     case 0x6C:
     {
         // LD L, H
         instr_ld8bIn8b(reg, &reg->L, &reg->H);
+        return 4;
         break;
     }
     case 0x6D:
     {
         // LD L, L
         instr_ld8bIn8b(reg, &reg->L, &reg->L);
+        return 4;
         break;
     }
     case 0x6E:
@@ -885,12 +998,14 @@ void opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
         // LD L, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->L, &memValue);
+        return 8;
         break;
     }
     case 0x6F:
     {
         // LD L, A
         instr_ld8bIn8b(reg, &reg->L, &reg->A);
+        return 4;
         break;
     }
     default:
@@ -899,7 +1014,7 @@ void opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -908,6 +1023,7 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
         // LD [HL], B
         memoryWrite(mem, reg->HL, reg->B);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x71:
@@ -915,6 +1031,7 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
         // LD [HL], C
         memoryWrite(mem, reg->HL, reg->C);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x72:
@@ -922,6 +1039,7 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
         // LD [HL], D
         memoryWrite(mem, reg->HL, reg->D);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x73:
@@ -929,6 +1047,7 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
         // LD [HL], E
         memoryWrite(mem, reg->HL, reg->E);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x74:
@@ -936,6 +1055,7 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
         // LD [HL], H
         memoryWrite(mem, reg->HL, reg->H);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x75:
@@ -943,12 +1063,14 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
         // LD [HL], L
         memoryWrite(mem, reg->HL, reg->L);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x76:
     {
         // HALT - Only CPU STOPS - IDLE
         incrementPC(reg);
+        return 4;
         break;
     }
     case 0x77:
@@ -956,42 +1078,49 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
         // LD [HL], A
         memoryWrite(mem, reg->HL, reg->A);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0x78:
     {
         // LD A, B
         instr_ld8bIn8b(reg, &reg->A, &reg->B);
+        return 4;
         break;
     }
     case 0x79:
     {
         // LD A, C
         instr_ld8bIn8b(reg, &reg->A, &reg->C);
+        return 4;
         break;
     }
     case 0x7A:
     {
         // LD A, D
         instr_ld8bIn8b(reg, &reg->A, &reg->D);
+        return 4;
         break;
     }
     case 0x7B:
     {
         // LD A, E
         instr_ld8bIn8b(reg, &reg->A, &reg->E);
+        return 4;
         break;
     }
     case 0x7C:
     {
         // LD A, H
         instr_ld8bIn8b(reg, &reg->A, &reg->H);
+        return 4;
         break;
     }
     case 0x7D:
     {
         // LD A, L
         instr_ld8bIn8b(reg, &reg->A, &reg->L);
+        return 4;
         break;
     }
     case 0x7E:
@@ -999,12 +1128,14 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
         // LD A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->A, &memValue);
+        return 8;
         break;
     }
     case 0x7F:
     {
         // LD A, A
         instr_ld8bIn8b(reg, &reg->A, &reg->A);
+        return 4;
         break;
     }
     default:
@@ -1013,7 +1144,7 @@ void opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -1021,36 +1152,42 @@ void opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD A, B
         instr_add8b(reg, &reg->A, reg->B);
+        return 4;
         break;
     }
     case 0x81:
     {
         // ADD A, C
         instr_add8b(reg, &reg->A, reg->C);
+        return 4;
         break;
     }
     case 0x82:
     {
         // ADD A, D
         instr_add8b(reg, &reg->A, reg->D);
+        return 4;
         break;
     }
     case 0x83:
     {
         // ADD A, E
         instr_add8b(reg, &reg->A, reg->E);
+        return 4;
         break;
     }
     case 0x84:
     {
         // ADD A, H
         instr_add8b(reg, &reg->A, reg->H);
+        return 4;
         break;
     }
     case 0x85:
     {
         // ADD A, L
         instr_add8b(reg, &reg->A, reg->L);
+        return 4;
         break;
     }
     case 0x86:
@@ -1058,48 +1195,56 @@ void opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
         // ADD A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_add8b(reg, &reg->A, memValue);
+        return 8;
         break;
     }
     case 0x87:
     {
         // ADD A, A
         instr_add8b(reg, &reg->A, reg->A);
+        return 4;
         break;
     }
     case 0x88:
     {
         // ADC A, B
         instr_add8bWithCarry(reg, &reg->A, reg->B);
+        return 4;
         break;
     }
     case 0x89:
     {
         // ADC A, C
         instr_add8bWithCarry(reg, &reg->A, reg->C);
+        return 4;
         break;
     }
     case 0x8A:
     {
         // ADC A, D
         instr_add8bWithCarry(reg, &reg->A, reg->D);
+        return 4;
         break;
     }
     case 0x8B:
     {
         // ADC A, E
         instr_add8bWithCarry(reg, &reg->A, reg->E);
+        return 4;
         break;
     }
     case 0x8C:
     {
         // ADC A, H
         instr_add8bWithCarry(reg, &reg->A, reg->H);
+        return 4;
         break;
     }
     case 0x8D:
     {
         // ADC A, L
         instr_add8bWithCarry(reg, &reg->A, reg->L);
+        return 4;
         break;
     }
     case 0x8E:
@@ -1107,12 +1252,14 @@ void opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
         // ADC A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_add8bWithCarry(reg, &reg->A, memValue);
+        return 8;
         break;
     }
     case 0x8F:
     {
         // ADC A, A
         instr_add8bWithCarry(reg, &reg->A, reg->A);
+        return 4;
         break;
     }
     default:
@@ -1121,7 +1268,7 @@ void opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -1129,36 +1276,42 @@ void opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SUB A, B
         instr_sub8b(reg, &reg->A, reg->B);
+        return 4;
         break;
     }
     case 0x91:
     {
         // SUB A, C
         instr_sub8b(reg, &reg->A, reg->C);
+        return 4;
         break;
     }
     case 0x92:
     {
         // SUB A, D
         instr_sub8b(reg, &reg->A, reg->D);
+        return 4;
         break;
     }
     case 0x93:
     {
         // SUB A, E
         instr_sub8b(reg, &reg->A, reg->E);
+        return 4;
         break;
     }
     case 0x94:
     {
         // SUB A, H
         instr_sub8b(reg, &reg->A, reg->H);
+        return 4;
         break;
     }
     case 0x95:
     {
         // SUB A, L
         instr_sub8b(reg, &reg->A, reg->L);
+        return 4;
         break;
     }
     case 0x96:
@@ -1166,48 +1319,56 @@ void opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
         // SUB A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_sub8b(reg, &reg->A, memValue);
+        return 8;
         break;
     }
     case 0x97:
     {
         // SUB A, A
         instr_sub8b(reg, &reg->A, reg->A);
+        return 4;
         break;
     }
     case 0x98:
     {
         // SBC A, B
         instr_sub8bWithCarry(reg, &reg->A, reg->B);
+        return 4;
         break;
     }
     case 0x99:
     {
         // SBC A, C
         instr_sub8bWithCarry(reg, &reg->A, reg->C);
+        return 4;
         break;
     }
     case 0x9A:
     {
         // SBC A, D
         instr_sub8bWithCarry(reg, &reg->A, reg->D);
+        return 4;
         break;
     }
     case 0x9B:
     {
         // SBC A, E
         instr_sub8bWithCarry(reg, &reg->A, reg->E);
+        return 4;
         break;
     }
     case 0x9C:
     {
         // SBC A, H
         instr_sub8bWithCarry(reg, &reg->A, reg->H);
+        return 4;
         break;
     }
     case 0x9D:
     {
         // SBC A, L
         instr_sub8bWithCarry(reg, &reg->A, reg->L);
+        return 4;
         break;
     }
     case 0x9E:
@@ -1215,12 +1376,14 @@ void opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
         // SBC A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_sub8bWithCarry(reg, &reg->A, memValue);
+        return 8;
         break;
     }
     case 0x9F:
     {
         // SBC A, A
         instr_sub8bWithCarry(reg, &reg->A, reg->A);
+        return 4;
         break;
     }
     default:
@@ -1229,7 +1392,7 @@ void opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -1237,36 +1400,42 @@ void opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // AND A, B
         instr_and(reg, &reg->A, reg->B);
+        return 4;
         break;
     }
     case 0xA1:
     {
         // AND A, C
         instr_and(reg, &reg->A, reg->C);
+        return 4;
         break;
     }
     case 0xA2:
     {
         // AND A, D
         instr_and(reg, &reg->A, reg->D);
+        return 4;
         break;
     }
     case 0xA3:
     {
         // AND A, E
         instr_and(reg, &reg->A, reg->E);
+        return 4;
         break;
     }
     case 0xA4:
     {
         // AND A, H
         instr_and(reg, &reg->A, reg->H);
+        return 4;
         break;
     }
     case 0xA5:
     {
         // AND A, L
         instr_and(reg, &reg->A, reg->L);
+        return 4;
         break;
     }
     case 0xA6:
@@ -1274,48 +1443,56 @@ void opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
         // AND A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_and(reg, &reg->A, memValue);
+        return 8;
         break;
     }
     case 0xA7:
     {
         // AND A, A
         instr_and(reg, &reg->A, reg->A);
+        return 4;
         break;
     }
     case 0xA8:
     {
         // XOR A, B
         instr_xor(reg, &reg->A, reg->B);
+        return 4;
         break;
     }
     case 0xA9:
     {
         // XOR A, C
         instr_xor(reg, &reg->A, reg->C);
+        return 4;
         break;
     }
     case 0xAA:
     {
         // XOR A, D
         instr_xor(reg, &reg->A, reg->D);
+        return 4;
         break;
     }
     case 0xAB:
     {
         // XOR A, E
         instr_xor(reg, &reg->A, reg->E);
+        return 4;
         break;
     }
     case 0xAC:
     {
         // XOR A, H
         instr_xor(reg, &reg->A, reg->H);
+        return 4;
         break;
     }
     case 0xAD:
     {
         // XOR A, L
         instr_xor(reg, &reg->A, reg->L);
+        return 4;
         break;
     }
     case 0xAE:
@@ -1323,12 +1500,14 @@ void opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
         // XOR A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_xor(reg, &reg->A, memValue);
+        return 8;
         break;
     }
     case 0xAF:
     {
         // XOR A, A
         instr_xor(reg, &reg->A, reg->A);
+        return 4;
         break;
     }
     default:
@@ -1337,7 +1516,7 @@ void opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -1345,36 +1524,42 @@ void opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // OR A, B
         instr_or(reg, &reg->A, reg->B);
+        return 4;
         break;
     }
     case 0xB1:
     {
         // OR A, C
         instr_or(reg, &reg->A, reg->C);
+        return 4;
         break;
     }
     case 0xB2:
     {
         // OR A, D
         instr_or(reg, &reg->A, reg->D);
+        return 4;
         break;
     }
     case 0xB3:
     {
         // OR A, E
         instr_or(reg, &reg->A, reg->E);
+        return 4;
         break;
     }
     case 0xB4:
     {
         // OR A, H
         instr_or(reg, &reg->A, reg->H);
+        return 4;
         break;
     }
     case 0xB5:
     {
         // OR A, L
         instr_or(reg, &reg->A, reg->L);
+        return 4;
         break;
     }
     case 0xB6:
@@ -1382,48 +1567,56 @@ void opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
         // OR A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_or(reg, &reg->A, memValue);
+        return 8;
         break;
     }
     case 0xB7:
     {
         // OR A, A
         instr_or(reg, &reg->A, reg->A);
+        return 4;
         break;
     }
     case 0xB8:
     {
         // CP A, B
         instr_cp8b(reg, &reg->A, reg->B);
+        return 4;
         break;
     }
     case 0xB9:
     {
         // CP A, C
         instr_cp8b(reg, &reg->A, reg->C);
+        return 4;
         break;
     }
     case 0xBA:
     {
         // CP A, D
         instr_cp8b(reg, &reg->A, reg->D);
+        return 4;
         break;
     }
     case 0xBB:
     {
         // CP A, E
         instr_cp8b(reg, &reg->A, reg->E);
+        return 4;
         break;
     }
     case 0xBC:
     {
         // CP A, H
         instr_cp8b(reg, &reg->A, reg->H);
+        return 4;
         break;
     }
     case 0xBD:
     {
         // CP A, L
         instr_cp8b(reg, &reg->A, reg->L);
+        return 4;
         break;
     }
     case 0xBE:
@@ -1431,6 +1624,7 @@ void opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
         // CP A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_cp8b(reg, &reg->A, memValue);
+        return 8;
         break;
     }
     case 0xBF:
@@ -1441,6 +1635,7 @@ void opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
         set_NFlag(reg);
         unset_HFlag(reg);
         unset_CFlag(reg);
+        return 4;
         break;
     }
     default:
@@ -1449,7 +1644,7 @@ void opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -1460,10 +1655,12 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         if (zFlagValue == 0)
         {
             instr_ret(reg, mem);
+            return 20;
         }
         else
         {
             incrementPC(reg);
+            return 8;
         }
         break;
     }
@@ -1473,6 +1670,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint16_t stackValue = stack_pop16(reg, mem);
         reg->BC = stackValue;
         incrementPC(reg);
+        return 12;
         break;
     }
     case 0xC2:
@@ -1482,10 +1680,12 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         if (zFlagValue == 0)
         {
             instr_jpNxt16(reg, mem);
+            return 16;
         }
         else
         {
             reg->PC += 3;
+            return 12;
         }
         break;
     }
@@ -1493,6 +1693,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     {
         // JP a16
         instr_jpNxt16(reg, mem);
+        return 16;
         break;
     }
     case 0xC4:
@@ -1502,10 +1703,12 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         if (zFlagValue == 0)
         {
             instr_callAddr16(reg, mem);
+            return 24;
         }
         else
         {
             reg->PC += 3;
+            return 12;
         }
         break;
     }
@@ -1514,6 +1717,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         // PUSH BC
         stack_push16(reg, mem, reg->BC);
         incrementPC(reg);
+        return 16;
         break;
     }
     case 0xC6:
@@ -1522,12 +1726,14 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_add8b(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xC7:
     {
         // RST $00
         instr_rst(reg, mem, 0x0000);
+        return 16;
         break;
     }
     case 0xC8:
@@ -1537,10 +1743,12 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         if (zFlagValue == 1)
         {
             instr_ret(reg, mem);
+            return 20;
         }
         else
         {
             incrementPC(reg);
+            return 8;
         }
         break;
     }
@@ -1548,6 +1756,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     {
         // RET
         instr_ret(reg, mem);
+        return 16;
         break;
     }
     case 0xCA:
@@ -1557,10 +1766,12 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         if (zFlagValue == 1)
         {
             instr_jpNxt16(reg, mem);
+            return 16;
         }
         else
         {
             reg->PC += 3;
+            return 12;
         }
         break;
     }
@@ -1568,10 +1779,9 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     {
         // PREFIX
         uint8_t cb_opcode = memoryRead(mem, reg->PC + 1);
-
-        execPrefix(reg, mem, cb_opcode);
-
+        uint8_t tState = execPrefix(reg, mem, cb_opcode);
         reg->PC += 2;
+        return tState;
         break;
     }
     case 0xCC:
@@ -1581,10 +1791,12 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         if (zFlagValue == 1)
         {
             instr_callAddr16(reg, mem);
+            return 24;
         }
         else
         {
             reg->PC += 3;
+            return 12;
         }
         break;
     }
@@ -1592,6 +1804,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     {
         // CALL a16
         instr_callAddr16(reg, mem);
+        return 24;
         break;
     }
     case 0xCE:
@@ -1600,12 +1813,14 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_add8bWithCarry(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xCF:
     {
         // RST $08
         instr_rst(reg, mem, 0x0008);
+        return 16;
         break;
     }
     default:
@@ -1614,7 +1829,7 @@ void opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -1625,10 +1840,12 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         if (cFlagValue == 0)
         {
             instr_ret(reg, mem);
+            return 20;
         }
         else
         {
             incrementPC(reg);
+            return 8;
         }
         break;
     }
@@ -1638,6 +1855,7 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         uint16_t stackValue = stack_pop16(reg, mem);
         reg->DE = stackValue;
         incrementPC(reg);
+        return 12;
         break;
     }
     case 0xD2:
@@ -1647,10 +1865,12 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         if (cFlagValue == 0)
         {
             instr_jpNxt16(reg, mem);
+            return 16;
         }
         else
         {
             reg->PC += 3;
+            return 12;
         }
         break;
     }
@@ -1667,10 +1887,12 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         if (cFlagValue == 0)
         {
             instr_callAddr16(reg, mem);
+            return 24;
         }
         else
         {
             reg->PC += 3;
+            return 12;
         }
         break;
     }
@@ -1679,6 +1901,7 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         // PUSH DE
         stack_push16(reg, mem, reg->DE);
         incrementPC(reg);
+        return 16;
         break;
     }
     case 0xD6:
@@ -1687,12 +1910,14 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_sub8b(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xD7:
     {
         // RST $10
         instr_rst(reg, mem, 0x0010);
+        return 16;
         break;
     }
     case 0xD8:
@@ -1702,10 +1927,12 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         if (cFlagValue == 1)
         {
             instr_ret(reg, mem);
+            return 20;
         }
         else
         {
             incrementPC(reg);
+            return 8;
         }
         break;
     }
@@ -1713,6 +1940,7 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
     {
         // RETI -- TODO: revise when implementing the Interrupt
         instr_ret(reg, mem);
+        return 16;
         break;
     }
     case 0xDA:
@@ -1722,10 +1950,12 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         if (cFlagValue == 1)
         {
             instr_jpNxt16(reg, mem);
+            return 16;
         }
         else
         {
             reg->PC += 3;
+            return 12;
         }
         break;
     }
@@ -1742,10 +1972,12 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         if (cFlagValue == 1)
         {
             instr_callAddr16(reg, mem);
+            return 24;
         }
         else
         {
             reg->PC += 3;
+            return 12;
         }
         break;
     }
@@ -1761,12 +1993,14 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_sub8bWithCarry(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xDF:
     {
         // RST $18
         instr_rst(reg, mem, 0x0018);
+        return 16;
         break;
     }
     default:
@@ -1775,7 +2009,7 @@ void opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -1785,6 +2019,7 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t offset = memoryRead(mem, reg->PC + 1);
         memoryWrite(mem, 0xFF00 + offset, reg->A);
         reg->PC += 2;
+        return 12;
         break;
     }
     case 0xE1:
@@ -1793,6 +2028,7 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         uint16_t stackValue = stack_pop16(reg, mem);
         reg->HL = stackValue;
         incrementPC(reg);
+        return 12;
         break;
     }
     case 0xE2:
@@ -1800,6 +2036,7 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         // LDH [C], A
         memoryWrite(mem, 0xFF00 + reg->C, reg->A);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xE3:
@@ -1819,6 +2056,7 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         // PUSH HL
         stack_push16(reg, mem, reg->HL);
         incrementPC(reg);
+        return 16;
         break;
     }
     case 0xE6:
@@ -1827,12 +2065,14 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_and(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xE7:
     {
         // RST $20
         instr_rst(reg, mem, 0x0020);
+        return 16;
         break;
     }
     case 0xE8:
@@ -1864,6 +2104,7 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         reg->SP = reg->SP + offset;
 
         reg->PC += 2;
+        return 16;
         break;
     }
     case 0xE9:
@@ -1871,6 +2112,7 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         // JP HL
         uint16_t hlAddr = reg->HL;
         reg->PC = hlAddr;
+        return 4;
         break;
     }
     case 0xEA:
@@ -1879,6 +2121,7 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         uint16_t memAddr = memoryRead16t(mem, reg->PC + 1);
         memoryWrite(mem, memAddr, reg->A);
         reg->PC += 3;
+        return 16;
         break;
     }
     case 0xEB:
@@ -1905,12 +2148,14 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_xor(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xEF:
     {
         // RST $28
         instr_rst(reg, mem, 0x0028);
+        return 16;
         break;
     }
     default:
@@ -1919,7 +2164,7 @@ void opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
     }
 }
 
-void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
+uint8_t opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
 {
     switch (opcode)
     {
@@ -1931,7 +2176,7 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t value = memoryRead(mem, source_address);
         reg->A = value;
         reg->PC += 2;
-
+        return 12;
         break;
     }
     case 0xF1:
@@ -1940,6 +2185,7 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         uint16_t stackValue = stack_pop16(reg, mem);
         reg->AF = stackValue & 0xFFF0;
         incrementPC(reg);
+        return 12;
         break;
     }
     case 0xF2:
@@ -1949,12 +2195,14 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t value = memoryRead(mem, offset);
         reg->A = value;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xF3:
     {
         // DI
         incrementPC(reg);
+        return 4;
         break;
     }
     case 0xF4:
@@ -1968,6 +2216,7 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         // PUSH AF
         stack_push16(reg, mem, reg->AF);
         incrementPC(reg);
+        return 16;
         break;
     }
     case 0xF6:
@@ -1976,12 +2225,14 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_or(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xF7:
     {
         // RST $30
         instr_rst(reg, mem, 0x0030);
+        return 16;
         break;
     }
     case 0xF8:
@@ -2014,6 +2265,7 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         reg->HL = reg->SP + offset;
 
         reg->PC += 2;
+        return 12;
         break;
     }
     case 0xF9:
@@ -2021,6 +2273,7 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         // LD SP, HL
         reg->SP = reg->HL;
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xFA:
@@ -2030,12 +2283,14 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t value = memoryRead(mem, memAddr);
         reg->A = value;
         reg->PC += 3;
+        return 16;
         break;
     }
     case 0xFB:
     {
         // EI
         incrementPC(reg);
+        return 4;
         break;
     }
     case 0xFC:
@@ -2056,12 +2311,14 @@ void opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_cp8b(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        return 8;
         break;
     }
     case 0xFF:
     {
         // RST $38
         instr_rst(reg, mem, 0x0038);
+        return 16;
         break;
     }
     default:

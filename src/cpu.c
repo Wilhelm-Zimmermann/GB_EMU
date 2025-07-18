@@ -3,71 +3,76 @@
 #include "./headers/register.h"
 #include "./headers/memory.h"
 #include "./headers/instructions.h"
+#include "./headers/logger.h"
 
 void initRegisters(Register *reg)
 {
     initialize(reg);
 }
 
-void cpu_cycle(Register *reg, Memory *mem)
+uint8_t cpu_cycle(Register *reg, Memory *mem)
 {
-    uint16_t pc_before_instruction = reg->PC;
-    uint8_t opcode = mem->ram[reg->PC];
+    uint8_t opcode = memoryRead16t(mem, reg->PC);
+
+    writeCPULogs(reg, mem, reg->PC, opcode);
 
     switch (opcode & 0xF0)
     {
     case 0x00:
-        opcode_x0(reg, mem, opcode);
+        return opcode_x0(reg, mem, opcode);
         break;
     case 0x10:
-        opcode_x1(reg, mem, opcode);
+        return opcode_x1(reg, mem, opcode);
         break;
     case 0x20:
-        opcode_x2(reg, mem, opcode);
+        return opcode_x2(reg, mem, opcode);
         break;
     case 0x30:
-        opcode_x3(reg, mem, opcode);
+        return opcode_x3(reg, mem, opcode);
         break;
     case 0x40:
-        opcode_x4(reg, mem, opcode);
+        return opcode_x4(reg, mem, opcode);
         break;
     case 0x50:
-        opcode_x5(reg, mem, opcode);
+        return opcode_x5(reg, mem, opcode);
         break;
     case 0x60:
-        opcode_x6(reg, mem, opcode);
+        return opcode_x6(reg, mem, opcode);
         break;
     case 0x70:
-        opcode_x7(reg, mem, opcode);
+        return opcode_x7(reg, mem, opcode);
         break;
     case 0x80:
-        opcode_x8(reg, mem, opcode);
+        return opcode_x8(reg, mem, opcode);
         break;
     case 0x90:
-        opcode_x9(reg, mem, opcode);
+        return opcode_x9(reg, mem, opcode);
         break;
     case 0xA0:
-        opcode_xA(reg, mem, opcode);
+        return opcode_xA(reg, mem, opcode);
         break;
     case 0xB0:
-        opcode_xB(reg, mem, opcode);
+        return opcode_xB(reg, mem, opcode);
         break;
     case 0xC0:
-        opcode_xC(reg, mem, opcode);
+        return opcode_xC(reg, mem, opcode);
         break;
     case 0xD0:
-        opcode_xD(reg, mem, opcode);
+        return opcode_xD(reg, mem, opcode);
         break;
     case 0xE0:
-        opcode_xE(reg, mem, opcode);
+        return opcode_xE(reg, mem, opcode);
         break;
     case 0xF0:
-        opcode_xF(reg, mem, opcode);
+        return opcode_xF(reg, mem, opcode);
         break;
     default:
     UNKNOWN_OPCODE:
         // printf("Unknown opcode: 0x%02X at PC=0%04X\n", opcode, reg->PC);
         incrementPC(reg);
+        return 4;
         break;
     }
+
+    return 4;
 }

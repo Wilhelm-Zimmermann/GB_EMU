@@ -10,6 +10,7 @@ void initMemory(Memory *mem)
 #ifdef DEBUG
     printf("Allocating RAM...\n");
 #endif
+    // TODO: make mallocs safer
     mem->vRamSize = (1024 * 8);
     mem->ramSize = (1024 * 64);
     mem->ram = malloc(sizeof(uint8_t) * mem->ramSize);
@@ -22,8 +23,19 @@ void initMemory(Memory *mem)
     }
 }
 
+void freeMemory(Memory *mem)
+{
+    free(mem->ram);
+    free(mem->vRam);
+    free(mem);
+}
+
 uint8_t memoryRead(Memory *mem, uint16_t address)
 {
+    if (address == 0xFF44)
+    {
+        return 0x90;
+    }
     return mem->ram[address];
 }
 
@@ -37,11 +49,17 @@ uint16_t memoryRead16t(Memory *mem, uint16_t address)
 
 void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
 {
-    if (address == 0xFF02 && mem->ram[0xFF01] == 0x81)
+    if (address == 0xFF01)
     {
-        printf("Serial PORT: %c\n", value);
+        mem->ram[address] = value;
+        return;
+    }
 
-        mem->ram[0xFF01] = 0;
+    if (address == 0xFF02 && value == 0x81)
+    {
+        printf("%c", mem->ram[0xFF01]);
+        mem->ram[address] = 0;
+        return;
     }
     mem->ram[address] = value;
 }

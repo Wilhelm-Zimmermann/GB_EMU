@@ -11,12 +11,29 @@ void initMemory(Memory *mem)
     printf("Allocating RAM...\n");
 #endif
     // TODO: make mallocs safer
-    mem->vRamSize = (1024 * 8);
-    mem->ramSize = (1024 * 64);
-    mem->ram = malloc(sizeof(uint8_t) * mem->ramSize);
-    mem->vRam = malloc(sizeof(uint8_t) * mem->vRamSize);
+    mem->romBank0Size = (1024 * 16);
+    mem->romBankNSize = (1024 * 16);
+    mem->extRamSize = (1024 * 8);
 
-    if (mem->ram == NULL)
+    mem->vRamSize = (1024 * 8);
+    mem->wramSize = (1024 * 8);
+
+    mem->oamSize = (160);
+    mem->ioRegsSize = (128);
+    mem->hRamSize = 127;
+
+    mem->interrupt_enable_register = 0;
+
+    mem->romBank0 = malloc(mem->romBank0Size);
+    mem->vRam = malloc(mem->vRamSize);
+    mem->romBankN = malloc(mem->romBankNSize);
+    mem->extRam = malloc(mem->extRamSize);
+    mem->wram = malloc(mem->wramSize);
+    mem->oam = malloc(mem->oamSize);
+    mem->ioRegs = malloc(mem->ioRegsSize);
+    mem->hRam = malloc(mem->hRamSize);
+
+    if (mem->romBank0 == NULL || mem->romBankN == NULL || mem->extRam == NULL || mem->vRam == NULL || mem->wram == NULL || mem->oam == NULL || mem->ioRegs == NULL || mem->hRam == NULL)
     {
         fprintf(stderr, "RAM could not be allocated!!");
         return;
@@ -25,18 +42,65 @@ void initMemory(Memory *mem)
 
 void freeMemory(Memory *mem)
 {
-    free(mem->ram);
+    free(mem->romBank0);
     free(mem->vRam);
-    free(mem);
+    free(mem->romBankN);
+    free(mem->extRam);
+    free(mem->wram);
+    free(mem->oam);
+    free(mem->ioRegs);
+    free(mem->hRam);
+    free(mem->fullRom);
 }
 
 uint8_t memoryRead(Memory *mem, uint16_t address)
 {
-    if (address == 0xFF44)
+    if (address <= 0x3FFF)
     {
-        return 0x90;
+        return mem->romBank0[address];
     }
-    return mem->ram[address];
+    else if (address <= 0x7FFF)
+    {
+        return mem->romBankN[address - 0x4000];
+    }
+    else if (address <= 0x9FFF)
+    {
+        return mem->vRam[address - 0x8000];
+    }
+    else if (address <= 0xBFFF)
+    {
+        return mem->extRam[address - 0xA000];
+    }
+    else if (address <= 0xDFFF)
+    {
+        return mem->wram[address - 0xC000];
+    }
+    else if (address <= 0xFDFF)
+    {
+        return mem->wram[address - 0xE000];
+    }
+    else if (address <= 0xFE9F)
+    {
+        return mem->oam[address - 0xFE00];
+    }
+    else if (address <= 0xFEFF)
+    {
+        return 0xFF;
+    }
+    else if (address <= 0xFF7F)
+    {
+        return mem->ioRegs[address - 0xFF00];
+    }
+    else if (address <= 0xFFFE)
+    {
+        return mem->hRam[address - 0xFF80];
+    }
+    else if (address == 0xFFFF)
+    {
+        return mem->interrupt_enable_register;
+    }
+
+    return 0;
 }
 
 uint16_t memoryRead16t(Memory *mem, uint16_t address)
@@ -49,19 +113,70 @@ uint16_t memoryRead16t(Memory *mem, uint16_t address)
 
 void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
 {
-    if (address == 0xFF01)
+    // ROM MEMORY - cannot write on this area (read - only - memory)
+    if (address <= 0x7FFF)
     {
-        mem->ram[address] = value;
+        return;
+    }
+    // VIDEO RAM
+    if (address >= 0x8000 && address <= 0x9FFF)
+    {
+        mem->vRam[address - 0x8000] = value;
         return;
     }
 
-    if (address == 0xFF02 && value == 0x81)
+    // EXT RAM
+    if (address >= 0xA000 && address <= 0xBFFF)
     {
-        printf("%c", mem->ram[0xFF01]);
-        mem->ram[address] = 0;
+        mem->extRam[address - 0xA000] = value;
         return;
     }
-    mem->ram[address] = value;
+
+    // WORK RAM
+    if (address >= 0xC000 && address <= 0xDFFF)
+    {
+        mem->wram[address - 0xC000] = value;
+        return;
+    }
+
+    // Object Attribute Memory
+    if (address >= 0xFE00 && address <= 0xFE9F)
+    {
+        mem->oam[address - 0xFE00] = value;
+        return;
+    }
+
+    // IO REGISTERS
+    if (address >= 0xFF00 && address <= 0xFF7F)
+    {
+        if (address == 0xFF01)
+        {
+            mem->ioRegs[address] = value;
+            return;
+        }
+
+        if (address == 0xFF02 && value == 0x81)
+        {
+            printf("%c", mem->ioRegs[0xFF01]);
+            mem->ioRegs[address] = 0;
+            return;
+        }
+
+        mem->ioRegs[address - 0xFF00] = value;
+        return;
+    }
+
+    // HIGH RAM
+    if (address >= 0xFF80 && address <= 0xFFFE)
+    {
+        mem->hRam[address - 0xFF80] = value;
+        return;
+    }
+
+    if (address == 0xFFFF)
+    {
+        mem->interrupt_enable_register = value;
+    }
 }
 
 // TODO: Review the stack implementation when implementing MMU

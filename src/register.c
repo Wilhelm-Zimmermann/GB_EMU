@@ -12,8 +12,6 @@ void initialize(Register *reg)
     // reg->DE = 0;
     // reg->HL = 0;
 
-    // reg->SP = 0;
-    // reg->PC = 0x100;
     reg->A = 0x01;
     reg->F = 0xB0;
     reg->B = 0x00;

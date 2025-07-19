@@ -17,37 +17,39 @@ void loadRom(Memory *mem, const char *fileName)
         return;
     }
     fseek(file, 0, SEEK_END);
-    long size = ftell(file);
+    mem->romSize = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    char *buffer = malloc(size);
-    if (buffer == NULL)
+    mem->fullRom = malloc(mem->romSize);
+    if (mem->fullRom == NULL)
     {
         fprintf(stderr, "Memory allocation for buffer failed\n");
         fclose(file);
         return;
     }
 
-    fread(buffer, 1, size, file);
+    fread(mem->fullRom, 1, mem->romSize, file);
     fclose(file);
-    for (long i = 0; i < size; i++)
-    {
-        mem->ram[i] = buffer[i];
-    }
-    
-    for (int i = 0; i < mem->vRamSize; i++)
-    {
-        mem->vRam[i] = buffer[0x8000 + i];
-    }
+    // TODO: put buffer outside to be globally accesible
+    mem->romBank0 = mem->fullRom;
+    mem->romBankN = mem->fullRom + 0x4000;
+
+    uint8_t mbcType = mem->fullRom[0x0147];
+    uint8_t romSizeCode = mem->fullRom[0x0148];
+    uint8_t ramSizeCode = mem->fullRom[0x0149];
+
+    printf("MBC Type: 0x%02X\n", mbcType);
+    printf("ROM Size Code: 0x%02X\n", romSizeCode);
+    printf("RAM Size Code: 0x%02X\n", ramSizeCode);
+
     // take the number "1" and shift by 0x148 position value, and then multiply by 32KB, this is a beautiful way to getting the ROM size lol!
-    long romSize = (1024 * 32) * (1 << buffer[0x0148]);
+    long romSize = (1024 * 32) * (1 << mem->fullRom[0x0148]);
     printf("ROM size %ldKB\n", romSize / 1024);
 
-    if (buffer[0x0149] == 0x02)
+    if (mem->fullRom[0x0149] == 0x02)
     {
         printf("Allocating additinal RAM. 8KiB\n");
     }
 
-    free(buffer);
     printf("ROM has been loaded. Enjoy your game!!\n");
 }

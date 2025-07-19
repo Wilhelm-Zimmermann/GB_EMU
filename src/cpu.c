@@ -12,7 +12,7 @@ void initRegisters(Register *reg)
 
 uint8_t cpu_cycle(Register *reg, Memory *mem)
 {
-    uint8_t opcode = memoryRead16t(mem, reg->PC);
+    uint8_t opcode = memoryRead(mem, reg->PC);
 
     writeCPULogs(reg, mem, reg->PC, opcode);
 

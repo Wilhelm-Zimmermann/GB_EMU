@@ -80,7 +80,9 @@ int main(int argc, char *args[])
     SDL_Quit();
 
     freeMemory(mem);
-    free(rom);
-    free(reg);
+    if (rom != NULL)
+        free(rom);
+    if (reg != NULL)
+        free(reg);
     return 0;
 }

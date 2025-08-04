@@ -42,15 +42,28 @@ void initMemory(Memory *mem)
 
 void freeMemory(Memory *mem)
 {
-    free(mem->romBank0);
-    free(mem->vRam);
-    free(mem->romBankN);
-    free(mem->extRam);
-    free(mem->wram);
-    free(mem->oam);
-    free(mem->ioRegs);
-    free(mem->hRam);
-    free(mem->fullRom);
+    if (mem == NULL)
+        return;
+    // if (mem->romBank0 != NULL)
+    //     free(mem->romBank0);
+    if (mem->vRam != NULL)
+        free(mem->vRam);
+    if (mem->romBankN != NULL)
+    //     free(mem->romBankN);
+    // if (mem->extRam != NULL)
+        free(mem->extRam);
+    if (mem->wram != NULL)
+        free(mem->wram);
+    if (mem->oam != NULL)
+        free(mem->oam);
+    if (mem->ioRegs != NULL)
+        free(mem->ioRegs);
+    if (mem->hRam != NULL)
+        free(mem->hRam);
+    if (mem->fullRom != NULL)
+        free(mem->fullRom);
+
+    free(mem);
 }
 
 uint8_t memoryRead(Memory *mem, uint16_t address)

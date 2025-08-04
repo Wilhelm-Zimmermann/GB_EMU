@@ -4,20 +4,20 @@
 
 typedef struct
 {
-    uint8_t lcdc; 
-    uint8_t stat; 
-    uint8_t scy;  
-    uint8_t scx;  
-    uint8_t ly;   
-    uint8_t lyc;  
-    uint8_t bgp;  
-    uint8_t obp0; 
-    uint8_t obp1; 
-    uint8_t wy;   
-    uint8_t wx;   
+    uint8_t lcdc; // $FF40 LCD Control
+    uint8_t stat; // $FF41 LCD Status
+    uint8_t scy;  // $FF42 Scroll Y
+    uint8_t scx;  // $FF43 Scroll X
+    uint8_t ly;   // $FF44 LCD Y-Coordinate
+    uint8_t lyc;  // $FF45 LY Compare
+    uint8_t bgp;  // $FF47 BG Palette Data
+    uint8_t obp0; // $FF48 Object Palette 0 Data
+    uint8_t obp1; // $FF49 Object Palette 1 Data
+    uint8_t wy;   // $FF4A Window Y Position
+    uint8_t wx;   // $FF4B Window X Position - 7
 
     int modeClock;
 } PPU;
 
-void ppu_init();
-void ppu_step(int cpuCycles);
+void ppuInit();
+void ppuStep(PPU ppu, int cpuCycles);

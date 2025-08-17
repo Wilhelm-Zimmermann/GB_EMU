@@ -4,6 +4,7 @@
 #include "./src/headers/memory.h"
 #include "./src/headers/rom.h"
 #include "./src/headers/cpu.h"
+#include "./src/headers/ppu.h"
 
 // #define DEBUG
 
@@ -32,6 +33,7 @@ int main(int argc, char *args[])
     Memory *mem = malloc(sizeof(Memory));
     ROM *rom = malloc(sizeof(ROM));
     Register *reg = malloc(sizeof(Register));
+    PPU *ppu = malloc(sizeof(PPU));
 
     if (window == NULL)
     {
@@ -67,7 +69,8 @@ int main(int argc, char *args[])
         }
 
         // SDL_UpdateTexture(texture, NULL, chip->display, 64 * sizeof(uint32_t));
-        cpu_cycle(reg, mem);
+        int cycles = cpu_cycle(reg, mem);
+        ppuStep(ppu, mem, cycles);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);

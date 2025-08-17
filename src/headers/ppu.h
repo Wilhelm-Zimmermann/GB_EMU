@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <stdbool.h>
+#include "./memory.h"
 
 typedef struct
 {
@@ -20,4 +21,4 @@ typedef struct
 } PPU;
 
 void ppuInit();
-void ppuStep(PPU ppu, int cpuCycles);
+void ppuStep(PPU *ppu, Memory *mem, int cpuCycles);

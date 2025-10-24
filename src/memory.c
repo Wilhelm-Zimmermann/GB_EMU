@@ -32,7 +32,7 @@ void initMemory(Memory *mem)
     mem->ioRegs = calloc(mem->ioRegsSize, sizeof(uint8_t));
     mem->hRam = calloc(mem->hRamSize, sizeof(uint8_t));
 
-    if (mem->romBank0 == NULL || mem->romBankN == NULL || mem->extRam == NULL || mem->vRam == NULL || mem->wram == NULL || mem->oam == NULL || mem->ioRegs == NULL || mem->hRam == NULL)
+    if (mem->extRam == NULL || mem->vRam == NULL || mem->wram == NULL || mem->oam == NULL || mem->ioRegs == NULL || mem->hRam == NULL)
     {
         fprintf(stderr, "There was an error on memory allocation!!");
         return;

@@ -10,7 +10,6 @@ void initMemory(Memory *mem)
 #ifdef DEBUG
     printf("Allocating RAM...\n");
 #endif
-    // TODO: make mallocs safer
     mem->romBank0Size = (1024 * 16);
     mem->romBankNSize = (1024 * 16);
     mem->extRamSize = (1024 * 8);
@@ -26,9 +25,7 @@ void initMemory(Memory *mem)
 
     // Here i can use the size because uint8_t is exactly one byte, if i do 100 * sizeof(uint8_t) i will get 100, if i was another type like int I must do on that way
     // mem->romBank0 = malloc(mem->romBank0Size);
-    mem->romBank0 = calloc(mem->romBank0Size, sizeof(uint8_t));
     mem->vRam = calloc(mem->vRamSize, sizeof(uint8_t));
-    mem->romBankN = calloc(mem->romBankNSize, sizeof(uint8_t));
     mem->extRam = calloc(mem->extRamSize, sizeof(uint8_t));
     mem->wram = calloc(mem->wramSize, sizeof(uint8_t));
     mem->oam = calloc(mem->oamSize, sizeof(uint8_t));
@@ -46,12 +43,8 @@ void freeMemory(Memory *mem)
 {
     if (mem == NULL)
         return;
-    if (mem->romBank0 != NULL)
-        free(mem->romBank0);
     if (mem->vRam != NULL)
         free(mem->vRam);
-    if (mem->romBankN != NULL)
-        free(mem->romBankN);
     if (mem->extRam != NULL)
         free(mem->extRam);
     if (mem->wram != NULL)
@@ -154,6 +147,8 @@ void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
         return;
     }
 
+    // TODO: Search more about Echo RAM
+
     // Object Attribute Memory
     if (address >= 0xFE00 && address <= 0xFE9F)
     {
@@ -166,14 +161,14 @@ void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
     {
         if (address == 0xFF01)
         {
-            mem->ioRegs[address- 0xFF00] = value;
+            mem->ioRegs[address - 0xFF00] = value;
             return;
         }
 
         if (address == 0xFF02 && value == 0x81)
         {
             printf("%c", mem->ioRegs[0xFF01]);
-            mem->ioRegs[address- 0xFF00] = 0;
+            mem->ioRegs[address - 0xFF00] = 0;
             return;
         }
 
@@ -194,7 +189,6 @@ void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
     }
 }
 
-// TODO: Review the stack implementation when implementing MMU
 void stack_push16(Register *reg, Memory *mem, uint16_t value)
 {
     reg->SP--;

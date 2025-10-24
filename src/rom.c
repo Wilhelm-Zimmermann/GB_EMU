@@ -30,7 +30,6 @@ void loadRom(Memory *mem, const char *fileName)
 
     fread(mem->fullRom, 1, mem->romSize, file);
     fclose(file);
-    // TODO: check later to allocate the rombanks on the heap
     mem->romBank0 = mem->fullRom;
     mem->romBankN = mem->fullRom + 0x4000;
 

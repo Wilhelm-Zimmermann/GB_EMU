@@ -30,10 +30,10 @@ int main(int argc, char *args[])
     }
 
     SDL_Window *window = SDL_CreateWindow(args[1], SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 160 * PIXEL_SCALE, 144 * PIXEL_SCALE, SDL_WINDOW_SHOWN);
-    Memory *mem = malloc(sizeof(Memory));
-    ROM *rom = malloc(sizeof(ROM));
-    Register *reg = malloc(sizeof(Register));
-    PPU *ppu = malloc(sizeof(PPU));
+    Memory *mem = calloc(1, sizeof(Memory));
+    ROM *rom = calloc(1, sizeof(ROM));
+    Register *reg = calloc(1, sizeof(Register));
+    PPU *ppu = calloc(1, sizeof(PPU));
 
     if (window == NULL)
     {
@@ -46,7 +46,7 @@ int main(int argc, char *args[])
 
     initMemory(mem);
     initRegisters(reg);
-
+    
     loadRom(mem, args[1]);
     SDL_Event e;
     int quit = 0;

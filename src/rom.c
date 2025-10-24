@@ -20,7 +20,7 @@ void loadRom(Memory *mem, const char *fileName)
     mem->romSize = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    mem->fullRom = malloc(mem->romSize);
+    mem->fullRom = calloc(mem->romSize, sizeof(uint8_t));
     if (mem->fullRom == NULL)
     {
         fprintf(stderr, "Memory allocation for buffer failed\n");

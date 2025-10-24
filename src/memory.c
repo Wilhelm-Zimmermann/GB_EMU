@@ -24,18 +24,20 @@ void initMemory(Memory *mem)
 
     mem->interrupt_enable_register = 0;
 
-    mem->romBank0 = malloc(mem->romBank0Size);
-    mem->vRam = malloc(mem->vRamSize);
-    mem->romBankN = malloc(mem->romBankNSize);
-    mem->extRam = malloc(mem->extRamSize);
-    mem->wram = malloc(mem->wramSize);
-    mem->oam = malloc(mem->oamSize);
-    mem->ioRegs = malloc(mem->ioRegsSize);
-    mem->hRam = malloc(mem->hRamSize);
+    // Here i can use the size because uint8_t is exactly one byte, if i do 100 * sizeof(uint8_t) i will get 100, if i was another type like int I must do on that way
+    // mem->romBank0 = malloc(mem->romBank0Size);
+    mem->romBank0 = calloc(mem->romBank0Size, sizeof(uint8_t));
+    mem->vRam = calloc(mem->vRamSize, sizeof(uint8_t));
+    mem->romBankN = calloc(mem->romBankNSize, sizeof(uint8_t));
+    mem->extRam = calloc(mem->extRamSize, sizeof(uint8_t));
+    mem->wram = calloc(mem->wramSize, sizeof(uint8_t));
+    mem->oam = calloc(mem->oamSize, sizeof(uint8_t));
+    mem->ioRegs = calloc(mem->ioRegsSize, sizeof(uint8_t));
+    mem->hRam = calloc(mem->hRamSize, sizeof(uint8_t));
 
     if (mem->romBank0 == NULL || mem->romBankN == NULL || mem->extRam == NULL || mem->vRam == NULL || mem->wram == NULL || mem->oam == NULL || mem->ioRegs == NULL || mem->hRam == NULL)
     {
-        fprintf(stderr, "RAM could not be allocated!!");
+        fprintf(stderr, "There was an error on memory allocation!!");
         return;
     }
 }
@@ -44,13 +46,13 @@ void freeMemory(Memory *mem)
 {
     if (mem == NULL)
         return;
-    // if (mem->romBank0 != NULL)
-    //     free(mem->romBank0);
+    if (mem->romBank0 != NULL)
+        free(mem->romBank0);
     if (mem->vRam != NULL)
         free(mem->vRam);
     if (mem->romBankN != NULL)
-    //     free(mem->romBankN);
-    // if (mem->extRam != NULL)
+        free(mem->romBankN);
+    if (mem->extRam != NULL)
         free(mem->extRam);
     if (mem->wram != NULL)
         free(mem->wram);

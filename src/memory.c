@@ -164,14 +164,14 @@ void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
     {
         if (address == 0xFF01)
         {
-            mem->ioRegs[address] = value;
+            mem->ioRegs[address- 0xFF00] = value;
             return;
         }
 
         if (address == 0xFF02 && value == 0x81)
         {
             printf("%c", mem->ioRegs[0xFF01]);
-            mem->ioRegs[address] = 0;
+            mem->ioRegs[address- 0xFF00] = 0;
             return;
         }
 

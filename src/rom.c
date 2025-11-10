@@ -4,6 +4,13 @@
 
 #define DEBUG
 
+void fillVideoMemory(Memory *mem)
+{
+    for (int i = 0; i < mem->vRamSize; i++)
+    {
+        mem->vRam[i] = mem->fullRom[0x8000 + i];
+    }
+}
 // If i forget something about ROM; https://gbdev.io/pandocs/The_Cartridge_Header.html
 void loadRom(Memory *mem, const char *fileName)
 {
@@ -45,6 +52,8 @@ void loadRom(Memory *mem, const char *fileName)
     long romSize = (1024 * 32) * (1 << mem->fullRom[0x0148]);
     printf("ROM size %ldKB\n", romSize / 1024);
 
+    // Fill the video ram with current map
+    fillVideoMemory(mem);
     if (mem->fullRom[0x0149] == 0x02)
     {
         // make this work

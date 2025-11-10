@@ -45,11 +45,13 @@ int main(int argc, char *args[])
     SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160, 144);
 
     initMemory(mem);
+    initPPUVideo(ppu);
     initRegisters(reg);
-    
+
     loadRom(mem, args[1]);
     SDL_Event e;
     int quit = 0;
+
     while (!quit)
     {
         while (SDL_PollEvent(&e))
@@ -68,13 +70,14 @@ int main(int argc, char *args[])
             }
         }
 
-        // SDL_UpdateTexture(texture, NULL, chip->display, 64 * sizeof(uint32_t));
+
+        SDL_UpdateTexture(texture, NULL, ppu->video, 160 * sizeof(uint32_t));
         int cycles = cpu_cycle(reg, mem);
         ppuStep(ppu, mem, cycles);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
-        // SDL_Delay(16);
+        SDL_Delay(16);
     }
 
     SDL_DestroyTexture(texture);

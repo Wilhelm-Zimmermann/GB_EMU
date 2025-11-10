@@ -5,6 +5,8 @@
 #include "./headers/instructions.h"
 #include "./headers/logger.h"
 
+// #define DEBUG
+
 void initRegisters(Register *reg)
 {
     initialize(reg);
@@ -14,8 +16,9 @@ uint8_t cpu_cycle(Register *reg, Memory *mem)
 {
     uint8_t opcode = memoryRead(mem, reg->PC);
 
+#ifdef DEBUG
     writeCPULogs(reg, mem, reg->PC, opcode);
-
+#endif
     switch (opcode & 0xF0)
     {
     case 0x00:

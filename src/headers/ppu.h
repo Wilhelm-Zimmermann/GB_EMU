@@ -17,8 +17,9 @@ typedef struct
     uint8_t wy;   // $FF4A Window Y Position
     uint8_t wx;   // $FF4B Window X Position - 7
 
+    uint32_t *video;
     int modeClock;
 } PPU;
 
-void ppuInit();
+void initPPUVideo(PPU* ppu);
 void ppuStep(PPU *ppu, Memory *mem, int cpuCycles);

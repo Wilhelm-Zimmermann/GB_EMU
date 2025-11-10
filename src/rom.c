@@ -47,6 +47,7 @@ void loadRom(Memory *mem, const char *fileName)
 
     if (mem->fullRom[0x0149] == 0x02)
     {
+        // make this work
         printf("Allocating additinal RAM. 8KiB\n");
     }
 

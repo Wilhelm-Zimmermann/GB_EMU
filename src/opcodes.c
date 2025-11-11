@@ -19,7 +19,6 @@ void instr_inc8b(Register *reg, uint8_t *value)
     unset_NFlag(reg);
 
     checkIfOpZeroAndSetZ(reg, *value);
-    incrementPC(reg);
 }
 
 void instr_dec8b(Register *reg, uint8_t *value)
@@ -36,14 +35,12 @@ void instr_dec8b(Register *reg, uint8_t *value)
     (*value)--;
     set_NFlag(reg);
     checkIfOpZeroAndSetZ(reg, *value);
-    incrementPC(reg);
 }
 
 // LD 8 bit instr
 void instr_ld8bIn8b(Register *reg, uint8_t *fromValue, uint8_t *toValue)
 {
     *fromValue = *toValue;
-    incrementPC(reg);
 }
 
 void instr_ldNxt8bAddrInReg(Register *reg, Memory *mem, uint8_t *value)
@@ -57,7 +54,6 @@ void instr_ldAddr8bInReg(Register *reg, Memory *mem, uint16_t memAddr, uint8_t *
 {
     uint8_t addrValue = memoryRead(mem, memAddr);
     *value = addrValue;
-    incrementPC(reg);
 }
 
 // LD 16 bit instr
@@ -76,7 +72,6 @@ void instr_add16b(Register *reg, uint16_t *regToAdd, uint16_t valueToAdd)
     checkIfHasCarryAndSetH16b(reg, (((*regToAdd) & 0x0FFF) + (valueToAdd & 0x0FFF)));
     setCFlagIfAddOpGtThanFFFF(reg, sumValue);
     *regToAdd = (uint16_t)sumValue;
-    incrementPC(reg);
 }
 
 // ADD/SUBTR 8 bit instr
@@ -88,7 +83,6 @@ void instr_add8b(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
     checkIfOpZeroAndSetZ(reg, (uint8_t)sumValue);
     checkIfHasCarryAndSet8b(reg, *regToAdd, valueToAdd);
     *regToAdd = (uint8_t)sumValue;
-    incrementPC(reg);
 }
 
 void instr_add8bWithCarry(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
@@ -100,7 +94,6 @@ void instr_add8bWithCarry(Register *reg, uint8_t *regToAdd, uint8_t valueToAdd)
     checkIfOpZeroAndSetZ(reg, (uint8_t)sumValue);
     checkIfHasCarryAndSet8bWithCarry(reg, *regToAdd, valueToAdd, carry);
     *regToAdd = (uint8_t)sumValue;
-    incrementPC(reg);
 }
 
 void instr_sub8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
@@ -116,7 +109,6 @@ void instr_sub8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
     *regToSubFrom = subrResult;
 
     checkIfOpZeroAndSetZ(reg, *regToSubFrom);
-    incrementPC(reg);
 }
 
 void instr_sub8bWithCarry(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
@@ -133,7 +125,6 @@ void instr_sub8bWithCarry(Register *reg, uint8_t *regToSubFrom, uint8_t valueToS
     *regToSubFrom = subrResult;
 
     checkIfOpZeroAndSetZ(reg, *regToSubFrom);
-    incrementPC(reg);
 }
 
 // Normal bitwise
@@ -144,7 +135,6 @@ void instr_and(Register *reg, uint8_t *from, uint8_t to)
     set_HFlag(reg);
     unset_NFlag(reg);
     unset_CFlag(reg);
-    incrementPC(reg);
 }
 void instr_xor(Register *reg, uint8_t *from, uint8_t to)
 {
@@ -153,7 +143,6 @@ void instr_xor(Register *reg, uint8_t *from, uint8_t to)
     unset_HFlag(reg);
     unset_NFlag(reg);
     unset_CFlag(reg);
-    incrementPC(reg);
 }
 void instr_or(Register *reg, uint8_t *from, uint8_t to)
 {
@@ -162,7 +151,6 @@ void instr_or(Register *reg, uint8_t *from, uint8_t to)
     unset_HFlag(reg);
     unset_NFlag(reg);
     unset_CFlag(reg);
-    incrementPC(reg);
 }
 
 // CP
@@ -184,7 +172,6 @@ void instr_cp8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
     {
         unset_CFlag(reg);
     }
-    incrementPC(reg);
 }
 
 // Stack Instructions

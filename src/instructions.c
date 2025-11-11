@@ -33,11 +33,13 @@ uint8_t opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x04:
         // INC B
         instr_inc8b(reg, &reg->B);
+        incrementPC(reg);
         return 4;
         break;
     case 0x05:
         // DEC B
         instr_dec8b(reg, &reg->B);
+        incrementPC(reg);
         return 4;
         break;
     case 0x06:
@@ -80,12 +82,14 @@ uint8_t opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x09:
         // ADD HL, BC
         instr_add16b(reg, &reg->HL, reg->BC);
+        incrementPC(reg);
         return 8;
         break;
     case 0x0A:
     {
         // LD A, [BC]
         instr_ldAddr8bInReg(reg, mem, reg->BC, &reg->A);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -98,11 +102,13 @@ uint8_t opcode_x0(Register *reg, Memory *mem, uint8_t opcode)
     case 0x0C:
         // INC C
         instr_inc8b(reg, &reg->C);
+        incrementPC(reg);
         return 4;
         break;
     case 0x0D:
         // DEC C
         instr_dec8b(reg, &reg->C);
+        incrementPC(reg);
         return 4;
         break;
     case 0x0E:
@@ -169,6 +175,7 @@ uint8_t opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     {
         // INC D
         instr_inc8b(reg, &reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -176,6 +183,7 @@ uint8_t opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     {
         // DEC D
         instr_dec8b(reg, &reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -222,6 +230,7 @@ uint8_t opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD HL, DE
         instr_add16b(reg, &reg->HL, reg->DE);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -229,6 +238,7 @@ uint8_t opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD A, [DE]
         instr_ldAddr8bInReg(reg, mem, reg->DE, &reg->A);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -244,6 +254,7 @@ uint8_t opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     {
         // INC E
         instr_inc8b(reg, &reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -251,6 +262,7 @@ uint8_t opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     {
         // DEC E
         instr_dec8b(reg, &reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -338,6 +350,7 @@ uint8_t opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     {
         // INC H
         instr_inc8b(reg, &reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -345,6 +358,7 @@ uint8_t opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     {
         // DEC H
         instr_dec8b(reg, &reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -415,6 +429,7 @@ uint8_t opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD HL, HL
         instr_add16b(reg, &reg->HL, reg->HL);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -423,6 +438,7 @@ uint8_t opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
         // LD A, [HL+]
         instr_ldAddr8bInReg(reg, mem, reg->HL, &reg->A);
         reg->HL++;
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -438,6 +454,7 @@ uint8_t opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     {
         // INC L
         instr_inc8b(reg, &reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -445,6 +462,7 @@ uint8_t opcode_x2(Register *reg, Memory *mem, uint8_t opcode)
     {
         // DEC L
         instr_dec8b(reg, &reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -524,6 +542,7 @@ uint8_t opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_inc8b(reg, &memValue);
         memoryWrite(mem, reg->HL, memValue);
+        incrementPC(reg);
         return 12;
         break;
     }
@@ -533,6 +552,7 @@ uint8_t opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_dec8b(reg, &memValue);
         memoryWrite(mem, reg->HL, memValue);
+        incrementPC(reg);
         return 12;
         break;
     }
@@ -578,6 +598,7 @@ uint8_t opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD HL, SP
         instr_add16b(reg, &reg->HL, reg->SP);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -586,6 +607,7 @@ uint8_t opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
         // LD A, [HL-]
         instr_ldAddr8bInReg(reg, mem, reg->HL, &reg->A);
         reg->HL--;
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -601,6 +623,7 @@ uint8_t opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
     {
         // INC A
         instr_inc8b(reg, &reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -608,6 +631,7 @@ uint8_t opcode_x3(Register *reg, Memory *mem, uint8_t opcode)
     {
         // DEC A
         instr_dec8b(reg, &reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -650,6 +674,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD B, B
         instr_ld8bIn8b(reg, &reg->B, &reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -657,6 +682,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD B, C
         instr_ld8bIn8b(reg, &reg->B, &reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -664,6 +690,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD B, D
         instr_ld8bIn8b(reg, &reg->B, &reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -671,6 +698,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD B, E
         instr_ld8bIn8b(reg, &reg->B, &reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -678,6 +706,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD B, H
         instr_ld8bIn8b(reg, &reg->B, &reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -685,6 +714,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD B, L
         instr_ld8bIn8b(reg, &reg->B, &reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -693,6 +723,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
         // LD B, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->B, &memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -700,6 +731,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD B, A
         instr_ld8bIn8b(reg, &reg->B, &reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -707,6 +739,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD C, B
         instr_ld8bIn8b(reg, &reg->C, &reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -714,6 +747,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD C, C
         instr_ld8bIn8b(reg, &reg->C, &reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -721,6 +755,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD C, D
         instr_ld8bIn8b(reg, &reg->C, &reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -728,6 +763,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD C, E
         instr_ld8bIn8b(reg, &reg->C, &reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -735,6 +771,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD C, H
         instr_ld8bIn8b(reg, &reg->C, &reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -742,6 +779,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD C, L
         instr_ld8bIn8b(reg, &reg->C, &reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -750,6 +788,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
         // LD C, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->C, &memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -757,6 +796,7 @@ uint8_t opcode_x4(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD C, A
         instr_ld8bIn8b(reg, &reg->C, &reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -774,6 +814,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD D, B
         instr_ld8bIn8b(reg, &reg->D, &reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -781,6 +822,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD D, C
         instr_ld8bIn8b(reg, &reg->D, &reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -788,6 +830,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD D, D
         instr_ld8bIn8b(reg, &reg->D, &reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -795,6 +838,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD D, E
         instr_ld8bIn8b(reg, &reg->D, &reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -802,6 +846,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD D, H
         instr_ld8bIn8b(reg, &reg->D, &reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -809,6 +854,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD D, L
         instr_ld8bIn8b(reg, &reg->D, &reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -817,6 +863,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
         // LD D, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->D, &memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -824,6 +871,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD D, A
         instr_ld8bIn8b(reg, &reg->D, &reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -831,6 +879,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD E, B
         instr_ld8bIn8b(reg, &reg->E, &reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -838,6 +887,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD E, C
         instr_ld8bIn8b(reg, &reg->E, &reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -845,6 +895,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD E, D
         instr_ld8bIn8b(reg, &reg->E, &reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -852,6 +903,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD E, E
         instr_ld8bIn8b(reg, &reg->E, &reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -859,6 +911,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD E, H
         instr_ld8bIn8b(reg, &reg->E, &reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -866,6 +919,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD E, L
         instr_ld8bIn8b(reg, &reg->E, &reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -874,6 +928,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
         // LD E, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->E, &memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -881,6 +936,7 @@ uint8_t opcode_x5(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD E, A
         instr_ld8bIn8b(reg, &reg->E, &reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -898,6 +954,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD H, B
         instr_ld8bIn8b(reg, &reg->H, &reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -905,6 +962,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD H, C
         instr_ld8bIn8b(reg, &reg->H, &reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -912,6 +970,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD H, D
         instr_ld8bIn8b(reg, &reg->H, &reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -919,6 +978,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD H, E
         instr_ld8bIn8b(reg, &reg->H, &reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -926,6 +986,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD H, H
         instr_ld8bIn8b(reg, &reg->H, &reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -933,6 +994,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD H, L
         instr_ld8bIn8b(reg, &reg->H, &reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -941,6 +1003,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
         // LD H, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->H, &memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -948,6 +1011,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD H, A
         instr_ld8bIn8b(reg, &reg->H, &reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -955,6 +1019,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD L, B
         instr_ld8bIn8b(reg, &reg->L, &reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -962,6 +1027,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD L, C
         instr_ld8bIn8b(reg, &reg->L, &reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -969,6 +1035,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD L, D
         instr_ld8bIn8b(reg, &reg->L, &reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -976,6 +1043,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD L, E
         instr_ld8bIn8b(reg, &reg->L, &reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -983,6 +1051,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD L, H
         instr_ld8bIn8b(reg, &reg->L, &reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -990,6 +1059,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD L, L
         instr_ld8bIn8b(reg, &reg->L, &reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -998,6 +1068,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
         // LD L, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->L, &memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1005,6 +1076,7 @@ uint8_t opcode_x6(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD L, A
         instr_ld8bIn8b(reg, &reg->L, &reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1085,6 +1157,7 @@ uint8_t opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD A, B
         instr_ld8bIn8b(reg, &reg->A, &reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1092,6 +1165,7 @@ uint8_t opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD A, C
         instr_ld8bIn8b(reg, &reg->A, &reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1099,6 +1173,7 @@ uint8_t opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD A, D
         instr_ld8bIn8b(reg, &reg->A, &reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1106,6 +1181,7 @@ uint8_t opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD A, E
         instr_ld8bIn8b(reg, &reg->A, &reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1113,6 +1189,7 @@ uint8_t opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD A, H
         instr_ld8bIn8b(reg, &reg->A, &reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1120,6 +1197,7 @@ uint8_t opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD A, L
         instr_ld8bIn8b(reg, &reg->A, &reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1128,6 +1206,7 @@ uint8_t opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
         // LD A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_ld8bIn8b(reg, &reg->A, &memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1135,6 +1214,7 @@ uint8_t opcode_x7(Register *reg, Memory *mem, uint8_t opcode)
     {
         // LD A, A
         instr_ld8bIn8b(reg, &reg->A, &reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1152,6 +1232,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD A, B
         instr_add8b(reg, &reg->A, reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1159,6 +1240,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD A, C
         instr_add8b(reg, &reg->A, reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1166,6 +1248,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD A, D
         instr_add8b(reg, &reg->A, reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1173,6 +1256,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD A, E
         instr_add8b(reg, &reg->A, reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1180,6 +1264,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD A, H
         instr_add8b(reg, &reg->A, reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1187,6 +1272,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD A, L
         instr_add8b(reg, &reg->A, reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1195,6 +1281,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
         // ADD A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_add8b(reg, &reg->A, memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1202,6 +1289,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADD A, A
         instr_add8b(reg, &reg->A, reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1209,6 +1297,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADC A, B
         instr_add8bWithCarry(reg, &reg->A, reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1216,6 +1305,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADC A, C
         instr_add8bWithCarry(reg, &reg->A, reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1223,6 +1313,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADC A, D
         instr_add8bWithCarry(reg, &reg->A, reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1230,6 +1321,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADC A, E
         instr_add8bWithCarry(reg, &reg->A, reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1237,6 +1329,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADC A, H
         instr_add8bWithCarry(reg, &reg->A, reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1244,6 +1337,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADC A, L
         instr_add8bWithCarry(reg, &reg->A, reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1252,6 +1346,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
         // ADC A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_add8bWithCarry(reg, &reg->A, memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1259,6 +1354,7 @@ uint8_t opcode_x8(Register *reg, Memory *mem, uint8_t opcode)
     {
         // ADC A, A
         instr_add8bWithCarry(reg, &reg->A, reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1276,6 +1372,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SUB A, B
         instr_sub8b(reg, &reg->A, reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1283,6 +1380,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SUB A, C
         instr_sub8b(reg, &reg->A, reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1290,6 +1388,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SUB A, D
         instr_sub8b(reg, &reg->A, reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1297,6 +1396,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SUB A, E
         instr_sub8b(reg, &reg->A, reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1304,6 +1404,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SUB A, H
         instr_sub8b(reg, &reg->A, reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1311,6 +1412,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SUB A, L
         instr_sub8b(reg, &reg->A, reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1319,6 +1421,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
         // SUB A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_sub8b(reg, &reg->A, memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1326,6 +1429,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SUB A, A
         instr_sub8b(reg, &reg->A, reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1333,6 +1437,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SBC A, B
         instr_sub8bWithCarry(reg, &reg->A, reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1340,6 +1445,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SBC A, C
         instr_sub8bWithCarry(reg, &reg->A, reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1347,6 +1453,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SBC A, D
         instr_sub8bWithCarry(reg, &reg->A, reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1354,6 +1461,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SBC A, E
         instr_sub8bWithCarry(reg, &reg->A, reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1361,6 +1469,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SBC A, H
         instr_sub8bWithCarry(reg, &reg->A, reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1368,6 +1477,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SBC A, L
         instr_sub8bWithCarry(reg, &reg->A, reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1376,6 +1486,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
         // SBC A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_sub8bWithCarry(reg, &reg->A, memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1383,6 +1494,7 @@ uint8_t opcode_x9(Register *reg, Memory *mem, uint8_t opcode)
     {
         // SBC A, A
         instr_sub8bWithCarry(reg, &reg->A, reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1400,6 +1512,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // AND A, B
         instr_and(reg, &reg->A, reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1407,6 +1520,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // AND A, C
         instr_and(reg, &reg->A, reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1414,6 +1528,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // AND A, D
         instr_and(reg, &reg->A, reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1421,6 +1536,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // AND A, E
         instr_and(reg, &reg->A, reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1428,6 +1544,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // AND A, H
         instr_and(reg, &reg->A, reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1435,6 +1552,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // AND A, L
         instr_and(reg, &reg->A, reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1443,6 +1561,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
         // AND A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_and(reg, &reg->A, memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1450,6 +1569,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // AND A, A
         instr_and(reg, &reg->A, reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1457,6 +1577,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // XOR A, B
         instr_xor(reg, &reg->A, reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1464,6 +1585,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // XOR A, C
         instr_xor(reg, &reg->A, reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1471,6 +1593,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // XOR A, D
         instr_xor(reg, &reg->A, reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1478,6 +1601,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // XOR A, E
         instr_xor(reg, &reg->A, reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1485,6 +1609,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // XOR A, H
         instr_xor(reg, &reg->A, reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1492,6 +1617,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // XOR A, L
         instr_xor(reg, &reg->A, reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1500,6 +1626,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
         // XOR A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_xor(reg, &reg->A, memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1507,6 +1634,7 @@ uint8_t opcode_xA(Register *reg, Memory *mem, uint8_t opcode)
     {
         // XOR A, A
         instr_xor(reg, &reg->A, reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1524,6 +1652,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // OR A, B
         instr_or(reg, &reg->A, reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1531,6 +1660,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // OR A, C
         instr_or(reg, &reg->A, reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1538,6 +1668,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // OR A, D
         instr_or(reg, &reg->A, reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1545,6 +1676,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // OR A, E
         instr_or(reg, &reg->A, reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1552,6 +1684,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // OR A, H
         instr_or(reg, &reg->A, reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1559,6 +1692,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // OR A, L
         instr_or(reg, &reg->A, reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1567,6 +1701,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
         // OR A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_or(reg, &reg->A, memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1574,6 +1709,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // OR A, A
         instr_or(reg, &reg->A, reg->A);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1581,6 +1717,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // CP A, B
         instr_cp8b(reg, &reg->A, reg->B);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1588,6 +1725,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // CP A, C
         instr_cp8b(reg, &reg->A, reg->C);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1595,6 +1733,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // CP A, D
         instr_cp8b(reg, &reg->A, reg->D);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1602,6 +1741,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // CP A, E
         instr_cp8b(reg, &reg->A, reg->E);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1609,6 +1749,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // CP A, H
         instr_cp8b(reg, &reg->A, reg->H);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1616,6 +1757,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // CP A, L
         instr_cp8b(reg, &reg->A, reg->L);
+        incrementPC(reg);
         return 4;
         break;
     }
@@ -1624,6 +1766,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
         // CP A, [HL]
         uint8_t memValue = memoryRead(mem, reg->HL);
         instr_cp8b(reg, &reg->A, memValue);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1631,6 +1774,7 @@ uint8_t opcode_xB(Register *reg, Memory *mem, uint8_t opcode)
     {
         // CP A, A
         instr_cp8b(reg, &reg->A, reg->A);
+        incrementPC(reg);
         set_ZFlag(reg);
         set_NFlag(reg);
         unset_HFlag(reg);
@@ -1726,6 +1870,7 @@ uint8_t opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_add8b(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1812,6 +1957,7 @@ uint8_t opcode_xC(Register *reg, Memory *mem, uint8_t opcode)
         // ADC A, n8
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_add8bWithCarry(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
         incrementPC(reg);
         return 8;
         break;
@@ -1910,6 +2056,7 @@ uint8_t opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_sub8b(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -1993,6 +2140,7 @@ uint8_t opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_sub8bWithCarry(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -2064,6 +2212,7 @@ uint8_t opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         // AND A, n8
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_and(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
         incrementPC(reg);
         return 8;
         break;
@@ -2148,6 +2297,7 @@ uint8_t opcode_xE(Register *reg, Memory *mem, uint8_t opcode)
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_xor(reg, &reg->A, memAddrValue);
         incrementPC(reg);
+        incrementPC(reg);
         return 8;
         break;
     }
@@ -2224,6 +2374,7 @@ uint8_t opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         // OR A, n8
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_or(reg, &reg->A, memAddrValue);
+        incrementPC(reg);
         incrementPC(reg);
         return 8;
         break;
@@ -2310,7 +2461,7 @@ uint8_t opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
         // CP A, n8
         uint8_t memAddrValue = memoryRead(mem, reg->PC + 1);
         instr_cp8b(reg, &reg->A, memAddrValue);
-        incrementPC(reg);
+        reg->PC += 2;
         return 8;
         break;
     }

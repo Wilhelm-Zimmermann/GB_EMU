@@ -5,7 +5,7 @@
 #include "./headers/instructions.h"
 #include "./headers/logger.h"
 
-// #define DEBUG
+#define DEBUG
 
 void initRegisters(Register *reg)
 {

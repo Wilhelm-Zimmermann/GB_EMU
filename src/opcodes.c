@@ -123,7 +123,7 @@ void instr_sub8bWithCarry(Register *reg, uint8_t *regToSubFrom, uint8_t valueToS
 {
     uint8_t carry = get_CFlag(reg);
     uint8_t originalValue = *regToSubFrom;
-    uint8_t subrResult = *regToSubFrom - valueToSub;
+    uint8_t subrResult = *regToSubFrom - valueToSub - carry;
 
     set_NFlag(reg);
     checkIfHasBorrowAndSet8bWithCarry(reg, originalValue, valueToSub, carry);
@@ -173,7 +173,7 @@ void instr_cp8b(Register *reg, uint8_t *regToSubFrom, uint8_t valueToSub)
 
     set_NFlag(reg);
     checkIfHasBorrowAndSet8b(reg, originalValue, valueToSub);
-    setCFlagIfAddOpLtThan0(reg, subrResult);
+    // setCFlagIfAddOpLtThan0(reg, subrResult);
 
     checkIfOpZeroAndSetZ(reg, subrResult);
     if (originalValue < valueToSub)

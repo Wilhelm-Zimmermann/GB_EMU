@@ -27,7 +27,8 @@ void writeCPULogs(Register *reg, Memory *mem, uint16_t pcAddr, uint8_t opcode)
     // char nFlag = get_NFlag(reg) ? 'N' : '-';
     // char ZFlag = get_ZFlag(reg) ? 'Z' : '-';
 
-    fprintf(filePointer, "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X PC:%04X PCMEM:%02X,%02X,%02X,%02X \n",
+    fprintf(filePointer, "OP: %02X A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X PC:%04X PCMEM:%02X,%02X,%02X,%02X \n",
+            opcode,
             reg->A,
             reg->F,
             reg->B,

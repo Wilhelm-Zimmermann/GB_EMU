@@ -17,4 +17,5 @@ make
 # ./main.out "../ROMS/08-misc instrs.gb"
 # ./main.out "../ROMS/09-op r,r.gb"
 # ./main.out "../ROMS/10-bit ops.gb"
+# ./main.out "../ROMS/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 ./main.out "../ROMS/tetris.gb"

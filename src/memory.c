@@ -159,6 +159,24 @@ void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
     // IO REGISTERS
     if (address >= 0xFF00 && address <= 0xFF7F)
     {
+
+        if (address == 0xFF40)
+        {
+            if (!(value & 0x80))
+            {
+                mem->ioRegs[0x44] = 0;
+                // TODO: reset ppu current line
+            }
+            mem->ioRegs[address - 0xFF00] = value;
+            return;
+        }
+
+        if (address == 0xFF44)
+        {
+
+            return;
+        }
+
         if (address == 0xFF01)
         {
             mem->ioRegs[address - 0xFF00] = value;

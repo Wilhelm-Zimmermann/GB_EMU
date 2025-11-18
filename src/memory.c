@@ -209,6 +209,8 @@ void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
 
 void stack_push16(Register *reg, Memory *mem, uint16_t value)
 {
+    // Game Boy is little endian, the low byte goes first and after the high byte
+    // on stack [high_byte, low_byte]
     reg->SP--;
     memoryWrite(mem, reg->SP, (uint8_t)(value >> 8));
 

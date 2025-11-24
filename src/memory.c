@@ -5,7 +5,7 @@
 #include "./headers/register.h"
 #define DEBUG
 
-void initMemory(Memory *mem)
+void init_memory(Memory *mem)
 {
 #ifdef DEBUG
     printf("Allocating RAM...\n");
@@ -39,7 +39,7 @@ void initMemory(Memory *mem)
     }
 }
 
-void freeMemory(Memory *mem)
+void free_memory(Memory *mem)
 {
     if (mem == NULL)
         return;
@@ -61,7 +61,7 @@ void freeMemory(Memory *mem)
     free(mem);
 }
 
-uint8_t memoryRead(Memory *mem, uint16_t address)
+uint8_t memory_read(Memory *mem, uint16_t address)
 {
     if (address <= 0x3FFF)
     {
@@ -111,15 +111,15 @@ uint8_t memoryRead(Memory *mem, uint16_t address)
     return 0;
 }
 
-uint16_t memoryRead16t(Memory *mem, uint16_t address)
+uint16_t memory_read_16t(Memory *mem, uint16_t address)
 {
-    uint8_t lowByte = memoryRead(mem, address);
-    uint8_t highByte = memoryRead(mem, address + 1);
+    uint8_t lowByte = memory_read(mem, address);
+    uint8_t highByte = memory_read(mem, address + 1);
 
     return (highByte << 8) | lowByte;
 }
 
-void memoryWrite(Memory *mem, uint16_t address, uint8_t value)
+void memory_write(Memory *mem, uint16_t address, uint8_t value)
 {
     // ROM MEMORY - cannot write on this area (read - only - memory)
     if (address <= 0x7FFF)
@@ -212,18 +212,18 @@ void stack_push16(Register *reg, Memory *mem, uint16_t value)
     // Game Boy is little endian, the low byte goes first and after the high byte
     // on stack [high_byte, low_byte]
     reg->SP--;
-    memoryWrite(mem, reg->SP, (uint8_t)(value >> 8));
+    memory_write(mem, reg->SP, (uint8_t)(value >> 8));
 
     reg->SP--;
-    memoryWrite(mem, reg->SP, (uint8_t)(value & 0xFF));
+    memory_write(mem, reg->SP, (uint8_t)(value & 0xFF));
 }
 
 uint16_t stack_pop16(Register *reg, Memory *mem)
 {
-    uint8_t lowByte = memoryRead(mem, reg->SP);
+    uint8_t lowByte = memory_read(mem, reg->SP);
     reg->SP++;
 
-    uint8_t highByte = memoryRead(mem, reg->SP);
+    uint8_t highByte = memory_read(mem, reg->SP);
     reg->SP++;
 
     return (uint16_t)((highByte << 8) | lowByte);

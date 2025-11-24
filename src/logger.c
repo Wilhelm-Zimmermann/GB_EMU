@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "./headers/logger.h"
 
-void writeCPULogs(Register *reg, Memory *mem, uint16_t pcAddr, uint8_t opcode)
+void write_cpu_logs(Register *reg, Memory *mem, uint16_t pcAddr, uint8_t opcode)
 {
     FILE *filePointer;
     char *fileName = "../log.txt";
@@ -17,15 +17,15 @@ void writeCPULogs(Register *reg, Memory *mem, uint16_t pcAddr, uint8_t opcode)
 
     // fprintf(filePointer, "PC: %04X | Opcode: %02X | AF: %04X | BC: %04X | DE: %04X | HL: %04X | SP: %04X\n",
     //         pcAddr, opcode, reg->AF, reg->BC, reg->DE, reg->HL, reg->SP);
-    uint8_t part1 = memoryRead(mem, reg->PC);
-    uint8_t part2 = memoryRead(mem, reg->PC + 1);
-    uint8_t part3 = memoryRead(mem, reg->PC + 2);
-    uint8_t part4 = memoryRead(mem, reg->PC + 3);
+    uint8_t part1 = memory_read(mem, reg->PC);
+    uint8_t part2 = memory_read(mem, reg->PC + 1);
+    uint8_t part3 = memory_read(mem, reg->PC + 2);
+    uint8_t part4 = memory_read(mem, reg->PC + 3);
 
-    // char cFlag = get_CFlag(reg) ? 'C' : '-';
-    // char hFlag = get_HFlag(reg) ? 'H' : '-';
-    // char nFlag = get_NFlag(reg) ? 'N' : '-';
-    // char ZFlag = get_ZFlag(reg) ? 'Z' : '-';
+    // char cFlag = get_c_flag(reg) ? 'C' : '-';
+    // char hFlag = get_h_flag(reg) ? 'H' : '-';
+    // char nFlag = get_n_flag(reg) ? 'N' : '-';
+    // char ZFlag = get_z_flag(reg) ? 'Z' : '-';
 
     fprintf(filePointer, "OP: %02X A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X PC:%04X PCMEM:%02X,%02X,%02X,%02X \n",
             opcode,

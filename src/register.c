@@ -25,17 +25,17 @@ void initialize(Register *reg)
     reg->PC = 0x100;
 }
 
-void set_ZFlag(Register *reg)
+void set_z_flag(Register *reg)
 {
     reg->F |= (1 << Z_FLAG_BIT);
 }
 
-void set_CFlag(Register *reg)
+void set_c_flag(Register *reg)
 {
     reg->F |= (1 << C_FLAG_BIT);
 }
 
-void set_NFlag(Register *reg)
+void set_n_flag(Register *reg)
 {
     reg->F |= (1 << N_FLAG_BIT);
 }
@@ -45,29 +45,29 @@ void set_HFlag(Register *reg)
     reg->F |= (1 << H_FLAG_BIT);
 }
 
-void unset_ZFlag(Register *reg)
+void unset_z_flag(Register *reg)
 {
     reg->F &= ~(1 << Z_FLAG_BIT);
 }
 
-void unset_CFlag(Register *reg)
+void unset_c_flag(Register *reg)
 {
     reg->F &= ~(1 << C_FLAG_BIT);
 }
 
-void unset_NFlag(Register *reg)
+void unset_n_flag(Register *reg)
 {
     reg->F &= ~(1 << N_FLAG_BIT);
 }
 
-void unset_HFlag(Register *reg)
+void unset_h_flag(Register *reg)
 {
     reg->F &= ~(1 << H_FLAG_BIT);
 }
 
 // Todo: implement better functions for H flag, specially for addition and subtraction
 // H FLAGS
-void checkIfHasCarryAndSet8b(Register *reg, uint8_t value1, uint8_t value2)
+void check_if_has_carry_and_set_8b(Register *reg, uint8_t value1, uint8_t value2)
 {
     if ((value1 & 0x0F) + (value2 & 0x0F) > 0xF)
     {
@@ -75,11 +75,11 @@ void checkIfHasCarryAndSet8b(Register *reg, uint8_t value1, uint8_t value2)
     }
     else
     {
-        unset_HFlag(reg);
+        unset_h_flag(reg);
     }
 }
 
-void checkIfHasBorrowAndSet8b(Register *reg, uint8_t value1, uint8_t value2)
+void check_if_has_borrow_and_set_8b(Register *reg, uint8_t value1, uint8_t value2)
 {
     if ((value1 & 0x0F) < (value2 & 0x0F))
     {
@@ -87,11 +87,11 @@ void checkIfHasBorrowAndSet8b(Register *reg, uint8_t value1, uint8_t value2)
     }
     else
     {
-        unset_HFlag(reg);
+        unset_h_flag(reg);
     }
 }
 
-void checkIfHasCarryAndSet8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
+void check_if_has_carry_and_set_8b_with_carry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
 {
     if (((value1 & 0x0F) + (value2 & 0x0F) + carry) > 0x0F)
     {
@@ -99,10 +99,10 @@ void checkIfHasCarryAndSet8bWithCarry(Register *reg, uint8_t value1, uint8_t val
     }
     else
     {
-        unset_HFlag(reg);
+        unset_h_flag(reg);
     }
 }
-void checkIfHasBorrowAndSet8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
+void check_if_has_borrow_and_set_8b_with_carry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
 {
     int16_t result = (value1 & 0x0F) - (value2 & 0x0F) - carry;
 
@@ -112,11 +112,11 @@ void checkIfHasBorrowAndSet8bWithCarry(Register *reg, uint8_t value1, uint8_t va
     }
     else
     {
-        unset_HFlag(reg);
+        unset_h_flag(reg);
     }
 }
 
-void checkIfHasCarryAndSetH16b(Register *reg, uint16_t value)
+void check_if_has_carry_and_set_h_16b(Register *reg, uint16_t value)
 {
     if (value > 0x0FFF)
     {
@@ -124,107 +124,107 @@ void checkIfHasCarryAndSetH16b(Register *reg, uint16_t value)
     }
     else
     {
-        unset_HFlag(reg);
+        unset_h_flag(reg);
     }
 }
 
 // Z FLAG
-void checkIfOpZeroAndSetZ(Register *reg, uint8_t value)
+void check_if_op_zero_and_set_z(Register *reg, uint8_t value)
 {
     if (value == 0)
     {
-        set_ZFlag(reg);
+        set_z_flag(reg);
     }
     else
     {
-        unset_ZFlag(reg);
+        unset_z_flag(reg);
     }
 }
 
 // C FLAG
-void setCFlagIfAddOpGtThanFF(Register *reg, uint16_t value)
+void set_c_flag_if_add_op_gt_FF(Register *reg, uint16_t value)
 {
     if (value > 0xFF)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
 }
-void setCFlagIfAddOpGtThanFFFF(Register *reg, uint32_t value)
+void set_c_flag_if_add_op_gt_FFFF(Register *reg, uint32_t value)
 {
     if (value > 0xFFFF)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
 }
 
-void checkIfHasBorrowAndSetC8b(Register *reg, uint8_t value1, uint8_t value2)
+void check_if_has_borrow_and_set_c_8b(Register *reg, uint8_t value1, uint8_t value2)
 {
     if (value1 < value2)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
 }
 
-void checkIfHasBorrowAndSetC8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
+void check_if_has_borrow_and_set_c_8b_with_carry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
 {
     int16_t result = (value1 & 0x0F) - (value2 & 0x0F) - carry;
 
     if (result < 0)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
 }
 
-void setCFlagIfAddOpLtThan0(Register *reg, uint16_t value)
+void set_c_flag_if_add_lt_0(Register *reg, uint16_t value)
 {
     int16_t signedValue = (int16_t)value;
     if (signedValue < 0)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
 }
 
-void incrementPC(Register *reg)
+void increment_pc(Register *reg)
 {
     reg->PC++;
 }
 
-uint8_t get_CFlag(Register *reg)
+uint8_t get_c_flag(Register *reg)
 {
     return (reg->F >> C_FLAG_BIT) & 1;
 }
 
-uint8_t get_ZFlag(Register *reg)
+uint8_t get_z_flag(Register *reg)
 {
     return (reg->F >> Z_FLAG_BIT) & 1;
 }
 
-uint8_t get_NFlag(Register *reg)
+uint8_t get_n_flag(Register *reg)
 {
     return (reg->F >> N_FLAG_BIT) & 1;
 }
 
-uint8_t get_HFlag(Register *reg)
+uint8_t get_h_flag(Register *reg)
 {
     return (reg->F >> H_FLAG_BIT) & 1;
 }

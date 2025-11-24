@@ -3,7 +3,7 @@
 
 int const VIDEO_SIZE = 160 * 144;
 
-void initPPUVideo(PPU *ppu)
+void init_ppu_video(PPU *ppu)
 {
     ppu->video = calloc(VIDEO_SIZE, sizeof(uint32_t));
     ppu->cycle_counter = 0;
@@ -44,12 +44,12 @@ static inline uint8_t get_ppu_mode(Memory *mem)
     // 1 - vertical blank
     // 2 - OAM scan
     // 3 - drawing pixels
-    return memoryRead(mem, 0xFF41) & 0x03;
+    return memory_read(mem, 0xFF41) & 0x03;
 }
 
 int handle_lcdc_blank(PPU *ppu, Memory *mem)
 {
-    uint8_t lcdc = memoryRead(mem, 0xFF40);
+    uint8_t lcdc = memory_read(mem, 0xFF40);
     uint8_t bg_window_enable = lcdc & 1; // get the rightmost bit.
 
     if (!bg_window_enable)
@@ -69,23 +69,11 @@ void render(PPU *ppu, Memory *mem)
 
     int i = 0;
     // it does not work yet
-    while (i < VIDEO_SIZE)
-    {
-        uint8_t firstChunk = memoryRead(mem, 0x8000 + i);
-        uint8_t secondChunk = memoryRead(mem, 0x8000 + i + 1);
-        uint32_t *merge_result = merge_tile_line(firstChunk, secondChunk);
 
-        for (int j = 0; j < 8; j++)
-        {
-            ppu->video[i + j] = display_palette[merge_result[j]];
-        }
-        free(merge_result);
-        i += 8;
-    }
 }
 
 // PPU = Picture Processing Unit
-void ppuStep(PPU *ppu, Memory *mem, int cpu_cycles)
+void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
 {
     render(ppu, mem);
 }

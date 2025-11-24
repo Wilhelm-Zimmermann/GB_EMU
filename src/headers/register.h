@@ -55,34 +55,34 @@ typedef struct
 } Register;
 
 void initialize(Register *reg);
-void incrementPC(Register *reg);
+void increment_pc(Register *reg);
 
-uint8_t get_CFlag(Register *reg);
-uint8_t get_ZFlag(Register *reg);
-uint8_t get_NFlag(Register *reg);
-uint8_t get_HFlag(Register *reg);
+uint8_t get_c_flag(Register *reg);
+uint8_t get_z_flag(Register *reg);
+uint8_t get_n_flag(Register *reg);
+uint8_t get_h_flag(Register *reg);
 
-void set_ZFlag(Register *reg);
-void set_CFlag(Register *reg);
-void set_NFlag(Register *reg);
+void set_z_flag(Register *reg);
+void set_c_flag(Register *reg);
+void set_n_flag(Register *reg);
 void set_HFlag(Register *reg);
 
-void unset_ZFlag(Register *reg);
-void unset_CFlag(Register *reg);
-void unset_NFlag(Register *reg);
-void unset_HFlag(Register *reg);
+void unset_z_flag(Register *reg);
+void unset_c_flag(Register *reg);
+void unset_n_flag(Register *reg);
+void unset_h_flag(Register *reg);
 
-void checkIfHasCarryAndSet8b(Register *reg, uint8_t value1, uint8_t value2);
-void checkIfHasBorrowAndSet8b(Register *reg, uint8_t value1, uint8_t value2);
-void checkIfHasCarryAndSet8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry);
-void checkIfHasBorrowAndSet8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry);
+void check_if_has_carry_and_set_8b(Register *reg, uint8_t value1, uint8_t value2);
+void check_if_has_borrow_and_set_8b(Register *reg, uint8_t value1, uint8_t value2);
+void check_if_has_carry_and_set_8b_with_carry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry);
+void check_if_has_borrow_and_set_8b_with_carry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry);
 
-void checkIfHasCarryAndSetH16b(Register *reg, uint16_t value);
+void check_if_has_carry_and_set_h_16b(Register *reg, uint16_t value);
 
-void checkIfOpZeroAndSetZ(Register *reg, uint8_t value);
+void check_if_op_zero_and_set_z(Register *reg, uint8_t value);
 
-void setCFlagIfAddOpGtThanFF(Register *reg, uint16_t value);
-void setCFlagIfAddOpGtThanFFFF(Register *reg, uint32_t value);
-void setCFlagIfAddOpLtThan0(Register *reg, uint16_t value);
-void checkIfHasBorrowAndSetC8b(Register *reg, uint8_t value1, uint8_t value2);
-void checkIfHasBorrowAndSetC8bWithCarry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry);
+void set_c_flag_if_add_op_gt_FF(Register *reg, uint16_t value);
+void set_c_flag_if_add_op_gt_FFFF(Register *reg, uint32_t value);
+void set_c_flag_if_add_lt_0(Register *reg, uint16_t value);
+void check_if_has_borrow_and_set_c_8b(Register *reg, uint8_t value1, uint8_t value2);
+void check_if_has_borrow_and_set_c_8b_with_carry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry);

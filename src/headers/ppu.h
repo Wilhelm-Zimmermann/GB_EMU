@@ -22,5 +22,5 @@ typedef struct
     int modeClock;
 } PPU;
 
-void initPPUVideo(PPU* ppu);
-void ppuStep(PPU *ppu, Memory *mem, int cpuCycles);
+void init_ppu_video(PPU* ppu);
+void ppu_step(PPU *ppu, Memory *mem, int cpuCycles);

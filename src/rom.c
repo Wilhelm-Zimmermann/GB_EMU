@@ -5,7 +5,7 @@
 #define DEBUG
 
 // If i forget something about ROM; https://gbdev.io/pandocs/The_Cartridge_Header.html
-void loadRom(Memory *mem, const char *fileName)
+void load_rom(Memory *mem, const char *fileName)
 {
 #ifdef DEBUG
     printf("Reading ROM file...\n");

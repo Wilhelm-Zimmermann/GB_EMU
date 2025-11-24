@@ -5,4 +5,4 @@ typedef struct
 {
 } ROM;
 
-void loadRom(Memory *mem, const char* fileName);
+void load_rom(Memory *mem, const char* fileName);

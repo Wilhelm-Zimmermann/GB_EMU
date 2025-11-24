@@ -3,156 +3,156 @@
 #include "./headers/bit.h"
 #include "./headers/register.h"
 
-void rotateLeftCircular8b(Register *reg, uint8_t *value)
+void rotate_left_circular_8b(Register *reg, uint8_t *value)
 {
-    uint8_t msb = getMsb(*value);
+    uint8_t msb = get_msb(*value);
     *value = (*value << 1) | msb;
     if (msb)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
 
-    checkIfOpZeroAndSetZ(reg, *value);
-    unset_HFlag(reg);
-    unset_NFlag(reg);
+    check_if_op_zero_and_set_z(reg, *value);
+    unset_h_flag(reg);
+    unset_n_flag(reg);
 }
 
-void rotateRightCircular8b(Register *reg, uint8_t *value)
+void rotate_right_circular_8b(Register *reg, uint8_t *value)
 {
-    uint8_t lsb = getLsb(*value);
+    uint8_t lsb = get_lsb(*value);
     *value = (*value >> 1) | (lsb << 7);
     if (lsb)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
-    checkIfOpZeroAndSetZ(reg, *value);
-    unset_HFlag(reg);
-    unset_NFlag(reg);
+    check_if_op_zero_and_set_z(reg, *value);
+    unset_h_flag(reg);
+    unset_n_flag(reg);
 }
 
-void rotateLeft8b(Register *reg, uint8_t *value)
+void rotate_left_8b(Register *reg, uint8_t *value)
 {
-    uint8_t msb = getMsb(*value);
-    uint8_t cFlag = get_CFlag(reg);
+    uint8_t msb = get_msb(*value);
+    uint8_t cFlag = get_c_flag(reg);
     *value = (*value << 1) | cFlag;
     if (msb)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
 
-    checkIfOpZeroAndSetZ(reg, *value);
-    unset_HFlag(reg);
-    unset_NFlag(reg);
+    check_if_op_zero_and_set_z(reg, *value);
+    unset_h_flag(reg);
+    unset_n_flag(reg);
 }
 
-void rotateRight8b(Register *reg, uint8_t *value)
+void rotate_right_8b(Register *reg, uint8_t *value)
 {
-    uint8_t lsb = getLsb(*value);
-    uint8_t cFlag = get_CFlag(reg);
+    uint8_t lsb = get_lsb(*value);
+    uint8_t cFlag = get_c_flag(reg);
     *value = (*value >> 1) | (cFlag << 7);
     if (lsb)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
-    checkIfOpZeroAndSetZ(reg, *value);
-    unset_HFlag(reg);
-    unset_NFlag(reg);
+    check_if_op_zero_and_set_z(reg, *value);
+    unset_h_flag(reg);
+    unset_n_flag(reg);
 }
 
-void shiftLeftArithmetic8b(Register *reg, uint8_t *value)
+void shift_left_arithmetic_8b(Register *reg, uint8_t *value)
 {
-    uint8_t msb = getMsb(*value);
+    uint8_t msb = get_msb(*value);
     if (msb)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
     *value = *value << 1;
-    checkIfOpZeroAndSetZ(reg, *value);
-    unset_HFlag(reg);
-    unset_NFlag(reg);
+    check_if_op_zero_and_set_z(reg, *value);
+    unset_h_flag(reg);
+    unset_n_flag(reg);
 }
 
-void shiftRightArithmetic8b(Register *reg, uint8_t *value)
+void shift_right_arithmetic_8b(Register *reg, uint8_t *value)
 {
-    uint8_t lsb = getLsb(*value);
-    uint8_t msb = getMsb(*value);
+    uint8_t lsb = get_lsb(*value);
+    uint8_t msb = get_msb(*value);
     if (lsb)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
     *value = (*value >> 1) | (msb << 7);
-    checkIfOpZeroAndSetZ(reg, *value);
-    unset_HFlag(reg);
-    unset_NFlag(reg);
+    check_if_op_zero_and_set_z(reg, *value);
+    unset_h_flag(reg);
+    unset_n_flag(reg);
 }
 
-void swap8b(Register *reg, uint8_t *value)
+void swap_8b(Register *reg, uint8_t *value)
 {
     uint8_t lowerNibble = *value & 0x0F;
     uint8_t highNibble = (*value >> 4);
     *value = (lowerNibble << 4) | highNibble;
-    checkIfOpZeroAndSetZ(reg, *value);
-    unset_HFlag(reg);
-    unset_NFlag(reg);
-    unset_CFlag(reg);
+    check_if_op_zero_and_set_z(reg, *value);
+    unset_h_flag(reg);
+    unset_n_flag(reg);
+    unset_c_flag(reg);
 }
 
-void shiftRightLogical8b(Register *reg, uint8_t *value)
+void shift_right_logical_8b(Register *reg, uint8_t *value)
 {
-    uint8_t lsb = getLsb(*value);
+    uint8_t lsb = get_lsb(*value);
     if (lsb)
     {
-        set_CFlag(reg);
+        set_c_flag(reg);
     }
     else
     {
-        unset_CFlag(reg);
+        unset_c_flag(reg);
     }
 
     *value = *value >> 1;
-    checkIfOpZeroAndSetZ(reg, *value);
-    unset_HFlag(reg);
-    unset_NFlag(reg);
+    check_if_op_zero_and_set_z(reg, *value);
+    unset_h_flag(reg);
+    unset_n_flag(reg);
 }
 
-void checkBit(Register *reg, uint8_t *value, uint8_t bitPos)
+void check_bit(Register *reg, uint8_t *value, uint8_t bitPos)
 {
     uint8_t extractedBit = (*value >> bitPos) & 1;
-    checkIfOpZeroAndSetZ(reg, extractedBit);
-    unset_NFlag(reg);
+    check_if_op_zero_and_set_z(reg, extractedBit);
+    unset_n_flag(reg);
     set_HFlag(reg);
 }
 
-void resetBit(Register *reg, uint8_t *value, uint8_t bitPos)
+void reset_bit(Register *reg, uint8_t *value, uint8_t bitPos)
 {
     *value &= ~(1 << bitPos);
 }
 
-void setBit(Register *reg, uint8_t *value, uint8_t bitPos)
+void set_bit(Register *reg, uint8_t *value, uint8_t bitPos)
 {
     *value |= (1 << bitPos);
 }

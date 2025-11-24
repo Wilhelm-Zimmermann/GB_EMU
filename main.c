@@ -10,7 +10,7 @@
 
 const int PIXEL_SCALE = 2;
 
-void printSdlError(const char *message)
+void print_sdl_error(const char *message)
 {
     printf("%s: %s\n", message, SDL_GetError());
 }
@@ -25,7 +25,7 @@ int main(int argc, char *args[])
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        printSdlError("SDL was not able to initialize");
+        print_sdl_error("SDL was not able to initialize");
         return 1;
     }
 
@@ -37,18 +37,18 @@ int main(int argc, char *args[])
 
     if (window == NULL)
     {
-        printSdlError("Window could not be created");
+        print_sdl_error("Window could not be created");
         return 1;
     }
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160, 144);
 
-    initMemory(mem);
-    initPPUVideo(ppu);
-    initRegisters(reg);
+    init_memory(mem);
+    init_ppu_video(ppu);
+    init_registers(reg);
 
-    loadRom(mem, args[1]);
+    load_rom(mem, args[1]);
     SDL_Event e;
     int quit = 0;
 
@@ -73,7 +73,7 @@ int main(int argc, char *args[])
 
         SDL_UpdateTexture(texture, NULL, ppu->video, 160 * sizeof(uint32_t));
         int cycles = cpu_cycle(reg, mem);
-        ppuStep(ppu, mem, cycles);
+        ppu_step(ppu, mem, cycles);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
@@ -85,7 +85,7 @@ int main(int argc, char *args[])
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    freeMemory(mem);
+    free_memory(mem);
     if (rom != NULL)
         free(rom);
     if (reg != NULL)

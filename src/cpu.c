@@ -7,17 +7,17 @@
 
 #define DEBUG
 
-void initRegisters(Register *reg)
+void init_registers(Register *reg)
 {
     initialize(reg);
 }
 
 uint8_t cpu_cycle(Register *reg, Memory *mem)
 {
-    uint8_t opcode = memoryRead(mem, reg->PC);
+    uint8_t opcode = memory_read(mem, reg->PC);
 
 #ifdef DEBUG
-    writeCPULogs(reg, mem, reg->PC, opcode);
+    write_cpu_logs(reg, mem, reg->PC, opcode);
 #endif
     switch (opcode & 0xF0)
     {
@@ -72,7 +72,7 @@ uint8_t cpu_cycle(Register *reg, Memory *mem)
     default:
     UNKNOWN_OPCODE:
         // printf("Unknown opcode: 0x%02X at PC=0%04X\n", opcode, reg->PC);
-        incrementPC(reg);
+        increment_pc(reg);
         return 4;
         break;
     }

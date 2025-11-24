@@ -27,7 +27,7 @@ uint8_t get_color(uint8_t color_id, uint8_t palette)
 
 uint32_t *merge_tile_line(uint8_t first, uint8_t second)
 {
-    // these lines will not work
+    // these lines will not work, this is only a trash code built by myself
     uint32_t *tile_line = calloc(8, sizeof(uint32_t));
     for (int i = 7; i >= 0; i--)
     {
@@ -67,9 +67,15 @@ void render(PPU *ppu, Memory *mem)
     int lcdc_window_blank_status = handle_lcdc_blank(ppu, mem);
     if(lcdc_window_blank_status) return;
 
-    int i = 0;
-    // it does not work yet
+    uint8_t lcdc = memory_read(mem, 0xFF40);
+    uint8_t bg_window_reg = (lcdc >> 4) & 1;
 
+    // object always use 8000 addr as base
+
+    uint16_t tile_data_addr = bg_window_reg ? 0x8000 : 0x9000;
+    // tile map -> 0x9800 to 0x9bff and 0x9c00 to 9fff
+    uint16_t tile_map_addr = 0x9800;
+    
 }
 
 // PPU = Picture Processing Unit

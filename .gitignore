@@ -5,3 +5,4 @@ ROMS/
 
 main.s
 main.o
+ppu_mirror.c

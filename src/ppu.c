@@ -57,6 +57,8 @@ int handle_lcdc_blank(PPU *ppu, Memory *mem)
         for(int i = 0; i < VIDEO_SIZE; i++) {
             ppu->video[i] = 0xFFFFFFFF; // put white on every place; just because i want.
         }
+        ppu->mode = 0;
+        ppu->cycle_counter = 0;
         return 1;
     }
     return 0;

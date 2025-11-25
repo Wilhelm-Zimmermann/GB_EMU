@@ -16,10 +16,10 @@ typedef struct
     uint8_t obp1; // $FF49 Object Palette 1 Data
     uint8_t wy;   // $FF4A Window Y Position
     uint8_t wx;   // $FF4B Window X Position - 7
-    int cycle_counter;
     uint8_t current_line; 
     uint32_t *video;
-    int modeClock;
+    int cycle_counter;
+    int mode;
 } PPU;
 
 void init_ppu_video(PPU* ppu);

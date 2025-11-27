@@ -9,6 +9,7 @@
 // #define DEBUG
 
 const int PIXEL_SCALE = 2;
+const int CYCLES_PER_FRAME = 70224;
 
 void print_sdl_error(const char *message)
 {
@@ -42,7 +43,7 @@ int main(int argc, char *args[])
     }
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160, 144);
+    SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160 , 144);
 
     init_memory(mem);
     init_ppu_video(ppu);
@@ -54,6 +55,7 @@ int main(int argc, char *args[])
 
     while (!quit)
     {
+        int frame_cycles = 0;
         while (SDL_PollEvent(&e))
         {
             if (e.type == SDL_QUIT)
@@ -69,11 +71,14 @@ int main(int argc, char *args[])
                 }
             }
         }
-
+        while (frame_cycles <= CYCLES_PER_FRAME)
+        {
+            int cycles = cpu_cycle(reg, mem);
+            ppu_step(ppu, mem, cycles);
+            frame_cycles += cycles;
+        }
 
         SDL_UpdateTexture(texture, NULL, ppu->video, 160 * sizeof(uint32_t));
-        int cycles = cpu_cycle(reg, mem);
-        ppu_step(ppu, mem, cycles);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);

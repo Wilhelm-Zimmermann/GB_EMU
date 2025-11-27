@@ -3,6 +3,10 @@
 #include <stdbool.h>
 #include "./memory.h"
 
+#define SCREEN_WIDTH 160
+#define SCREEN_HEIGHT 144
+#define TICKS_PER_LINE 456
+
 typedef struct
 {
     uint8_t lcdc; // $FF40 LCD Control
@@ -16,7 +20,6 @@ typedef struct
     uint8_t obp1; // $FF49 Object Palette 1 Data
     uint8_t wy;   // $FF4A Window Y Position
     uint8_t wx;   // $FF4B Window X Position - 7
-    uint8_t current_line; 
     uint32_t *video;
     int cycle_counter;
     int mode;

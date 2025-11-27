@@ -54,7 +54,8 @@ int handle_lcdc_blank(PPU *ppu, Memory *mem)
 
     if (!bg_window_enable)
     {
-        for(int i = 0; i < VIDEO_SIZE; i++) {
+        for (int i = 0; i < VIDEO_SIZE; i++)
+        {
             ppu->video[i] = 0xFFFFFFFF; // put white on every place; just because i want.
         }
         ppu->mode = 0;
@@ -66,22 +67,23 @@ int handle_lcdc_blank(PPU *ppu, Memory *mem)
 
 void render(PPU *ppu, Memory *mem)
 {
-    int lcdc_window_blank_status = handle_lcdc_blank(ppu, mem);
-    if(lcdc_window_blank_status) return;
-
     uint8_t lcdc = memory_read(mem, 0xFF40);
     uint8_t bg_window_reg = (lcdc >> 4) & 1;
 
     // object always use 8000 addr as base
-
     uint16_t tile_data_addr = bg_window_reg ? 0x8000 : 0x9000;
     // tile map -> 0x9800 to 0x9bff and 0x9c00 to 9fff
     uint16_t tile_map_addr = 0x9800;
-    
 }
 
 // PPU = Picture Processing Unit
 void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
 {
+    int lcdc_window_blank_status = handle_lcdc_blank(ppu, mem);
+    if (lcdc_window_blank_status)
+        return;
+
+
+
     render(ppu, mem);
 }

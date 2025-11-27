@@ -173,7 +173,8 @@ void memory_write(Memory *mem, uint16_t address, uint8_t value)
 
         if (address == 0xFF44)
         {
-
+            // TODO: remove write logic
+            mem->ioRegs[address - 0xFF00] = value;
             return;
         }
 

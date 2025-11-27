@@ -8,7 +8,7 @@
 
 // #define DEBUG
 
-const int PIXEL_SCALE = 2;
+const int PIXEL_SCALE = 6;
 const int CYCLES_PER_FRAME = 70224;
 
 void print_sdl_error(const char *message)

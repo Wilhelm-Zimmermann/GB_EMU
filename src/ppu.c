@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "./headers/ppu.h"
 
-int const VIDEO_SIZE = 160 * 144;
+int const VIDEO_SIZE = SCREEN_WIDTH * SCREEN_HEIGHT;
 
 void init_ppu_video(PPU *ppu)
 {
@@ -47,10 +47,15 @@ static inline uint8_t get_ppu_mode(Memory *mem)
     return memory_read(mem, 0xFF41) & 0x03;
 }
 
-int handle_lcdc_blank(PPU *ppu, Memory *mem)
+void refresh_lcdc_flags(PPU *ppu, Memory *mem)
 {
     uint8_t lcdc = memory_read(mem, 0xFF40);
-    uint8_t bg_window_enable = lcdc & 1; // get the rightmost bit.
+    ppu->lcdc = lcdc;
+}
+
+int handle_lcdc_blank(PPU *ppu, Memory *mem)
+{
+    uint8_t bg_window_enable = ppu->lcdc & 1; // get the rightmost bit.
 
     if (!bg_window_enable)
     {
@@ -67,23 +72,33 @@ int handle_lcdc_blank(PPU *ppu, Memory *mem)
 
 void render(PPU *ppu, Memory *mem)
 {
-    uint8_t lcdc = memory_read(mem, 0xFF40);
-    uint8_t bg_window_reg = (lcdc >> 4) & 1;
+    uint8_t lcdc = ppu->lcdc;
+    uint8_t bg_window_flag = (lcdc >> 4) & 1;
+    uint8_t tile_map_flag = (lcdc >> 6) & 1;
 
-    // object always use 8000 addr as base
-    uint16_t tile_data_addr = bg_window_reg ? 0x8000 : 0x9000;
+    // LCDC flags: https://gbdev.io/pandocs/LCDC.html
+    // object always use 8000 addr as base; if bg_window_flag = 1 0x8000 else 0x8800
+    uint16_t tile_data_addr = bg_window_flag ? 0x8000 : 0x8800;
     // tile map -> 0x9800 to 0x9bff and 0x9c00 to 9fff
-    uint16_t tile_map_addr = 0x9800;
+    uint16_t tile_map_addr = tile_map_flag ? 0x9800 : 0x9c00;
 }
 
 // PPU = Picture Processing Unit
 void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
 {
+    refresh_lcdc_flags(ppu, mem);
+    // TODO: only for test the below asignment; remove after;
+    ppu->mode = 3;
     int lcdc_window_blank_status = handle_lcdc_blank(ppu, mem);
     if (lcdc_window_blank_status)
         return;
 
-
-
-    render(ppu, mem);
+    switch (ppu->mode)
+    {
+    case 3:
+        render(ppu, mem);
+        break;
+    default:
+        break;
+    }
 }

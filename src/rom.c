@@ -48,7 +48,7 @@ void load_rom(Memory *mem, const char *fileName)
     // Fill the video ram with current map
     if (mem->fullRom[0x0149] == 0x02)
     {
-        // make this work
+        // TODO: make this work
         printf("Allocating additinal RAM. 8KiB\n");
     }
 

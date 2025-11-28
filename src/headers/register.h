@@ -52,6 +52,10 @@ typedef struct
 
     uint16_t SP; // Stack Pointer
     uint16_t PC; // Program Counter
+    int IME;           
+    int ime_scheduled;
+    int halted;
+    int stopped;
 } Register;
 
 void initialize(Register *reg);

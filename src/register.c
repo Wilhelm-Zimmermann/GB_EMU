@@ -21,6 +21,11 @@ void initialize(Register *reg)
     reg->H = 0x01;
     reg->L = 0x4D;
 
+    reg->IME = 0;           
+    reg->ime_scheduled = 0;
+    reg->halted = 0;
+    reg->stopped = 0;
+
     reg->SP = 0xFFFE;
     reg->PC = 0x100;
 }

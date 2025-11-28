@@ -145,6 +145,7 @@ uint8_t opcode_x1(Register *reg, Memory *mem, uint8_t opcode)
     case 0x10:
         // STOP n8 - IDLE EMU
         // Implement this after
+        reg->halted = 1;
         reg->PC += 2;
         return 4;
         break;
@@ -2351,6 +2352,8 @@ uint8_t opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
     case 0xF3:
     {
         // DI
+        reg->IME = 0;
+        reg->ime_scheduled = 0;
         increment_pc(reg);
         return 4;
         break;
@@ -2440,6 +2443,7 @@ uint8_t opcode_xF(Register *reg, Memory *mem, uint8_t opcode)
     case 0xFB:
     {
         // EI
+        reg->ime_scheduled = 1;
         increment_pc(reg);
         return 4;
         break;

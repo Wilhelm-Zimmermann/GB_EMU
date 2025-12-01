@@ -46,7 +46,7 @@ int main(int argc, char *args[])
     SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 160 , 144);
 
     init_memory(mem);
-    init_ppu_video(ppu);
+    init_ppu(ppu);
     init_registers(reg);
 
     load_rom(mem, args[1]);

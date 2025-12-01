@@ -5,7 +5,7 @@
 
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 144
-#define TICKS_PER_LINE 456
+const int TICKS_PER_LINE =  456;
 
 typedef struct
 {
@@ -25,5 +25,5 @@ typedef struct
     int mode;
 } PPU;
 
-void init_ppu_video(PPU* ppu);
+void init_ppu(PPU* ppu);
 void ppu_step(PPU *ppu, Memory *mem, int cpuCycles);

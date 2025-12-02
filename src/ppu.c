@@ -7,7 +7,7 @@ int const VIDEO_SIZE = SCREEN_WIDTH * SCREEN_HEIGHT;
 void init_ppu(PPU *ppu)
 {
     ppu->video = calloc(VIDEO_SIZE, sizeof(uint32_t));
-    ppu->cycle_counter = 0;
+    ppu->dot_clock = 0;
     ppu->mode = 0;
 }
 
@@ -63,7 +63,7 @@ int handle_lcdc_blank(PPU *ppu, Memory *mem)
             ppu->video[i] = 0xFFFFFFFF; // put white on every place; just because i want.
         }
         ppu->mode = 0;
-        ppu->cycle_counter = 0;
+        ppu->dot_clock = 0;
         return 1;
     }
     return 0;
@@ -91,13 +91,13 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
 {
     refresh_lcdc_flags(ppu, mem);
     // TODO: only for test the below asignment; remove after;
+    ppu->dot_clock += cpu_cycles;
 
-    printf("PPU mode: %d\n", ppu->mode);
     switch (ppu->mode)
     {
     case 2:
         // OAM Scan
-        if (ppu->cycle_counter >= 80)
+        if (ppu->dot_clock >= 80)
         {
             ppu->mode = 3;
             update_ppu_mode(ppu, mem);
@@ -105,7 +105,7 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
         break;
     case 3:
         // Drawing pixels
-        if (ppu->cycle_counter >= 252)
+        if (ppu->dot_clock >= 252)
         {
             ppu->mode = 0;
             update_ppu_mode(ppu, mem);
@@ -114,22 +114,42 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
         break;
     case 0:
         // Horizontal blank;
-        if (ppu->cycle_counter >= 80)
+        if (ppu->dot_clock >= TICKS_PER_LINE)
         {
-            ppu->mode = 1;
+            ppu->dot_clock = 0;
+            int ly = memory_read(mem, 0xFF44);
+            ly++;
+            if (ly == LY_MAX_LINE)
+            {
+                ppu->mode = 1;
+                uint8_t if_reg = memory_read(mem, 0xFF0F);
+                memory_write(mem, 0xFF0F, if_reg | 0x01);
+            }
+            else
+            {
+                ppu->mode = 2;
+            }
+            memory_write(mem, 0xFF44, ly);
             update_ppu_mode(ppu, mem);
         }
         break;
     case 1:
         // Vertical blank;
-        if (ppu->cycle_counter >= 80)
+        if (ppu->dot_clock >= TICKS_PER_LINE)
         {
-            ppu->mode = 2;
+            ppu->dot_clock = 0;
+            int ly = memory_read(mem, 0xFF44);
+            ly++;
+            if (ly > V_BLANK_LY_MAX)
+            {
+                ppu->mode = 2;
+                ly = 0;
+            }
+            memory_write(mem, 0xFF44, ly);
             update_ppu_mode(ppu, mem);
         }
         break;
     default:
         break;
     }
-    ppu->cycle_counter += cpu_cycles;
 }

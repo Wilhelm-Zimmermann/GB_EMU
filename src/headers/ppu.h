@@ -5,7 +5,9 @@
 
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 144
-const int TICKS_PER_LINE =  456;
+#define TICKS_PER_LINE  456
+#define LY_MAX_LINE  144
+#define V_BLANK_LY_MAX  153
 
 typedef struct
 {
@@ -21,7 +23,7 @@ typedef struct
     uint8_t wy;   // $FF4A Window Y Position
     uint8_t wx;   // $FF4B Window X Position - 7
     uint32_t *video;
-    int cycle_counter;
+    int dot_clock;
     int mode;
 } PPU;
 

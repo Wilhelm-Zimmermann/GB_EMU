@@ -9,6 +9,11 @@
 #define LY_MAX_LINE  144
 #define V_BLANK_LY_MAX  153
 
+
+#define STAT_LYC_FLAG   (1 << 2) 
+#define STAT_LYC_INT    (1 << 6) 
+#define IF_STAT_BIT     (1 << 1)
+
 typedef struct
 {
     uint8_t lcdc; // $FF40 LCD Control

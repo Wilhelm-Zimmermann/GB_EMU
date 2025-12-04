@@ -27,6 +27,30 @@ uint8_t get_color(uint8_t color_id, uint8_t palette)
     return (palette >> (color_id * 2)) & 0x03;
 }
 
+void check_lyc(Memory *mem)
+{
+    uint8_t ly = memory_read(mem, 0xFF44);
+    uint8_t lyc = memory_read(mem, 0xFF45);
+    uint8_t stat = memory_read(mem, 0xFF41);
+
+    if (ly == lyc)
+    {
+        stat |= STAT_LYC_FLAG;
+
+        if (stat & STAT_LYC_INT)
+        {
+            uint8_t if_reg = memory_read(mem, 0xFF0F);
+            memory_write(mem, 0xFF0F, if_reg | IF_STAT_BIT);
+        }
+    }
+    else
+    {
+        stat &= ~STAT_LYC_FLAG;
+    }
+
+    memory_write(mem, 0xFF41, stat);
+}
+
 static inline uint8_t get_ppu_mode(Memory *mem)
 {
     // get ppu mode
@@ -119,6 +143,10 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
             ppu->dot_clock = 0;
             int ly = memory_read(mem, 0xFF44);
             ly++;
+
+            memory_write(mem, 0xFF44, ly);
+            check_lyc(mem);
+
             if (ly == LY_MAX_LINE)
             {
                 ppu->mode = 1;
@@ -129,7 +157,6 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
             {
                 ppu->mode = 2;
             }
-            memory_write(mem, 0xFF44, ly);
             update_ppu_mode(ppu, mem);
         }
         break;
@@ -146,6 +173,7 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
                 ly = 0;
             }
             memory_write(mem, 0xFF44, ly);
+            check_lyc(mem);
             update_ppu_mode(ppu, mem);
         }
         break;

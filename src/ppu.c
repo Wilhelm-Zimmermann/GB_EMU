@@ -78,7 +78,7 @@ void refresh_lcdc_flags(PPU *ppu, Memory *mem)
 
 int handle_lcdc_blank(PPU *ppu, Memory *mem)
 {
-    uint8_t bg_window_enable = ppu->lcdc & 1; // get the rightmost bit.
+    uint8_t bg_window_enable = (ppu->lcdc >> 7) & 1; // get the rightmost bit.
 
     if (!bg_window_enable)
     {
@@ -97,12 +97,14 @@ void render(PPU *ppu, Memory *mem)
 {
     uint8_t lcdc = ppu->lcdc;
     uint8_t bg_window_flag = (lcdc >> 4) & 1;
+    uint8_t bg_tile_map_select = (lcdc >> 3) & 1;
     uint8_t tile_map_flag = (lcdc >> 6) & 1;
 
     int lcdc_window_blank_status = handle_lcdc_blank(ppu, mem);
     if (lcdc_window_blank_status)
         return;
 
+    uint16_t map_addr = bg_tile_map_select ? 0x9C00 : 0x9800;
     // LCDC flags: https://gbdev.io/pandocs/LCDC.html
     // object always use 8000 addr as base; if bg_window_flag = 1 0x8000 else 0x8800
     uint16_t tile_data_addr = bg_window_flag ? 0x8000 : 0x8800;
@@ -116,7 +118,7 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
     refresh_lcdc_flags(ppu, mem);
     // TODO: only for test the below asignment; remove after;
     ppu->dot_clock += cpu_cycles;
-
+    printf("PPU MODE: %d\n", ppu->mode);
     switch (ppu->mode)
     {
     case 2:

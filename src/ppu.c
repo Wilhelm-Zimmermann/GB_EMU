@@ -99,6 +99,9 @@ void render(PPU *ppu, Memory *mem)
     uint8_t bg_window_flag = (lcdc >> 4) & 1;
     uint8_t bg_tile_map_select = (lcdc >> 3) & 1;
     uint8_t tile_map_flag = (lcdc >> 6) & 1;
+    uint8_t scx = memory_read(mem, 0xFF43);
+    uint8_t scy = memory_read(mem, 0xFF42);
+    int ly = memory_read(mem, 0xFF44);
 
     int lcdc_window_blank_status = handle_lcdc_blank(ppu, mem);
     if (lcdc_window_blank_status)
@@ -110,6 +113,29 @@ void render(PPU *ppu, Memory *mem)
     uint16_t tile_data_addr = bg_window_flag ? 0x8000 : 0x8800;
     // tile map -> 0x9800 to 0x9bff and 0x9c00 to 9fff
     uint16_t tile_map_addr = tile_map_flag ? 0x9800 : 0x9c00;
+
+    for (int pixel_x = 0; pixel_x < 160; pixel_x++)
+    {
+        // & 0xFF is the same as %256 but faster
+        // uint8_t map_x = (x + scx) & 0xFF
+        uint8_t x_pos = (pixel_x + scx) % 256;
+        uint8_t y_pos = (ly + scy) % 256;
+
+        uint8_t col = x_pos / 8;
+        uint8_t row = y_pos / 8;
+
+        uint16_t address = map_addr + (row * 32) + col;
+        uint8_t tile = memory_read(mem, address);
+
+        uint32_t cor;
+        if (tile % 2 == 0) {
+            cor = 0xFF000000;
+        } else {
+            cor = 0xFFFFFFFF;
+        }
+
+        ppu->video[ly * 160 + pixel_x] = tile % 2 == 0 ? 0xffffffff : 0x0;
+    }
 }
 
 // PPU = Picture Processing Unit

@@ -110,7 +110,7 @@ void render(PPU *ppu, Memory *mem)
     uint16_t map_addr = bg_tile_map_select ? 0x9C00 : 0x9800;
     // LCDC flags: https://gbdev.io/pandocs/LCDC.html
     // object always use 8000 addr as base; if bg_window_flag = 1 0x8000 else 0x8800
-    uint16_t tile_data_addr = bg_window_flag ? 0x8000 : 0x8800;
+    uint16_t tile_data_addr = bg_window_flag ? 0x8000 : 0x9000;
     // tile map -> 0x9800 to 0x9bff and 0x9c00 to 9fff
     uint16_t tile_map_addr = tile_map_flag ? 0x9800 : 0x9c00;
 
@@ -125,16 +125,34 @@ void render(PPU *ppu, Memory *mem)
         uint8_t row = y_pos / 8;
 
         uint16_t address = map_addr + (row * 32) + col;
-        uint8_t tile = memory_read(mem, address);
+        uint8_t tile_id = memory_read(mem, address);
 
-        uint32_t cor;
-        if (tile % 2 == 0) {
-            cor = 0xFF000000;
-        } else {
-            cor = 0xFFFFFFFF;
+        uint16_t tile_data_start_addr;
+        if (bg_window_flag)
+        {
+            tile_data_start_addr = 0x8000 + (tile_id * 16);
+        }
+        else
+        {
+            tile_data_start_addr = 0x9000 + ((int8_t)tile_id * 16);
         }
 
-        ppu->video[ly * 160 + pixel_x] = tile % 2 == 0 ? 0xffffffff : 0x0;
+        uint8_t internal_line = y_pos % 8;
+        uint16_t current_line_addr = tile_data_start_addr + (internal_line * 2);
+
+        uint8_t tile_byte_1 = memory_read(mem, current_line_addr);
+        uint8_t tile_byte_2 = memory_read(mem, current_line_addr + 1);
+
+        uint8_t pixel_num = x_pos % 8;
+        uint8_t bit_to_check = 7 - pixel_num;
+
+        uint8_t bit_low = (tile_byte_1 >> bit_to_check) & 1;
+        uint8_t bit_high = (tile_byte_2 >> bit_to_check) & 1;
+
+        uint8_t color_id = (bit_high << 1) | bit_low;
+        uint8_t palette = memory_read(mem, 0xFF47);
+
+        ppu->video[ly * 160 + pixel_x] = display_palette[get_color(color_id, palette)];
     }
 }
 

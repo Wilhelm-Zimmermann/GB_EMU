@@ -119,6 +119,16 @@ uint16_t memory_read_16t(Memory *mem, uint16_t address)
     return (highByte << 8) | lowByte;
 }
 
+void dma_transfer(Memory *mem, uint16_t startAddr)
+{
+    for (int i = 0; i < 160; i++)
+    {
+        uint8_t data = memory_read(mem, startAddr + i);
+
+        mem->oam[i] = data;
+    }
+}
+
 void memory_write(Memory *mem, uint16_t address, uint8_t value)
 {
     // ROM MEMORY - cannot write on this area (read - only - memory)
@@ -153,6 +163,14 @@ void memory_write(Memory *mem, uint16_t address, uint8_t value)
     if (address >= 0xFE00 && address <= 0xFE9F)
     {
         mem->oam[address - 0xFE00] = value;
+        return;
+    }
+
+    if (address == 0xFF46)
+    {
+        uint16_t dma_source = value << 8;
+        dma_transfer(mem, dma_source);
+        mem->ioRegs[address - 0xFF00] = value;
         return;
     }
 

@@ -93,6 +93,69 @@ int handle_lcdc_blank(PPU *ppu, Memory *mem)
     return 0;
 }
 
+void render_sprites(PPU *ppu, Memory *mem)
+{
+
+    if (!(ppu->lcdc & 0x02))
+        return;
+
+    int sprite_height = 8;
+
+    for (int i = 0; i < 40; i++)
+    {
+        uint16_t sprite_addr = 0xFE00 + (i * 4);
+
+        int16_t sprite_y = memory_read(mem, sprite_addr) - 16;
+        int16_t sprite_x = memory_read(mem, sprite_addr + 1) - 8;
+        uint8_t tile_id = memory_read(mem, sprite_addr + 2);
+        uint8_t attributes = memory_read(mem, sprite_addr + 3);
+
+        int ly = memory_read(mem, 0xFF44);
+
+        if (ly >= sprite_y && ly < (sprite_y + sprite_height))
+        {
+
+            int line = ly - sprite_y;
+
+            if (attributes & 0x40)
+            {
+                line = sprite_height - 1 - line;
+            }
+
+            uint16_t tile_data_addr = 0x8000 + (tile_id * 16) + (line * 2);
+            uint8_t b1 = memory_read(mem, tile_data_addr);
+            uint8_t b2 = memory_read(mem, tile_data_addr + 1);
+
+            for (int x = 0; x < 8; x++)
+            {
+
+                int pixel_x_screen = sprite_x + x;
+
+                if (pixel_x_screen < 0 || pixel_x_screen >= 160)
+                    continue;
+
+                int bit_index = x;
+                if (!(attributes & 0x20))
+                {
+                    bit_index = 7 - x;
+                }
+
+                uint8_t color_bit_low = (b1 >> bit_index) & 1;
+                uint8_t color_bit_high = (b2 >> bit_index) & 1;
+                uint8_t color_id = (color_bit_high << 1) | color_bit_low;
+
+                if (color_id == 0)
+                    continue;
+
+                uint16_t palette_addr = (attributes & 0x10) ? 0xFF49 : 0xFF48;
+                uint8_t palette = memory_read(mem, palette_addr);
+
+                ppu->video[ly * 160 + pixel_x_screen] = display_palette[get_color(color_id, palette)];
+            }
+        }
+    }
+}
+
 void render(PPU *ppu, Memory *mem)
 {
     uint8_t lcdc = ppu->lcdc;
@@ -154,6 +217,7 @@ void render(PPU *ppu, Memory *mem)
 
         ppu->video[ly * 160 + pixel_x] = display_palette[get_color(color_id, palette)];
     }
+    render_sprites(ppu, mem);
 }
 
 // PPU = Picture Processing Unit

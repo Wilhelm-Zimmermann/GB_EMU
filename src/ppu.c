@@ -82,10 +82,10 @@ int handle_lcdc_blank(PPU *ppu, Memory *mem)
 
     if (!bg_window_enable)
     {
-        for (int i = 0; i < VIDEO_SIZE; i++)
-        {
-            ppu->video[i] = 0xFFFFFFFF; // put white on every place; just because i want.
-        }
+        // for (int i = 0; i < VIDEO_SIZE; i++)
+        // {
+        //     ppu->video[i] = 0xFFFFFFFF; // put white on every place; just because i want.
+        // }
         ppu->mode = 0;
         ppu->dot_clock = 0;
         return 1;
@@ -159,39 +159,72 @@ void render_sprites(PPU *ppu, Memory *mem)
 void render(PPU *ppu, Memory *mem)
 {
     uint8_t lcdc = ppu->lcdc;
-    uint8_t bg_window_flag = (lcdc >> 4) & 1;
+
+    uint8_t bg_window_enable = lcdc & 1;
+
     uint8_t bg_tile_map_select = (lcdc >> 3) & 1;
-    uint8_t tile_map_flag = (lcdc >> 6) & 1;
+    uint8_t window_tile_map_select = (lcdc >> 6) & 1;
+    uint8_t window_enable = (lcdc >> 5) & 1;
+    uint8_t tile_data_select = (lcdc >> 4) & 1;
+
     uint8_t scx = memory_read(mem, 0xFF43);
     uint8_t scy = memory_read(mem, 0xFF42);
+    uint8_t wx = memory_read(mem, 0xFF4B);
+    uint8_t wy = memory_read(mem, 0xFF4A);
     int ly = memory_read(mem, 0xFF44);
 
     int lcdc_window_blank_status = handle_lcdc_blank(ppu, mem);
     if (lcdc_window_blank_status)
         return;
 
-    uint16_t map_addr = bg_tile_map_select ? 0x9C00 : 0x9800;
-    // LCDC flags: https://gbdev.io/pandocs/LCDC.html
-    // object always use 8000 addr as base; if bg_window_flag = 1 0x8000 else 0x8800
-    uint16_t tile_data_addr = bg_window_flag ? 0x8000 : 0x9000;
-    // tile map -> 0x9800 to 0x9bff and 0x9c00 to 9fff
-    uint16_t tile_map_addr = tile_map_flag ? 0x9800 : 0x9c00;
+    uint16_t bg_map_base = bg_tile_map_select ? 0x9C00 : 0x9800;
+    uint16_t win_map_base = window_tile_map_select ? 0x9C00 : 0x9800;
+    uint16_t tile_data_base = tile_data_select ? 0x8000 : 0x9000;
+
+    int window_line_counter = 0;
 
     for (int pixel_x = 0; pixel_x < 160; pixel_x++)
     {
         // & 0xFF is the same as %256 but faster
         // uint8_t map_x = (x + scx) & 0xFF
-        uint8_t x_pos = (pixel_x + scx) % 256;
-        uint8_t y_pos = (ly + scy) % 256;
+        if (!bg_window_enable)
+        {
+            ppu->video[ly * 160 + pixel_x] = display_palette[0]; // Branco
+            continue;
+        }
+        int using_window = 0;
+
+        if (window_enable && (ly >= wy) && (pixel_x >= wx - 7))
+        {
+            using_window = 1;
+        }
+
+        uint8_t x_pos;
+        uint8_t y_pos;
+        uint16_t current_map_base;
+
+        if (using_window)
+        {
+            x_pos = pixel_x - (wx - 7);
+            y_pos = ly - wy;
+            current_map_base = win_map_base;
+        }
+        else
+        {
+
+            x_pos = (pixel_x + scx) & 0xFF;
+            y_pos = (ly + scy) & 0xFF;
+            current_map_base = bg_map_base;
+        }
 
         uint8_t col = x_pos / 8;
         uint8_t row = y_pos / 8;
 
-        uint16_t address = map_addr + (row * 32) + col;
+        uint16_t address = current_map_base + (row * 32) + col;
         uint8_t tile_id = memory_read(mem, address);
 
         uint16_t tile_data_start_addr;
-        if (bg_window_flag)
+        if (tile_data_select)
         {
             tile_data_start_addr = 0x8000 + (tile_id * 16);
         }
@@ -226,7 +259,7 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
     refresh_lcdc_flags(ppu, mem);
     // TODO: only for test the below asignment; remove after;
     ppu->dot_clock += cpu_cycles;
-    printf("PPU MODE: %d\n", ppu->mode);
+    // printf("PPU MODE: %d\n", ppu->mode);
     switch (ppu->mode)
     {
     case 2:
@@ -250,7 +283,8 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
         // Horizontal blank;
         if (ppu->dot_clock >= TICKS_PER_LINE)
         {
-            ppu->dot_clock = 0;
+            // ppu->dot_clock = 0;
+            ppu->dot_clock -= TICKS_PER_LINE;
             int ly = memory_read(mem, 0xFF44);
             ly++;
 
@@ -274,7 +308,8 @@ void ppu_step(PPU *ppu, Memory *mem, int cpu_cycles)
         // Vertical blank;
         if (ppu->dot_clock >= TICKS_PER_LINE)
         {
-            ppu->dot_clock = 0;
+            // ppu->dot_clock = 0;
+            ppu->dot_clock -= TICKS_PER_LINE;
             int ly = memory_read(mem, 0xFF44);
             ly++;
             if (ly > V_BLANK_LY_MAX)

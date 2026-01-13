@@ -9,9 +9,9 @@ typedef struct
         {
             // Lower byte
             // z -> zero flag - 7th bit
-            // n -> subtraction flag (BCD) - 6th bit
+            // n -> subtraction flag (BCD) - 6th bit - if last op was subtraction or not
             // h -> half carry flag (BCD) - 5th bit
-            // c -> carry flag - 4th bit
+            // c -> full carry flag - 4th bit
             // Lower 4 bits are always 0
             uint8_t F;
             // Higher byte

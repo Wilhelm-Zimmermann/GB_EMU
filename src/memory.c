@@ -158,6 +158,11 @@ void memory_write(Memory *mem, uint16_t address, uint8_t value)
     }
 
     // TODO: Search more about Echo RAM
+    if (address >= 0xE000 && address <= 0xFDFF)
+    {
+        mem->wram[address - 0xE000] = value;
+        return;
+    }
 
     // Object Attribute Memory
     if (address >= 0xFE00 && address <= 0xFE9F)
@@ -204,7 +209,11 @@ void memory_write(Memory *mem, uint16_t address, uint8_t value)
 
         if (address == 0xFF02 && value == 0x81)
         {
-            printf("%c", mem->ioRegs[0xFF01]);
+            char c = mem->ioRegs[0x01];
+
+            printf("%c", c);
+            fflush(stdout);
+
             mem->ioRegs[address - 0xFF00] = 0;
             return;
         }

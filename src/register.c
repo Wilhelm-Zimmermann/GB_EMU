@@ -184,7 +184,7 @@ void check_if_has_borrow_and_set_c_8b(Register *reg, uint8_t value1, uint8_t val
 
 void check_if_has_borrow_and_set_c_8b_with_carry(Register *reg, uint8_t value1, uint8_t value2, uint8_t carry)
 {
-    int16_t result = (value1 & 0x0F) - (value2 & 0x0F) - carry;
+    int16_t result = (int16_t)value1 - (int16_t)value2 - (int16_t)carry;
 
     if (result < 0)
     {

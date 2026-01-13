@@ -6,20 +6,23 @@ make clean
 make
 # ./main.out "../ROMS/Legend of Zelda, The - Link's Awakening (USA, Europe) (Rev 2).gb"
 # ./main.out "../ROMS/Legend of Zelda, The - Link's Awakening (USA, Europe) (Rev 2).gb"
-# ./main.out "../ROMS/04-op r,imm.gb.gb" # seg fault
+
+### Blarg ROM TESTS
 # ./main.out "../ROMS/01-special.gb" # passed V
-# ./main.out "../ROMS/02-interrupts.gb" #- implement interruprs
-# ./main.out "../ROMS/03-op sp,hl.gb" - passed V
-# ./main.out "../ROMS/04-op r,imm.gb" # - failed DE
-# ./main.out "../ROMS/05-op rp.gb" - passed V
-# ./main.out "../ROMS/06-ld r,r.gb" -- passed V
-# ./main.out "../ROMS/07-jr,jp,call,ret,rst.gb" #-- passed V
-# ./main.out "../ROMS/08-misc instrs.gb"
-# ./main.out "../ROMS/09-op r,r.gb"
-# ./main.out "../ROMS/10-bit ops.gb"
+# ./main.out "../ROMS/02-interrupts.gb" # implement interruprs
+# ./main.out "../ROMS/03-op sp,hl.gb" # passed V
+# ./main.out "../ROMS/04-op r,imm.gb" # passed V
+# ./main.out "../ROMS/05-op rp.gb" # passed V
+# ./main.out "../ROMS/06-ld r,r.gb"  # passed V
+# ./main.out "../ROMS/07-jr,jp,call,ret,rst.gb" # passed V
+# ./main.out "../ROMS/08-misc instrs.gb" # passed V
+# ./main.out "../ROMS/09-op r,r.gb" # passed V
+# ./main.out "../ROMS/10-bit ops.gb" # passed V
 # ./main.out "../ROMS/cpu_instrs.gb"
+### END BLARG
+
 # ./main.out "../ROMS/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
 # ./main.out "../ROMS/tetris.gb"
 ./main.out "../ROMS/Tetris (JUE) (V1.1) [!].gb"
-# ./main.out "../ROMS/Dr. Mario (World).gb"
+# # ./main.out "../ROMS/Dr. Mario (World).gb"
 # ./main.out "../ROMS/Alleyway (JUE) [!].gb"

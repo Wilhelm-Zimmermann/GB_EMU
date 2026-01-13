@@ -2086,8 +2086,10 @@ uint8_t opcode_xD(Register *reg, Memory *mem, uint8_t opcode)
     }
     case 0xD9:
     {
-        // RETI -- TODO: revise when implementing the Interrupt
-        instr_ret(reg, mem);
+        // RETI
+        uint16_t return_addr = stack_pop16(reg, mem);
+        reg->PC = return_addr;
+        reg->IME = 1;
         return 16;
         break;
     }

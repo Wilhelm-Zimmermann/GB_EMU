@@ -1,95 +1,129 @@
 <h1 align="center">GB_EMU</h1>
 
 <p align="center">
-  Emulador de Game Boy desenvolvido em C para estudo de arquitetura de computadores, CPU, memória e renderização gráfica.
+  Um emulador de Game Boy escrito em C, criado para estudar CPU, memória, ciclos de máquina e renderização gráfica em baixo nível.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/C-99.0%25-00599C?style=for-the-badge&logo=c&logoColor=white" alt="C" />
+  <img src="https://img.shields.io/badge/C-Language-00599C?style=for-the-badge&logo=c&logoColor=white" alt="C" />
   <img src="https://img.shields.io/badge/CMake-Build-064F8C?style=for-the-badge&logo=cmake&logoColor=white" alt="CMake" />
   <img src="https://img.shields.io/badge/SDL2-Graphics-2C2D72?style=for-the-badge" alt="SDL2" />
+  <img src="https://img.shields.io/badge/WSL-Linux%20Environment-4EAA25?style=for-the-badge&logo=linux&logoColor=white" alt="WSL" />
+  <img src="https://img.shields.io/badge/Focus-PPU-8BAC0F?style=for-the-badge" alt="Focus PPU" />
   <img src="https://img.shields.io/badge/Status-Em%20desenvolvimento-yellow?style=for-the-badge" alt="Status" />
 </p>
 
 <p align="center">
   <a href="#visão-geral">Visão geral</a> •
-  <a href="#status-atual">Status atual</a> •
-  <a href="#tecnologias-utilizadas">Tecnologias</a> •
+  <a href="#progresso">Progresso</a> •
   <a href="#arquitetura">Arquitetura</a> •
-  <a href="#como-executar">Como executar</a>
+  <a href="#como-executar">Como executar</a> •
+  <a href="#próximos-passos">Próximos passos</a>
 </p>
+
+---
+
+> Projeto em desenvolvimento. O foco atual está na implementação da **PPU** e na evolução da renderização gráfica.
 
 ## Visão geral
 
 O **GB_EMU** é um emulador de Game Boy desenvolvido em C com foco em aprendizado de baixo nível.
 
-O projeto tem como objetivo estudar, na prática, conceitos como execução de instruções da CPU, organização de memória, carregamento de ROMs, ciclos de máquina, interrupções e renderização gráfica por meio da PPU.
+O objetivo do projeto é entender, na prática, como um sistema clássico funciona internamente: execução de instruções da CPU, organização de memória, leitura de ROMs, ciclos de máquina, interrupções e renderização gráfica por meio da PPU.
 
-Este repositório ainda está em desenvolvimento e não representa um emulador finalizado. A implementação atual está evoluindo principalmente na parte gráfica, com foco na **PPU**.
+Este repositório ainda não representa um emulador finalizado. Ele está em evolução contínua e atualmente a principal frente de desenvolvimento é a implementação da **Picture Processing Unit**, responsável por grande parte do comportamento visual do Game Boy.
 
 ## Objetivo do projeto
 
-Este projeto foi criado com fins educacionais, servindo como base para estudar:
+O projeto foi criado com fins educacionais, servindo como um estudo prático sobre emulação e arquitetura de computadores.
 
-* arquitetura do Game Boy;
+Principais temas estudados:
+
+* arquitetura interna do Game Boy;
 * emulação de CPU;
+* execução de instruções e opcodes;
 * manipulação de memória em C;
 * leitura de ROMs `.gb`;
-* implementação de instruções e opcodes;
 * funcionamento da PPU;
-* renderização com SDL2;
-* depuração usando ROMs de teste.
+* renderização gráfica com SDL2;
+* ciclos de máquina e sincronização;
+* depuração usando logs e ROMs de teste.
+
+## Progresso
+
+| Componente            | Status                    |
+| --------------------- | ------------------------- |
+| Carregamento de ROM   | Em desenvolvimento        |
+| CPU                   | Parcialmente implementada |
+| Memória               | Parcialmente implementada |
+| Instruções e opcodes  | Em evolução               |
+| Interrupções          | Em evolução               |
+| PPU                   | Foco atual                |
+| Renderização com SDL2 | Inicial                   |
+| Áudio                 | Não implementado          |
+| Input/controles       | Não finalizado            |
+| Testes automatizados  | Não estruturados          |
+| Compatibilidade geral | Ainda não garantida       |
 
 ## Status atual
 
-O projeto ainda está em desenvolvimento.
+Estado geral do projeto:
 
-Estado geral:
-
-* CPU parcialmente implementada.
-* Sistema de memória implementado em módulos separados.
-* Carregamento de ROMs `.gb`.
-* Execução baseada em ciclos.
-* Integração inicial entre CPU e PPU.
-* Janela SDL2 com resolução base de Game Boy.
-* PPU em desenvolvimento.
-* Renderização gráfica ainda em evolução.
-* ROMs comerciais podem não funcionar corretamente.
-* Compatibilidade geral ainda não é garantida.
-
-> O foco atual do projeto é avançar na implementação da **PPU** e melhorar a renderização dos frames.
+* emulador escrito em C;
+* build configurado com CMake;
+* execução em ambiente Linux/WSL;
+* carregamento de ROMs `.gb`;
+* estrutura modular para CPU, memória, ROM, instruções, opcodes e PPU;
+* loop principal baseado em ciclos;
+* integração inicial entre CPU e PPU;
+* janela SDL2 com resolução base de Game Boy;
+* renderização gráfica ainda em evolução;
+* ROMs comerciais podem não funcionar corretamente;
+* compatibilidade geral ainda não é garantida.
 
 ## Principais recursos
 
-* Emulador escrito em C.
-* Build configurado com CMake.
-* Renderização de vídeo usando SDL2.
+* Implementação em C com foco em baixo nível.
+* Separação dos módulos principais do emulador.
 * Carregamento de ROMs no formato `.gb`.
-* Estrutura modular para CPU, memória, ROM, instruções, opcodes e PPU.
-* Loop principal baseado em ciclos por frame.
-* Suporte inicial a janela gráfica com escala.
-* Logs e pontos de depuração para auxiliar o desenvolvimento.
-* Referências a ROMs de teste para validação manual.
+* Execução de ciclos da CPU.
+* Estrutura para instruções normais e prefixadas.
+* Manipulação de memória em módulo dedicado.
+* Integração inicial com PPU.
+* Renderização usando SDL2.
+* Logs e pontos de depuração para acompanhar a execução.
+* Base preparada para evoluir compatibilidade e validação com ROMs de teste.
 
 ## Tecnologias utilizadas
 
-| Categoria | Tecnologias                                             |
-| --------- | ------------------------------------------------------- |
-| Linguagem | C                                                       |
-| Build     | CMake, Make                                             |
-| Gráficos  | SDL2                                                    |
-| Emulação  | CPU, memória, ROM, PPU                                  |
-| Depuração | Logs e ROMs de teste                                    |
-| Ambiente  | Linux/Unix-like ou ambiente compatível com CMake e SDL2 |
+| Categoria | Tecnologias            |
+| --------- | ---------------------- |
+| Linguagem | C                      |
+| Build     | CMake, Make            |
+| Gráficos  | SDL2                   |
+| Ambiente  | WSL / Linux            |
+| Emulação  | CPU, memória, ROM, PPU |
+| Depuração | Logs e ROMs de teste   |
 
 ## Arquitetura
 
-O projeto está organizado em módulos de baixo nível, separando as principais responsabilidades do emulador.
+O projeto é organizado em módulos de baixo nível, mantendo cada responsabilidade principal separada.
 
-Fluxo principal:
+Fluxo simplificado:
 
 ```text
 ROM -> Memory -> CPU Cycle -> PPU Step -> SDL Texture -> Window
+```
+
+Diagrama geral:
+
+```mermaid
+flowchart LR
+    ROM[ROM .gb] --> MEM[Memory]
+    MEM --> CPU[CPU]
+    CPU --> PPU[PPU]
+    PPU --> SDL[SDL2 Texture]
+    SDL --> WIN[Window]
 ```
 
 Responsabilidades principais:
@@ -104,6 +138,7 @@ Responsabilidades principais:
 | `opcodes.c`              | Organização e roteamento de opcodes.                                    |
 | `prefixedInstructions.c` | Instruções prefixadas do processador.                                   |
 | `bit.c` / `bitwise.c`    | Operações auxiliares de bits.                                           |
+| `register.c`             | Manipulação e organização dos registradores.                            |
 | `ppu.c`                  | Implementação da Picture Processing Unit e renderização do vídeo.       |
 | `logger.c`               | Geração de logs para depuração.                                         |
 | `src/headers/`           | Arquivos de cabeçalho compartilhados entre os módulos.                  |
@@ -133,7 +168,9 @@ Responsabilidades principais:
 
 ## Pré-requisitos
 
-Para compilar e executar o projeto, é necessário ter instalado:
+O projeto foi desenvolvido para execução em ambiente Linux/WSL.
+
+Para compilar e executar, é necessário ter instalado:
 
 * compilador C, como `gcc` ou `clang`;
 * CMake;
@@ -141,7 +178,7 @@ Para compilar e executar o projeto, é necessário ter instalado:
 * SDL2;
 * uma ROM `.gb` para teste.
 
-Em distribuições baseadas em Debian/Ubuntu, as dependências podem ser instaladas com:
+Em distribuições baseadas em Debian/Ubuntu, incluindo WSL Ubuntu, as dependências podem ser instaladas com:
 
 ```bash
 sudo apt update
@@ -182,13 +219,19 @@ Execute informando o caminho de uma ROM `.gb`:
 ./main.out "../ROMS/seu-arquivo.gb"
 ```
 
-Também existe um script auxiliar:
+Também existe um script auxiliar na raiz do projeto:
 
 ```bash
 ./run.sh
 ```
 
 > O script `run.sh` possui caminhos de ROM configurados diretamente no arquivo. Ajuste o caminho da ROM conforme o seu ambiente local.
+
+Caso o script não tenha permissão de execução:
+
+```bash
+chmod +x run.sh
+```
 
 ## ROMs
 
@@ -198,14 +241,15 @@ Para executar o emulador, forneça uma ROM `.gb` própria, obtida de forma legal
 
 ## Testes e validação
 
-O projeto não possui uma suíte automatizada de testes unitários no momento.
+O projeto ainda não possui uma suíte automatizada de testes unitários.
 
 A validação durante o desenvolvimento é feita principalmente por:
 
 * execução manual de ROMs `.gb`;
 * ROMs de teste;
 * logs de CPU;
-* comparação do comportamento esperado da CPU, memória e PPU.
+* comparação do comportamento esperado da CPU, memória e PPU;
+* depuração incremental dos ciclos de execução.
 
 ## Limitações atuais
 
@@ -216,28 +260,37 @@ Como o projeto ainda está em desenvolvimento, algumas limitações são esperad
 * renderização gráfica em evolução;
 * suporte a cartuchos/MBCs ainda limitado;
 * áudio ainda não implementado;
-* entrada/controles ainda não finalizados;
-* testes automatizados ainda não estruturados.
+* input/controles ainda não finalizados;
+* testes automatizados ainda não estruturados;
+* compatibilidade geral ainda não garantida.
 
 ## Próximos passos
 
-Possíveis evoluções do projeto:
+* [ ] Avançar na implementação da PPU.
+* [ ] Melhorar a renderização de background.
+* [ ] Evoluir renderização de window e sprites.
+* [ ] Validar modos da PPU.
+* [ ] Melhorar o timing por scanline.
+* [ ] Revisar tratamento de interrupções.
+* [ ] Evoluir suporte a cartuchos/MBCs.
+* [ ] Implementar input/controles.
+* [ ] Adicionar áudio.
+* [ ] Estruturar testes automatizados.
+* [ ] Documentar progresso de compatibilidade.
 
-* finalizar a implementação da PPU;
-* melhorar renderização de background, window e sprites;
-* validar modos da PPU e timing por scanline;
-* melhorar tratamento de interrupções;
-* implementar suporte mais completo a cartuchos/MBCs;
-* adicionar suporte a input;
-* adicionar áudio;
-* organizar uma suíte de testes automatizados;
-* documentar melhor o progresso de compatibilidade.
+## Sobre o desenvolvimento
+
+O **GB_EMU** é um projeto de estudo contínuo e aprofundamento técnico.
+
+A ideia principal não é apenas criar um emulador funcional, mas entender cada parte do processo: como a CPU executa instruções, como a memória é acessada, como os ciclos são sincronizados e como a PPU transforma dados em imagem.
+
+Esse projeto representa uma jornada prática em programação C, arquitetura de computadores e emulação.
 
 ## Status do projeto
 
 Projeto em evolução, desenvolvido para fins de estudo e aprofundamento em programação C, emulação, arquitetura de computadores e funcionamento interno do Game Boy.
 
-O foco atual está na implementação da **PPU**.
+Foco atual: **implementação da PPU**.
 
 ## Autor
 

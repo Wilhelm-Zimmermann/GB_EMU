@@ -97,6 +97,38 @@ uint8_t memory_read(Memory *mem, uint16_t address)
     }
     else if (address <= 0xFF7F)
     {
+        if (address == 0xFF00)
+        {
+            uint8_t request = mem->ioRegs[0x00];
+            uint8_t result = 0xFF;
+
+            // if (!(request & 0x10))
+            // {
+            //     if (joypad.right)
+            //         result &= ~0x01;
+            //     if (joypad.left)
+            //         result &= ~0x02;
+            //     if (joypad.up)
+            //         result &= ~0x04;
+            //     if (joypad.down)
+            //         result &= ~0x08;
+            // }
+
+            // if (!(request & 0x20))
+            // {
+            //     if (joypad.a)
+            //         result &= ~0x01;
+            //     if (joypad.b)
+            //         result &= ~0x02;
+            //     if (joypad.select)
+            //         result &= ~0x04;
+            //     if (joypad.start)
+            //         result &= ~0x08;
+            // }
+
+            return result;
+        }
+
         return mem->ioRegs[address - 0xFF00];
     }
     else if (address <= 0xFFFE)
@@ -237,8 +269,11 @@ void memory_write(Memory *mem, uint16_t address, uint8_t value)
 
 void stack_push16(Register *reg, Memory *mem, uint16_t value)
 {
-    // Game Boy is little endian, the low byte goes first and after the high byte
-    // on stack [high_byte, low_byte]
+    // Game Boy is little-endian (low byte at lower address).
+    // Because the stack grows downward, the high byte must be pushed first.
+    // Memory layout after push:
+    // SP+1 -> [high_byte]
+    // SP   -> [low_byte]
     reg->SP--;
     memory_write(mem, reg->SP, (uint8_t)(value >> 8));
 

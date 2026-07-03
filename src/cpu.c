@@ -12,7 +12,7 @@ void init_registers(Register *reg)
     initialize(reg);
 }
 
-void handle_interrupts(Register *reg, Memory *mem)
+int handle_interrupts(Register *reg, Memory *mem)
 {
 
     uint8_t IE = memory_read(mem, 0xFFFF);
@@ -30,7 +30,7 @@ void handle_interrupts(Register *reg, Memory *mem)
 
         if (reg->IME == 0)
         {
-            return;
+            return 0;
         }
 
         uint8_t interrupt_bit = 0;
@@ -74,38 +74,40 @@ void handle_interrupts(Register *reg, Memory *mem)
         stack_push16(reg, mem, reg->PC);
 
         reg->PC = vector_addr;
+
+        return 20;
     }
+
+    return 0;
 }
 
 uint8_t cpu_cycle(Register *reg, Memory *mem)
 {
-    uint8_t opcode = memory_read(mem, reg->PC);
+    int interrupt_cycles = handle_interrupts(reg, mem);
 
-#ifdef DEBUG
-    write_cpu_logs(reg, mem, reg->PC, opcode);
-#endif
+    if (interrupt_cycles > 0)
+    {
+        return interrupt_cycles;
+    }
 
     if (reg->halted)
     {
         return 4;
     }
 
-    handle_interrupts(reg, mem);
+    uint8_t opcode = memory_read(mem, reg->PC);
 
-    if (!reg->halted)
+#ifdef DEBUG
+    write_cpu_logs(reg, mem, reg->PC, opcode);
+#endif
+
+    int was_EI = (opcode == 0xFB);
+    if (reg->ime_scheduled)
     {
-        uint8_t opcode = memory_read(mem, reg->PC);
-
-        int was_EI = (opcode == 0xFB);
-
-        if (reg->ime_scheduled)
+        if (!was_EI)
         {
-
-            if (!was_EI)
-            {
-                reg->IME = 1;
-                reg->ime_scheduled = 0;
-            }
+            reg->IME = 1;
+            reg->ime_scheduled = 0;
         }
     }
     switch (opcode & 0xF0)

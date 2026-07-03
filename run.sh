@@ -22,7 +22,7 @@ make
 ### END BLARG
 
 # ./main.out "../ROMS/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb"
+# ./main.out "../ROMS/Tetris (JUE) (V1.1) [!].gb"
+# ./main.out "../ROMS/Dr. Mario (World).gb"
+./main.out "../ROMS/Alleyway (JUE) [!].gb"
 # ./main.out "../ROMS/tetris.gb"
-./main.out "../ROMS/Tetris (JUE) (V1.1) [!].gb"
-# # ./main.out "../ROMS/Dr. Mario (World).gb"
-# ./main.out "../ROMS/Alleyway (JUE) [!].gb"
